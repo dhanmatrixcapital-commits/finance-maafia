@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Track Record & Performance — DhanMatrix</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:#080c1c;color:#fff;overflow-x:hidden}
+canvas#bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* TICKER */
+.tick{background:#080c1c;border-bottom:1px solid rgba(0,212,170,.1);padding:8px 0;overflow:hidden;white-space:nowrap;position:relative;z-index:99}
+.tw{display:inline-flex;gap:40px;animation:scroll 38s linear infinite}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.tl{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:1.5px;color:#e879f9;text-transform:uppercase}
+.tl::before{content:'';width:6px;height:6px;border-radius:50%;background:#e879f9;animation:blink 1s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+.ti{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:500}
+.tn{color:#4b5563}.tp{color:#f1f5f9}.up{color:#34d399}.dn{color:#f87171}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 52px;height:64px;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(10,22,36,.98);backdrop-filter:blur(20px);position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.lbox{width:34px;height:34px;background:#00b8a0;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:'Sora',sans-serif}
+.ltxt{font-family:'Sora',sans-serif;font-size:20px;font-weight:700}
+.ltxt .w{color:#fff}.ltxt .t{color:#00d4aa}
+.nl{display:flex;align-items:center;gap:0;list-style:none;height:100%}
+.nl li{height:100%;display:flex;align-items:center}
+.nl a{color:#6b7280;text-decoration:none;font-size:13.5px;font-weight:500;padding:5px 12px;white-space:nowrap;transition:.2s;position:relative;height:100%;display:flex;align-items:center}
+.nl a:hover{color:#fff}
+.nl a.on{color:#a78bfa}
+.nl a.on::after{content:'';position:absolute;bottom:0;left:8px;right:8px;height:2px;background:#a78bfa;border-radius:2px 2px 0 0}
+.ne{display:flex;gap:10px}
+.blo{background:transparent;border:1px solid rgba(255,255,255,.15);color:#fff;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s}
+.blo:hover{border-color:#a78bfa;color:#a78bfa}
+.bgs{background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s}
+.bgs:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,.4)}
+
+/* HERO */
+.hero{position:relative;z-index:1;padding:72px 52px 56px;text-align:center}
+.bc{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:#4b5563;margin-bottom:22px}
+.bc a{color:#4b5563;text-decoration:none;transition:.2s}.bc a:hover,.bc .cur{color:#a78bfa}
+.htag{display:inline-flex;align-items:center;gap:6px;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.25);color:#a78bfa;font-size:10px;font-weight:700;letter-spacing:2px;padding:5px 14px;border-radius:20px;margin-bottom:20px;text-transform:uppercase}
+.hero h1{font-family:'Sora',sans-serif;font-size:52px;font-weight:900;line-height:1.08;letter-spacing:-1.5px;margin-bottom:16px}
+.hero h1 .g1{background:linear-gradient(135deg,#00d4aa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero h1 .g2{background:linear-gradient(135deg,#818cf8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{color:#6b7280;font-size:16px;line-height:1.7;max-width:520px;margin:0 auto}
+
+/* STATS CARDS */
+.stats-wrap{position:relative;z-index:1;padding:0 52px 60px}
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:48px}
+.sc{background:linear-gradient(135deg,rgba(10,8,24,.97),rgba(8,6,20,.98));border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:28px 20px;text-align:center;transition:.3s}
+.sc:hover{transform:translateY(-4px);border-color:rgba(167,139,250,.2)}
+.sc .sv{font-family:'Sora',sans-serif;font-size:38px;font-weight:900;line-height:1;letter-spacing:-1px;margin-bottom:6px}
+.sc .sl{font-size:10px;font-weight:600;color:#4b5563;letter-spacing:1px;text-transform:uppercase}
+
+/* FILTERS */
+.filters{display:flex;align-items:center;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+.filters-left{display:flex;gap:8px;flex-wrap:wrap}
+.fbtn{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#6b7280;padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s}
+.fbtn:hover{color:#fff;border-color:rgba(255,255,255,.2)}
+.fbtn.active{background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.3);color:#a78bfa}
+.fsearch{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#fff;padding:8px 14px;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;width:200px;margin-left:auto}
+.fsearch::placeholder{color:#4b5563}
+.fsearch:focus{border-color:rgba(167,139,250,.3)}
+
+/* TABLE */
+.tbl-wrap{background:rgba(8,10,22,.9);border:1px solid rgba(255,255,255,.06);border-radius:20px;overflow:hidden}
+.tbl-head{padding:16px 24px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between}
+.tbl-head h3{font-family:'Sora',sans-serif;font-size:16px;font-weight:700}
+.live-dot{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#34d399}
+.live-dot::before{content:'';width:7px;height:7px;border-radius:50%;background:#34d399;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+table{width:100%;border-collapse:collapse}
+thead th{text-align:left;font-size:10px;font-weight:700;letter-spacing:1px;color:#4b5563;text-transform:uppercase;padding:12px 24px;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(255,255,255,.02)}
+tbody td{padding:14px 24px;border-bottom:1px solid rgba(255,255,255,.04);font-size:14px;vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(255,255,255,.02)}
+.sym{font-weight:700;color:#fff}
+.typ{font-size:11px;color:#4b5563;margin-top:2px}
+.badge{display:inline-flex;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:800;white-space:nowrap}
+.badge.BUY{background:rgba(34,197,94,.12);color:#34d399;border:1px solid rgba(34,197,94,.2)}
+.badge.SELL{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.2)}
+.status{display:inline-flex;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:700}
+.status.WIN{background:rgba(34,197,94,.12);color:#34d399;border:1px solid rgba(34,197,94,.2)}
+.status.LOSS{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.2)}
+.status.OPEN{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.2)}
+.pnl-p{color:#34d399;font-weight:700;font-family:'Sora',sans-serif;font-size:15px}
+.pnl-l{color:#f87171;font-weight:700;font-family:'Sora',sans-serif;font-size:15px}
+.pnl-o{color:#fbbf24;font-weight:700;font-family:'Sora',sans-serif;font-size:15px}
+
+/* DISCLAIMER */
+.disc{position:relative;z-index:1;background:rgba(3,5,12,.95);border-top:1px solid rgba(255,255,255,.05);padding:14px 52px}
+.disc p{font-size:11px;color:#374151;line-height:1.7}
+.disc strong{color:#f5a623}
+
+/* FOOTER */
+footer{background:#03040a;border-top:1px solid rgba(255,255,255,.05);padding:40px 52px 24px;position:relative;z-index:1}
+.fg{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:44px;margin-bottom:32px}
+.fl{display:flex;align-items:center;gap:9px;text-decoration:none;margin-bottom:12px}
+.flb{width:32px;height:32px;background:#00b8a0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;font-family:'Sora',sans-serif}
+.flt{font-family:'Sora',sans-serif;font-size:17px;font-weight:700}.flt .w{color:#fff}.flt .t{color:#00d4aa}
+.fb p{color:#4b5563;font-size:13px;line-height:1.75}
+.fc h4{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#374151;margin-bottom:14px}
+.fc ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.fc ul li a{color:#4b5563;text-decoration:none;font-size:13px;transition:.2s}
+.fc ul li a:hover{color:#fff}
+.fbot{border-top:1px solid rgba(255,255,255,.04);padding-top:20px;display:flex;justify-content:space-between;align-items:center}
+.fbot p,.fbot span{font-size:12px;color:#374151}
+
+/* CHART BAR */
+.chart-wrap{position:relative;z-index:1;padding:0 52px 60px}
+.chart-card{background:rgba(8,10,22,.9);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:32px}
+.chart-title{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;margin-bottom:6px}
+.chart-sub{font-size:13px;color:#4b5563;margin-bottom:28px}
+.bars{display:flex;align-items:flex-end;gap:8px;height:160px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.06)}
+.bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bar{width:100%;border-radius:6px 6px 0 0;min-height:4px;transition:height .5s ease}
+.bar.win{background:linear-gradient(180deg,#34d399,#059669)}
+.bar.loss{background:linear-gradient(180deg,#f87171,#dc2626)}
+.bar-lbl{font-size:10px;color:#4b5563;margin-top:6px;white-space:nowrap}
+.bar-val{font-size:10px;font-weight:700;margin-bottom:2px}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<!-- TICKER -->
+<div class="tick"><div class="tw">
+  <span class="tl">LIVE</span>
+  <span class="ti"><span class="tn">NIFTY</span><span class="tp" id="t-nifty">24,812</span><span class="up">▲ +142.30</span></span>
+  <span class="ti"><span class="tn">SENSEX</span><span class="tp">81,532</span><span class="up">▲ +498.60</span></span>
+  <span class="ti"><span class="tn">RELIANCE</span><span class="tp">2,845</span><span class="dn">▼ -18.40</span></span>
+  <span class="ti"><span class="tn">TCS</span><span class="tp">4,210</span><span class="up">▲ +55.20</span></span>
+  <span class="ti"><span class="tn">HDFC BANK</span><span class="tp">1,698</span><span class="up">▲ +22.10</span></span>
+  <span class="ti"><span class="tn">INFY</span><span class="tp">1,532</span><span class="dn">▼ -8.65</span></span>
+  <span class="tl">LIVE</span>
+  <span class="ti"><span class="tn">NIFTY</span><span class="tp">24,812</span><span class="up">▲ +142.30</span></span>
+  <span class="ti"><span class="tn">SENSEX</span><span class="tp">81,532</span><span class="up">▲ +498.60</span></span>
+  <span class="ti"><span class="tn">RELIANCE</span><span class="tp">2,845</span><span class="dn">▼ -18.40</span></span>
+  <span class="ti"><span class="tn">TCS</span><span class="tp">4,210</span><span class="up">▲ +55.20</span></span>
+</div></div>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="index.html"><div class="lbox">dm</div><div class="ltxt"><span class="w">Dhan</span><span class="t">Matrix</span></div></a>
+  <ul class="nl">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="performance.html" class="on">Closed Trades</a></li>
+    <li><a href="index.html#research">Research</a></li>
+    <li><a href="index.html#education">Education</a></li>
+    <li><a href="index.html#demat">Demat</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <div class="ne">
+    <button class="blo">Login</button>
+    <button class="bgs">Get Started</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="bc"><a href="index.html">Home</a><span>›</span><span class="cur">Track Record</span></div>
+  <div class="htag">📊 Performance & Closed Trades</div>
+  <h1>Every Call. Every Result.<br><span class="g1">No Cherry Picking.</span></h1>
+  <p>Full transparency — every trade we gave, the entry, the exit, and the result. Updated regularly. No hidden losses.</p>
+</header>
+
+<!-- STATS -->
+<div class="stats-wrap">
+  <div class="stats-grid">
+    <div class="sc">
+      <div class="sv" id="stat-total" style="color:#f1f5f9">—</div>
+      <div class="sl">Total Trades</div>
+    </div>
+    <div class="sc">
+      <div class="sv" id="stat-wins" style="color:#34d399">—</div>
+      <div class="sl">Wins ✅</div>
+    </div>
+    <div class="sc">
+      <div class="sv" id="stat-losses" style="color:#f87171">—</div>
+      <div class="sl">Losses ❌</div>
+    </div>
+    <div class="sc">
+      <div class="sv" id="stat-wr" style="color:#a78bfa">—</div>
+      <div class="sl">Win Rate</div>
+    </div>
+    <div class="sc">
+      <div class="sv" id="stat-open" style="color:#fbbf24">—</div>
+      <div class="sl">Open Calls</div>
+    </div>
+  </div>
+
+  <!-- MONTHLY CHART -->
+  <div class="chart-wrap" style="padding:0 0 48px">
+    <div class="chart-card">
+      <div class="chart-title">Monthly Performance</div>
+      <div class="chart-sub">Win / Loss breakdown by month</div>
+      <div class="bars" id="monthlyBars">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <div class="filters-left">
+      <button class="fbtn active" onclick="filterTrades('ALL',this)">All</button>
+      <button class="fbtn" onclick="filterTrades('Equity',this)">📊 Equity</button>
+      <button class="fbtn" onclick="filterTrades('Swing',this)">🔄 Swing</button>
+      <button class="fbtn" onclick="filterTrades('Options',this)">⚡ Options</button>
+      <button class="fbtn" onclick="filterTrades('Futures',this)">📈 Futures</button>
+      <button class="fbtn" onclick="filterTrades('WIN',this)">✅ Wins</button>
+      <button class="fbtn" onclick="filterTrades('LOSS',this)">❌ Losses</button>
+    </div>
+    <input class="fsearch" type="text" placeholder="Search symbol…" oninput="searchTrades(this.value)">
+  </div>
+
+  <!-- TABLE -->
+  <div class="tbl-wrap">
+    <div class="tbl-head">
+      <h3>Closed Trade Log</h3>
+      <div class="live-dot">Updated regularly</div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Symbol</th>
+          <th>Type</th>
+          <th>Call Type</th>
+          <th>Entry</th>
+          <th>Exit</th>
+          <th>SL</th>
+          <th>Target 1</th>
+          <th>P&L %</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="tradeTable">
+        <!-- Populated by JS -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- DISCLAIMER -->
+<div class="disc">
+  <p>⚠ <strong>Disclaimer:</strong> DhanMatrix is not a SEBI Registered Research Analyst. All trade ideas are for informational and educational purposes only. Past performance does not guarantee future results. Invest at your own risk. GSTIN: 07AAXFD3406A1ZO | MSME: UDYAM-DL-09-0043446</p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fg">
+    <div class="fb">
+      <a class="fl" href="index.html"><div class="flb">dm</div><div class="flt"><span class="w">Dhan</span><span class="t">Matrix</span></div></a>
+      <p>India's trusted investment education platform. Smart research. Proven calls. Real results.</p>
+    </div>
+    <div class="fc"><h4>Services</h4><ul><li><a href="services.html#equity">Equity Calls</a></li><li><a href="services.html#swing">Swing Trading</a></li><li><a href="services.html#options">Options</a></li><li><a href="services.html#futures">Futures</a></li></ul></div>
+    <div class="fc"><h4>Company</h4><ul><li><a href="index.html#about">About Us</a></li><li><a href="performance.html">Track Record</a></li><li><a href="index.html#education">Education</a></li><li><a href="index.html#demat">Open Demat</a></li></ul></div>
+    <div class="fc"><h4>Legal</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li><li><a href="#">Refund Policy</a></li><li><a href="index.html#contact">Contact Us</a></li></ul></div>
+  </div>
+  <div class="fbot">
+    <p>© 2025 DhanMatrix Securities. All rights reserved.</p>
+    <span>Made with ❤ for Indian investors</span>
+  </div>
+</footer>
+
+<script>
+/* ── TRADES DATA — edit this array to add/update trades ── */
+var TRADES = [
+  { id:1, symbol:'RELIANCE', type:'BUY', callType:'Equity', entry:'2780', exit:'2960', sl:'2700', t1:'2860', pnl:'+6.5%', status:'WIN', date:'2025-03-14' },
+  { id:2, symbol:'HDFC BANK', type:'BUY', callType:'Equity', entry:'1620', exit:'1685', sl:'1580', t1:'1680', pnl:'+4.0%', status:'WIN', date:'2025-03-08' },
+  { id:3, symbol:'TCS', type:'BUY', callType:'Equity', entry:'4100', exit:'4028', sl:'4000', t1:'4220', pnl:'-1.8%', status:'LOSS', date:'2025-02-28' },
+  { id:4, symbol:'NIFTY 23500 CE', type:'BUY', callType:'Options', entry:'180', exit:'568', sl:'90', t1:'400', pnl:'+216%', status:'WIN', date:'2025-03-18' },
+  { id:5, symbol:'INFY 1500 PE', type:'BUY', callType:'Options', entry:'62', exit:'153', sl:'30', t1:'130', pnl:'+147%', status:'WIN', date:'2025-03-12' },
+  { id:6, symbol:'BAJAJ AUTO', type:'BUY', callType:'Swing', entry:'8200', exit:'8888', sl:'7900', t1:'8700', pnl:'+8.4%', status:'WIN', date:'2025-03-20' },
+  { id:7, symbol:'ICICI BANK', type:'BUY', callType:'Swing', entry:'1180', exit:'1240', sl:'1130', t1:'1230', pnl:'+5.1%', status:'WIN', date:'2025-03-15' },
+  { id:8, symbol:'NIFTY FUT', type:'BUY', callType:'Futures', entry:'23200', exit:'23918', sl:'22900', t1:'23800', pnl:'+3.1%', status:'WIN', date:'2025-03-22' },
+  { id:9, symbol:'BANKNIFTY CE', type:'BUY', callType:'Options', entry:'240', exit:'454', sl:'110', t1:'400', pnl:'+89%', status:'WIN', date:'2025-03-10' },
+  { id:10, symbol:'WIPRO', type:'BUY', callType:'Equity', entry:'480', exit:'462', sl:'460', t1:'520', pnl:'-3.75%', status:'LOSS', date:'2025-02-20' },
+  { id:11, symbol:'MARUTI', type:'BUY', callType:'Swing', entry:'11200', exit:'12008', sl:'10800', t1:'11900', pnl:'+7.2%', status:'WIN', date:'2025-03-05' },
+  { id:12, symbol:'BANKNIFTY FUT', type:'BUY', callType:'Futures', entry:'48200', exit:'50512', sl:'47200', t1:'50000', pnl:'+4.8%', status:'WIN', date:'2025-03-19' },
+];
+
+var allTrades = TRADES.slice();
+var currentFilter = 'ALL';
+var currentSearch = '';
+
+/* ── RENDER TABLE ── */
+function renderTable(trades) {
+  var tbody = document.getElementById('tradeTable');
+  if (!trades.length) {
+    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:40px;color:#4b5563">No trades found</td></tr>';
+    return;
+  }
+  tbody.innerHTML = trades.map(function(t, i) {
+    var pnlClass = t.status === 'WIN' ? 'pnl-p' : t.status === 'LOSS' ? 'pnl-l' : 'pnl-o';
+    return '<tr>' +
+      '<td style="color:#4b5563;font-size:12px">' + t.id + '</td>' +
+      '<td><div class="sym">' + t.symbol + '</div><div class="typ">' + t.callType + '</div></td>' +
+      '<td><span class="badge ' + t.type + '">' + t.type + '</span></td>' +
+      '<td style="font-size:13px;color:#9ca3af">' + t.callType + '</td>' +
+      '<td style="font-size:13px">₹' + t.entry + '</td>' +
+      '<td style="font-size:13px">' + (t.exit ? '₹'+t.exit : '—') + '</td>' +
+      '<td style="font-size:13px;color:#f87171">₹' + t.sl + '</td>' +
+      '<td style="font-size:13px;color:#34d399">₹' + t.t1 + '</td>' +
+      '<td><span class="' + pnlClass + '">' + t.pnl + '</span></td>' +
+      '<td><span class="status ' + t.status + '">' + t.status + '</span></td>' +
+      '<td style="font-size:12px;color:#4b5563">' + t.date + '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+/* ── FILTER ── */
+function filterTrades(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.fbtn').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  applyFilters();
+}
+
+function searchTrades(val) {
+  currentSearch = val.toLowerCase();
+  applyFilters();
+}
+
+function applyFilters() {
+  var filtered = allTrades.filter(function(t) {
+    var matchFilter = currentFilter === 'ALL' ||
+      t.callType === currentFilter ||
+      t.status === currentFilter;
+    var matchSearch = !currentSearch || t.symbol.toLowerCase().includes(currentSearch);
+    return matchFilter && matchSearch;
+  });
+  renderTable(filtered);
+}
+
+/* ── STATS ── */
+function calcStats() {
+  var total = allTrades.length;
+  var wins = allTrades.filter(function(t){ return t.status === 'WIN'; }).length;
+  var losses = allTrades.filter(function(t){ return t.status === 'LOSS'; }).length;
+  var open = allTrades.filter(function(t){ return t.status === 'OPEN'; }).length;
+  var wr = total > 0 ? Math.round((wins/total)*100) : 0;
+
+  animCount(document.getElementById('stat-total'), total, 800);
+  animCount(document.getElementById('stat-wins'), wins, 800);
+  animCount(document.getElementById('stat-losses'), losses, 800);
+  animCount(document.getElementById('stat-open'), open, 800);
+  document.getElementById('stat-wr').textContent = wr + '%';
+}
+
+function animCount(el, target, dur) {
+  if (!el || target === 0) { if(el) el.textContent = '0'; return; }
+  var start = 0, step = target/60;
+  var iv = setInterval(function() {
+    start += step;
+    if (start >= target) { start = target; clearInterval(iv); }
+    el.textContent = Math.round(start);
+  }, dur/60);
+}
+
+/* ── MONTHLY CHART ── */
+function renderChart() {
+  var months = {};
+  allTrades.forEach(function(t) {
+    var m = t.date.substring(0, 7);
+    if (!months[m]) months[m] = { win: 0, loss: 0 };
+    if (t.status === 'WIN') months[m].win++;
+    else if (t.status === 'LOSS') months[m].loss++;
+  });
+
+  var keys = Object.keys(months).sort();
+  var maxVal = Math.max.apply(null, keys.map(function(k){ return months[k].win + months[k].loss; }));
+  var container = document.getElementById('monthlyBars');
+  var monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  container.innerHTML = keys.map(function(k) {
+    var d = months[k];
+    var total = d.win + d.loss;
+    var winH = Math.round((d.win / maxVal) * 130);
+    var lossH = Math.round((d.loss / maxVal) * 130);
+    var parts = k.split('-');
+    var lbl = monthNames[parseInt(parts[1])-1] + ' ' + parts[0].substring(2);
+    return '<div class="bar-wrap">' +
+      '<div style="display:flex;flex-direction:column;align-items:center;gap:2px;justify-content:flex-end;height:145px">' +
+        (d.win ? '<div class="bar-val" style="color:#34d399;font-size:9px">'+d.win+'W</div><div class="bar win" style="height:'+winH+'px;width:100%"></div>' : '') +
+        (d.loss ? '<div class="bar-val" style="color:#f87171;font-size:9px">'+d.loss+'L</div><div class="bar loss" style="height:'+lossH+'px;width:100%"></div>' : '') +
+      '</div>' +
+      '<div class="bar-lbl">' + lbl + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+/* ── BG CANVAS ── */
+try {
+  var cv = document.getElementById('bg');
+  var cx = cv.getContext('2d');
+  var pts = [], blobs = [];
+  var COLS = ['129,140,248','52,211,153','251,191,36','244,114,182','6,182,212','167,139,250'];
+  function resize(){ cv.width=window.innerWidth; cv.height=window.innerHeight; initPts(); }
+  function initPts(){
+    pts=[];
+    var n=Math.max(60,Math.min(120,Math.floor(cv.width*cv.height/9000)));
+    for(var i=0;i<n;i++){
+      pts.push({x:Math.random()*cv.width,y:Math.random()*cv.height,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:1.2+Math.random()*1.8,col:COLS[Math.floor(Math.random()*COLS.length)],a:.5+Math.random()*.35,ph:Math.random()*Math.PI*2,ps:.015+Math.random()*.02});
+    }
+    blobs=[
+      {px:0,py:0,sx:.00012,sy:.0001,bx:.2,by:.25,col:'99,102,241',a:.08,r:.45},
+      {px:2,py:.8,sx:.0001,sy:.00014,bx:.8,by:.7,col:'52,211,153',a:.06,r:.4},
+      {px:1,py:3,sx:.00015,sy:.0001,bx:.5,by:.1,col:'251,191,36',a:.05,r:.35},
+    ];
+  }
+  function drawBg(){
+    cx.clearRect(0,0,cv.width,cv.height);
+    cx.fillStyle='#080c1c'; cx.fillRect(0,0,cv.width,cv.height);
+    blobs.forEach(function(b){
+      b.px+=b.sx; b.py+=b.sy;
+      var bx=(b.bx+Math.sin(b.px)*.1)*cv.width, by=(b.by+Math.cos(b.py)*.09)*cv.height;
+      var g=cx.createRadialGradient(bx,by,0,bx,by,b.r*Math.min(cv.width,cv.height));
+      g.addColorStop(0,'rgba('+b.col+','+b.a+')'); g.addColorStop(1,'transparent');
+      cx.fillStyle=g; cx.fillRect(0,0,cv.width,cv.height);
+    });
+    pts.forEach(function(p){
+      p.x+=p.vx; p.y+=p.vy; p.ph+=p.ps;
+      if(p.x<-10)p.x=cv.width+10; if(p.x>cv.width+10)p.x=-10;
+      if(p.y<-10)p.y=cv.height+10; if(p.y>cv.height+10)p.y=-10;
+    });
+    for(var i=0;i<pts.length;i++) for(var j=i+1;j<pts.length;j++){
+      var a=pts[i],b=pts[j],d=Math.sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y));
+      if(d<130){var al=(1-d/130)*.25; cx.beginPath();cx.strokeStyle='rgba('+a.col+','+al+')';cx.lineWidth=.8;cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.stroke();}
+    }
+    pts.forEach(function(p){
+      cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      cx.fillStyle='rgba('+p.col+','+(p.a*(0.7+Math.sin(p.ph)*.3))+')';cx.fill();
+    });
+    requestAnimationFrame(drawBg);
+  }
+  resize(); window.addEventListener('resize',resize); requestAnimationFrame(drawBg);
+} catch(e){}
+
+/* ── INIT ── */
+window.addEventListener('DOMContentLoaded', function() {
+  calcStats();
+  renderTable(allTrades);
+  renderChart();
+});
+</script>
+</body>
+</html>

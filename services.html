@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services & Pricing — DhanMatrix</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:#080c1c;color:#fff;overflow-x:hidden}
+canvas#bg{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%}
+
+/* ── TICKER ── */
+.tick{background:#080c1c;border-bottom:1px solid rgba(0,212,170,.1);padding:8px 0;overflow:hidden;white-space:nowrap;position:relative;z-index:99}
+.tw{display:inline-flex;gap:40px;animation:scroll 38s linear infinite}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.tl{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:1.5px;color:#e879f9;text-transform:uppercase}
+.tl::before{content:'';width:6px;height:6px;border-radius:50%;background:#e879f9;animation:blink 1s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+.ti{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:500}
+.tn{color:#4b5563}.tp{color:#f1f5f9}.up{color:#34d399}.dn{color:#f87171}
+
+/* ── NAV ── */
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 52px;height:64px;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(10,22,36,.98);backdrop-filter:blur(20px);position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.lbox{width:38px;height:38px;background:#00b8a0;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;font-family:'Sora',sans-serif;letter-spacing:-.5px}
+.ltxt{font-family:'Sora',sans-serif;font-size:20px;font-weight:700}
+.ltxt .w{color:#fff}.ltxt .t{color:#00d4aa}
+.nl{display:flex;align-items:center;gap:0;list-style:none;height:100%}
+.nl li{height:100%;display:flex;align-items:center}
+.nl a{color:#6b7280;text-decoration:none;font-size:13.5px;font-weight:500;padding:5px 12px;white-space:nowrap;transition:.2s;position:relative;height:100%;display:flex;align-items:center}
+.nl a:hover{color:#fff}
+.nl a.on{color:#a78bfa}
+.nl a.on::after{content:'';position:absolute;bottom:0;left:8px;right:8px;height:2px;background:#a78bfa;border-radius:2px 2px 0 0}
+.ne{display:flex;gap:10px}
+.blo{background:transparent;border:1px solid rgba(255,255,255,.15);color:#fff;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:.2s}
+.blo:hover{border-color:#a78bfa;color:#a78bfa}
+.bgs{background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;color:#fff;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:.2s}
+.bgs:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,.4)}
+
+/* ── PAGE HERO ── */
+.hero{position:relative;z-index:1;background:linear-gradient(180deg,rgba(8,12,28,.0) 0%,rgba(8,12,28,.88) 100%);padding:72px 52px 64px;text-align:center;overflow:hidden}
+.bc{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:#4b5563;margin-bottom:22px}
+.bc a{color:#4b5563;text-decoration:none;transition:.2s}.bc a:hover,.bc .cur{color:#a78bfa}
+.htag{display:inline-flex;align-items:center;gap:6px;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.25);color:#a78bfa;font-size:10px;font-weight:700;letter-spacing:2px;padding:5px 14px;border-radius:20px;margin-bottom:20px;text-transform:uppercase}
+.hero h1{font-family:'Sora',sans-serif;font-size:56px;font-weight:900;line-height:1.06;letter-spacing:-1.5px;margin-bottom:18px}
+.hero h1 .g1{background:linear-gradient(135deg,#00d4aa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero h1 .g2{background:linear-gradient(135deg,#06b6d4,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{color:#6b7280;font-size:16px;line-height:1.7;max-width:520px;margin:0 auto 44px}
+.hrow{display:flex;align-items:stretch;justify-content:center;gap:0;border:1px solid rgba(167,139,250,.15);border-radius:18px;overflow:hidden;max-width:660px;margin:0 auto;background:rgba(10,8,24,.7);backdrop-filter:blur(12px)}
+.hc{flex:1;padding:20px 18px;text-align:center;border-right:1px solid rgba(167,139,250,.1)}
+.hc:last-child{border-right:none}
+.hc .v{font-family:'Sora',sans-serif;font-size:24px;font-weight:800;line-height:1}
+.hc:nth-child(1) .v{color:#a78bfa}
+.hc:nth-child(2) .v{color:#34d399}
+.hc:nth-child(3) .v{color:#f59e0b}
+.hc:nth-child(4) .v{color:#06b6d4}
+.hc:nth-child(5) .v{color:#f472b6}
+.hc .l{font-size:10px;color:#4b5563;margin-top:5px;letter-spacing:.5px;text-transform:uppercase}
+
+/* ── SUBNAV ── */
+.subnav{background:rgba(5,7,16,.97);border-bottom:1px solid rgba(255,255,255,.05);padding:0 52px;display:flex;overflow-x:auto;position:sticky;top:64px;z-index:90;backdrop-filter:blur(10px)}
+.subnav::-webkit-scrollbar{display:none}
+.sn{color:#6b7280;text-decoration:none;font-size:13px;font-weight:500;padding:14px 18px;white-space:nowrap;border-bottom:2px solid transparent;transition:.2s;display:flex;align-items:center;gap:6px}
+.sn:hover{color:#fff}
+.sn.on{color:#a78bfa;border-bottom-color:#a78bfa}
+
+/* ── SERVICE SECTIONS ── */
+.srvsec{position:relative;z-index:1;overflow:hidden}
+.srvsec::before{content:'';position:absolute;pointer-events:none;border-radius:50%;filter:blur(80px);opacity:.12;z-index:0}
+
+/* Each section has a unique identity */
+.sec-eq{background:rgba(8,12,28,.82);border-bottom:1px solid rgba(129,140,248,.08)}
+.sec-eq::before{top:-120px;right:-80px;width:400px;height:400px;background:#818cf8}
+.sec-sw{background:rgba(4,14,10,.82);border-bottom:1px solid rgba(52,211,153,.08)}
+.sec-sw::before{bottom:-100px;left:-80px;width:380px;height:380px;background:#059669}
+.sec-op{background:rgba(16,10,2,.82);border-bottom:1px solid rgba(251,191,36,.08)}
+.sec-op::before{top:-100px;left:50%;width:420px;height:350px;background:#d97706}
+.sec-fu{background:rgba(16,4,10,.82);border-bottom:1px solid rgba(244,114,182,.08)}
+.sec-fu::before{bottom:-100px;right:-80px;width:380px;height:380px;background:#db2777}
+
+.sw{padding:80px 52px;position:relative;z-index:1}
+
+/* ── SERVICE LAYOUT ── */
+.srv-wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.srv-wrap.rev{direction:rtl}.srv-wrap.rev>*{direction:ltr}
+
+/* Left - big visual panel */
+.srv-panel{border-radius:24px;overflow:hidden;position:relative;min-height:440px;display:flex;flex-direction:column}
+.panel-header{padding:28px 28px 22px;display:flex;align-items:flex-start;justify-content:space-between}
+.panel-ico{font-size:32px;width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center}
+.panel-price{text-align:right}
+.panel-price .amt{font-family:'Sora',sans-serif;font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1}
+.panel-price .per{font-size:12px;margin-top:2px}
+.panel-title{padding:0 28px 6px}
+.panel-title h3{font-family:'Sora',sans-serif;font-size:28px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px}
+.panel-title p{font-size:13px;line-height:1.6;opacity:.65}
+
+/* Stats strip */
+.panel-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:20px 28px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.07)}
+.ps{padding:12px 14px;text-align:center;border-right:1px solid rgba(255,255,255,.07)}
+.ps:last-child{border-right:none}
+.ps .pv{font-family:'Sora',sans-serif;font-size:16px;font-weight:800;line-height:1}
+.ps .pk{font-size:10px;color:rgba(255,255,255,.4);margin-top:4px;letter-spacing:.3px}
+
+/* Recent trades strip */
+.panel-trades{margin:0 28px 28px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.07)}
+.pt-head{padding:10px 14px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.4);border-bottom:1px solid rgba(255,255,255,.06)}
+.pt-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04)}
+.pt-row:last-child{border-bottom:none}
+.pt-sym{font-size:13px;font-weight:600}.pt-typ{font-size:11px;color:rgba(255,255,255,.35)}
+.pnl-p{font-size:13px;font-weight:700;color:#34d399}
+.pnl-l{font-size:13px;font-weight:700;color:#f87171}
+
+/* Right - content */
+.srv-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:20px;border:1px solid;display:inline-flex;margin-bottom:16px}
+.srv-title{font-family:'Sora',sans-serif;font-size:32px;font-weight:800;letter-spacing:-.5px;line-height:1.2;margin-bottom:14px;color:#ffffff}
+.srv-desc{font-size:14px;line-height:1.75;color:#6b7280;margin-bottom:24px}
+.srv-pts{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:28px}
+.srv-pts li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#d1d5db;line-height:1.6}
+.ck-box{width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+.srv-cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn-a{padding:13px 28px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:.25s;text-decoration:none;display:inline-flex;align-items:center;gap:7px;border:none}
+.btn-a:hover{transform:translateY(-2px)}
+.btn-b{padding:13px 28px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:.2s;text-decoration:none;display:inline-flex;align-items:center;background:transparent;border:1px solid rgba(255,255,255,.15);color:#fff}
+.btn-b:hover{background:rgba(255,255,255,.06)}
+
+/* ── DIVIDER ── */
+.div{position:relative;z-index:1;border:none;border-top:1px solid rgba(255,255,255,.05)}
+
+/* ── PRICING ── */
+.pricing-sec{position:relative;z-index:1;background:rgba(8,12,28,.80)}
+.sec-head{text-align:center;margin-bottom:48px}
+.sec-tag{display:inline-flex;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.25);color:#a78bfa;font-size:10px;font-weight:700;letter-spacing:2px;padding:5px 14px;border-radius:20px;margin-bottom:16px;text-transform:uppercase}
+.sec-title{font-family:'Sora',sans-serif;font-size:40px;font-weight:900;letter-spacing:-1px;margin-bottom:10px}
+.sec-title .g{background:linear-gradient(135deg,#00d4aa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sec-sub{color:#6b7280;font-size:15px;max-width:480px;margin:0 auto}
+
+/* Pricing toggle */
+.ptoggle{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:40px}
+.ptoggle span{font-size:14px;color:#6b7280;font-weight:500}
+.ptoggle span.act{color:#fff;font-weight:600}
+.toggle-pill{width:48px;height:26px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:13px;position:relative;cursor:pointer;transition:.3s}
+.toggle-pill::after{content:'';position:absolute;width:20px;height:20px;background:#fff;border-radius:50%;top:3px;left:3px;transition:.3s}
+.toggle-pill.yr::after{left:25px}
+.save-badge{background:rgba(52,211,153,.15);border:1px solid rgba(52,211,153,.3);color:#34d399;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
+
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.plan{border-radius:22px;overflow:hidden;display:flex;flex-direction:column;transition:.3s;position:relative}
+.plan:hover{transform:translateY(-6px)}
+.plan.pop{box-shadow:0 0 0 1px rgba(167,139,250,.4),0 0 60px rgba(124,58,237,.12)}
+.p-bar{height:4px}
+.pb{padding:30px;flex:1;display:flex;flex-direction:column;background:rgba(10,8,24,.9);border:1px solid rgba(255,255,255,.07);border-top:none}
+.p-popular{display:none;position:absolute;top:18px;right:18px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;font-size:10px;font-weight:700;letter-spacing:1px;padding:4px 10px;border-radius:20px;text-transform:uppercase}
+.plan.pop .p-popular{display:block}
+.p-name{font-family:'Sora',sans-serif;font-size:22px;font-weight:800;margin-bottom:4px;letter-spacing:-.3px}
+.p-tag{color:#6b7280;font-size:13px;margin-bottom:22px}
+.p-price .a{font-family:'Sora',sans-serif;font-size:48px;font-weight:900;line-height:1;letter-spacing:-2px}
+.p-price .m{color:#6b7280;font-size:13px;margin-left:3px}
+.p-save{font-size:11px;font-weight:600;color:#34d399;margin:6px 0 22px;height:18px}
+.p-feats{list-style:none;display:flex;flex-direction:column;gap:11px;flex:1;margin-bottom:26px}
+.p-feats li{display:flex;align-items:center;gap:9px;font-size:13.5px;color:#d1d5db}
+.p-feats .ck{color:#34d399;font-size:13px;font-weight:700;flex-shrink:0;width:16px}
+.p-feats .no{color:rgba(255,255,255,.2);font-size:13px;flex-shrink:0;width:16px}
+.p-feats li.dim{color:rgba(255,255,255,.3)}
+.pbtn{width:100%;padding:14px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:.25s;margin-top:auto;border:none}
+.pbtn.ou{background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.12)}
+.pbtn.ou:hover{background:rgba(255,255,255,.1)}
+.pbtn.fi{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff}
+.pbtn.fi:hover{box-shadow:0 10px 30px rgba(124,58,237,.4);transform:translateY(-2px)}
+
+/* ── COMPARE ── */
+.compare-sec{position:relative;z-index:1;background:rgba(8,12,28,.80)}
+.ctbl{width:100%;border-collapse:collapse;margin-top:40px}
+.ctbl th{font-size:11px;font-weight:600;letter-spacing:.3px;color:#6b7280;text-transform:uppercase;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}
+.ctbl th:not(:first-child){text-align:center}
+.ctbl td{padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.04);font-size:14px;color:#d1d5db}
+.ctbl td:not(:first-child){text-align:center}
+.ctbl tr:hover td{background:rgba(255,255,255,.015)}
+.crow td{background:rgba(167,139,250,.04);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(167,139,250,.5);padding:10px 20px}
+.ctbl .ck{color:#34d399;font-size:15px;font-weight:700}
+.ctbl .no{color:rgba(255,255,255,.15);font-size:15px}
+.ctbl .hc2{color:#a78bfa;font-weight:600}
+
+/* ── FAQ ── */
+.faq-sec{position:relative;z-index:1;background:rgba(8,12,28,.80)}
+.faq{display:flex;flex-direction:column;gap:10px;margin-top:40px}
+.fq{background:rgba(10,8,24,.85);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;transition:.2s}
+.fq:hover{border-color:rgba(167,139,250,.2)}
+.fqq{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;cursor:pointer;font-size:15px;font-weight:500;gap:16px;transition:.2s}
+.fqq:hover{color:#a78bfa}
+.fqq .arr{color:#34d399;font-size:20px;transition:.3s;flex-shrink:0;font-weight:300}
+.fq.op .fqq .arr{transform:rotate(45deg)}
+.fqa{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .3s;color:#6b7280;font-size:14px;line-height:1.78;padding:0 22px}
+.fq.op .fqa{max-height:220px;padding:0 22px 18px}
+
+/* ── CTA ── */
+.cta{position:relative;z-index:1;background:rgba(5,7,16,.95);padding:80px 52px;text-align:center;overflow:hidden}
+.cta::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:700px;height:600px;background:radial-gradient(ellipse,rgba(124,58,237,.07) 0%,rgba(52,211,153,.04) 50%,transparent 70%);pointer-events:none}
+.cta h2{font-family:'Sora',sans-serif;font-size:44px;font-weight:900;letter-spacing:-1.5px;margin-bottom:14px}
+.cta h2 .g{background:linear-gradient(135deg,#00d4aa,#34d399,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta p{color:#6b7280;font-size:15px;max-width:460px;margin:0 auto 32px;line-height:1.7}
+.cta-row{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}
+
+/* ── FOOTER ── */
+footer{background:#03040a;border-top:1px solid rgba(255,255,255,.05);padding:50px 52px 26px;position:relative;z-index:1}
+.fg{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:44px;margin-bottom:36px}
+.fb p{color:#4b5563;font-size:13px;line-height:1.75;margin:12px 0}
+.fmeta p{font-size:11px;color:#374151;line-height:1.9}
+.fl{display:flex;align-items:center;gap:9px;text-decoration:none}
+.flb{width:36px;height:36px;background:#00b8a0;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;font-family:'Sora',sans-serif}
+.flt{font-family:'Sora',sans-serif;font-size:18px;font-weight:700}.flt .w{color:#fff}.flt .t{color:#00d4aa}
+.fc h4{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#374151;margin-bottom:16px}
+.fc ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.fc ul li a{color:#4b5563;text-decoration:none;font-size:14px;transition:.2s}
+.fc ul li a:hover{color:#fff}
+.fbot{border-top:1px solid rgba(255,255,255,.04);padding-top:22px;display:flex;justify-content:space-between;align-items:center}
+.fbot p,.fbot span{font-size:12px;color:#374151}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<!-- TICKER -->
+<div class="tick"><div class="tw">
+  <span class="tl">LIVE</span>
+  <span class="ti"><span class="tn">NIFTY</span><span class="tp">24,812</span><span class="up">▲ +142.30</span></span>
+  <span class="ti"><span class="tn">SENSEX</span><span class="tp">81,532</span><span class="up">▲ +498.60</span></span>
+  <span class="ti"><span class="tn">RELIANCE</span><span class="tp">2,845</span><span class="dn">▼ -18.40</span></span>
+  <span class="ti"><span class="tn">TCS</span><span class="tp">4,210</span><span class="up">▲ +55.20</span></span>
+  <span class="ti"><span class="tn">HDFC BANK</span><span class="tp">1,698</span><span class="up">▲ +22.10</span></span>
+  <span class="ti"><span class="tn">INFY</span><span class="tp">1,532</span><span class="dn">▼ -8.65</span></span>
+  <span class="ti"><span class="tn">WIPRO</span><span class="tp">502</span><span class="up">▲ +6.30</span></span>
+  <span class="ti"><span class="tn">BAJAJ FIN</span><span class="tp">6,890</span><span class="dn">▼ -45.20</span></span>
+  <span class="tl">LIVE</span>
+  <span class="ti"><span class="tn">NIFTY</span><span class="tp">24,812</span><span class="up">▲ +142.30</span></span>
+  <span class="ti"><span class="tn">SENSEX</span><span class="tp">81,532</span><span class="up">▲ +498.60</span></span>
+  <span class="ti"><span class="tn">RELIANCE</span><span class="tp">2,845</span><span class="dn">▼ -18.40</span></span>
+  <span class="ti"><span class="tn">TCS</span><span class="tp">4,210</span><span class="up">▲ +55.20</span></span>
+  <span class="ti"><span class="tn">HDFC BANK</span><span class="tp">1,698</span><span class="up">▲ +22.10</span></span>
+  <span class="ti"><span class="tn">INFY</span><span class="tp">1,532</span><span class="dn">▼ -8.65</span></span>
+  <span class="ti"><span class="tn">WIPRO</span><span class="tp">502</span><span class="up">▲ +6.30</span></span>
+  <span class="ti"><span class="tn">BAJAJ FIN</span><span class="tp">6,890</span><span class="dn">▼ -45.20</span></span>
+</div></div>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="index.html"><div class="lbox">dm</div><div class="ltxt"><span class="w">Dhan</span><span class="t">Matrix</span></div></a>
+  <ul class="nl">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="services.html" class="on">Services</a></li>
+    <li><a href="index.html#closed">Closed Trades</a></li>
+    <li><a href="index.html#research">Research</a></li>
+    <li><a href="index.html#education">Education</a></li>
+    <li><a href="index.html#demat">Demat</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <div class="ne">
+    <button class="blo">Login</button>
+    <button class="bgs">Get Started</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="bc"><a href="index.html">Home</a><span>›</span><span class="cur">Services</span></div>
+  <div class="htag">💼 Services & Pricing</div>
+  <h1><span class="g1">For Genuine, Patient</span><br><span class="g2">Traders &amp; Investors</span></h1>
+  <p style="font-size:17px;line-height:1.75;color:rgba(255,255,255,.55);max-width:600px;margin:0 auto 44px;font-style:italic">"In trading, protecting your capital is as important as growing it. &nbsp;No loss is also a profit."</p>
+  </header>
+
+<!-- SUBNAV -->
+<div class="subnav">
+  <a class="sn on" href="#equity">📊 Equity</a>
+  <a class="sn" href="#swing">🔄 Swing</a>
+  <a class="sn" href="#options">⚡ Options</a>
+  <a class="sn" href="#futures">📈 Futures</a>
+  <a class="sn" href="#pricing">💰 Pricing</a>
+  <a class="sn" href="#faq">❓ FAQ</a>
+</div>
+
+<!-- ═══ 1. EQUITY ═══ -->
+<section id="equity" class="srvsec sec-eq">
+<div class="sw">
+  <div class="srv-wrap">
+    <!-- Left panel -->
+    <div class="srv-panel" style="background:linear-gradient(160deg,#0f0c28,#1a0e3a)">
+      <div class="panel-header">
+        <div class="panel-ico" style="background:rgba(129,140,248,.15)">📊</div>
+        <div class="panel-price">
+
+        </div>
+      </div>
+      <div class="panel-title">
+        <h3 style="color:#fff">Equity Calls</h3>
+        <p style="color:rgba(255,255,255,.5)">Delivery-based stock picks with clear entry, SL & targets</p>
+      </div>
+      <div class="panel-stats" style="background:rgba(255,255,255,.03)">
+        <div class="ps"><div class="pv" style="color:#818cf8">3–7</div><div class="pk">Calls/Month</div></div>
+        <div class="ps"><div class="pv" style="color:#a5b4fc">4–6/mo</div><div class="pk">Calls</div></div>
+        
+        <div class="ps"><div class="pv" style="color:#f59e0b">1W–3M</div><div class="pk">Hold</div></div>
+      </div>
+      <div class="panel-trades" style="background:rgba(255,255,255,.03)">
+        <div class="pt-head">Recent Calls</div>
+        <div class="pt-row"><div><div class="pt-sym">RELIANCE</div><div class="pt-typ">Equity · 8 days</div></div><div class="pnl-p">+6.2%</div></div>
+        <div class="pt-row"><div><div class="pt-sym">HDFC BANK</div><div class="pt-typ">Equity · 12 days</div></div><div class="pnl-p">+3.5%</div></div>
+        <div class="pt-row"><div><div class="pt-sym">TCS</div><div class="pt-typ">Equity · 5 days</div></div><div class="pnl-l">-1.7%</div></div>
+        <div class="pt-row"><div><div class="pt-sym">WIPRO</div><div class="pt-typ">Equity · 7 days</div></div><div class="pnl-p">+4.6%</div></div>
+      </div>
+    </div>
+    <!-- Right content -->
+    <div>
+      <span class="srv-label" style="color:#818cf8;border-color:rgba(129,140,248,.3);background:rgba(129,140,248,.08)">📊 Equity Calls</span>
+      <h2 class="srv-title">High-Conviction<br><span style="color:#818cf8">Stock Picks</span></h2>
+      <p class="srv-desc">Carefully researched delivery-based recommendations backed by fundamental + technical analysis. Every call includes entry, stop-loss and three target levels — zero guesswork.</p>
+      <ul class="srv-pts">
+        <li><span class="ck-box" style="background:rgba(129,140,248,.15);color:#818cf8">✓</span>4–6 calls/month across large, mid & small cap</li>
+        <li><span class="ck-box" style="background:rgba(129,140,248,.15);color:#818cf8">✓</span>Entry price, SL & 3 target levels on every call</li>
+        <li><span class="ck-box" style="background:rgba(129,140,248,.15);color:#818cf8">✓</span>Fundamental + technical research note included</li>
+        <li><span class="ck-box" style="background:rgba(129,140,248,.15);color:#818cf8">✓</span>Holding period 1 week to 3 months</li>
+        <li><span class="ck-box" style="background:rgba(129,140,248,.15);color:#818cf8">✓</span>Instant App, WhatsApp alerts</li>
+        <li><span class="ck-box" style="background:rgba(129,140,248,.15);color:#818cf8">✓</span>Weekly portfolio tracking & performance review</li>
+      </ul>
+      <div class="srv-cta">
+        <a class="btn-a" style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;box-shadow:0 8px 24px rgba(99,102,241,.3)" href="#pricing">Subscribe Now →</a>
+        <a class="btn-b" href="index.html#contact">Talk to Us</a>
+      </div>
+    </div>
+  </div>
+</div>
+</section><hr class="div">
+
+<!-- ═══ 2. SWING ═══ -->
+<section id="swing" class="srvsec sec-sw">
+<div class="sw">
+  <div class="srv-wrap rev">
+    <div class="srv-panel" style="background:linear-gradient(160deg,#071a14,#0a2a1c)">
+      <div class="panel-header">
+        <div class="panel-ico" style="background:rgba(52,211,153,.15)">🔄</div>
+        <div class="panel-price">
+
+        </div>
+      </div>
+      <div class="panel-title">
+        <h3 style="color:#fff">Swing Trading</h3>
+        <p style="color:rgba(255,255,255,.5)">Short-term breakouts with momentum & volume confirmation</p>
+      </div>
+      <div class="panel-stats" style="background:rgba(255,255,255,.03)">
+        <div class="ps"><div class="pv" style="color:#34d399">3–10%</div><div class="pk">Target</div></div>
+        <div class="ps"><div class="pv" style="color:#6ee7b7">8–12/mo</div><div class="pk">Calls</div></div>
+        
+        <div class="ps"><div class="pv" style="color:#f59e0b">2–15D</div><div class="pk">Hold</div></div>
+      </div>
+      <div class="panel-trades" style="background:rgba(255,255,255,.03)">
+        <div class="pt-head">Recent Calls</div>
+        <div class="pt-row"><div><div class="pt-sym">BAJAJ AUTO</div><div class="pt-typ">Swing · 9 days</div></div><div class="pnl-p">+8.4%</div></div>
+        <div class="pt-row"><div><div class="pt-sym">ICICI BANK</div><div class="pt-typ">Swing · 6 days</div></div><div class="pnl-p">+5.1%</div></div>
+        <div class="pt-row"><div><div class="pt-sym">TATA STEEL</div><div class="pt-typ">Swing · 4 days</div></div><div class="pnl-l">-2.1%</div></div>
+        <div class="pt-row"><div><div class="pt-sym">MARUTI</div><div class="pt-typ">Swing · 11 days</div></div><div class="pnl-p">+7.2%</div></div>
+      </div>
+    </div>
+    <div>
+      <span class="srv-label" style="color:#34d399;border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.08)">🔄 Swing Trading</span>
+      <h2 class="srv-title">Capture 3–10% in<br><span style="color:#34d399">Just 2–15 Days</span></h2>
+      <p class="srv-desc">Short-to-medium term breakout trades using technical analysis, momentum indicators and volume confirmation. Perfect for active traders who want frequent opportunities.</p>
+      <ul class="srv-pts">
+        <li><span class="ck-box" style="background:rgba(52,211,153,.12);color:#34d399">✓</span>5–25 calls every month</li>
+        <li><span class="ck-box" style="background:rgba(52,211,153,.12);color:#34d399">✓</span>Technical breakout & momentum setups</li>
+        <li><span class="ck-box" style="background:rgba(52,211,153,.12);color:#34d399">✓</span>Both long & short-sell opportunities</li>
+        <li><span class="ck-box" style="background:rgba(52,211,153,.12);color:#34d399">✓</span>Pre-market briefing every trading day</li>
+        <li><span class="ck-box" style="background:rgba(52,211,153,.12);color:#34d399">✓</span>Trailing stop-loss strategy on every call</li>
+        <li><span class="ck-box" style="background:rgba(52,211,153,.12);color:#34d399">✓</span>Volume & price action confirmation</li>
+      </ul>
+      <div class="srv-cta">
+        <a class="btn-a" style="background:linear-gradient(135deg,#059669,#047857);color:#fff;box-shadow:0 8px 24px rgba(5,150,105,.3)" href="#pricing">Subscribe Now →</a>
+        <a class="btn-b" href="index.html#contact">Talk to Us</a>
+      </div>
+    </div>
+  </div>
+</div>
+</section><hr class="div">
+
+<!-- ═══ 3. OPTIONS ═══ -->
+<section id="options" class="srvsec sec-op">
+<div class="sw">
+  <div class="srv-wrap">
+    <div class="srv-panel" style="background:linear-gradient(160deg,#1a1005,#2a1a05)">
+      <div class="panel-header">
+        <div class="panel-ico" style="background:rgba(251,191,36,.15)">⚡</div>
+        <div class="panel-price">
+
+        </div>
+      </div>
+      <div class="panel-title">
+        <h3 style="color:#fff">Options Trading</h3>
+        <p style="color:rgba(255,255,255,.5)">Directional & hedged strategies for maximum returns</p>
+      </div>
+      <div class="panel-stats" style="background:rgba(255,255,255,.03)">
+        <div class="ps"><div class="pv" style="color:#fbbf24">100–300%</div><div class="pk">Potential</div></div>
+        <div class="ps"><div class="pv" style="color:#fde68a">10–15/mo</div><div class="pk">Calls</div></div>
+        
+        <div class="ps"><div class="pv" style="color:#f59e0b">1–7D</div><div class="pk">Hold</div></div>
+      </div>
+      <div class="panel-trades" style="background:rgba(255,255,255,.03)">
+        <div class="pt-head">Recent Calls</div>
+        <div class="pt-row"><div><div class="pt-sym">NIFTY 23500 CE</div><div class="pt-typ">Options · 3 days</div></div><div class="pnl-p">+216%</div></div>
+        <div class="pt-row"><div><div class="pt-sym">INFY 1500 PE</div><div class="pt-typ">Options · 4 days</div></div><div class="pnl-p">+147%</div></div>
+        <div class="pt-row"><div><div class="pt-sym">BANKNIFTY CE</div><div class="pt-typ">Options · 2 days</div></div><div class="pnl-p">+89%</div></div>
+        <div class="pt-row"><div><div class="pt-sym">TCS PE</div><div class="pt-typ">Options · 1 day</div></div><div class="pnl-l">-45%</div></div>
+      </div>
+    </div>
+    <div>
+      <span class="srv-label" style="color:#fbbf24;border-color:rgba(251,191,36,.3);background:rgba(251,191,36,.08)">⚡ Options Trading</span>
+      <h2 class="srv-title">Premium Strategies for<br><span style="color:#fbbf24">100–300% Gains</span></h2>
+      <p class="srv-desc">High-accuracy calls across Index and Stock options — from simple directional buys to advanced spreads and hedged positions — for every experience level.</p>
+      <ul class="srv-pts">
+        <li><span class="ck-box" style="background:rgba(251,191,36,.12);color:#fbbf24">✓</span>15–45 calls every month</li>
+        <li><span class="ck-box" style="background:rgba(251,191,36,.12);color:#fbbf24">✓</span>NIFTY & BANKNIFTY CE/PE directional calls</li>
+        <li><span class="ck-box" style="background:rgba(251,191,36,.12);color:#fbbf24">✓</span>Iron condors, spreads & hedged strategies</li>
+        <li><span class="ck-box" style="background:rgba(251,191,36,.12);color:#fbbf24">✓</span>Greeks & IV analysis on every call</li>
+        <li><span class="ck-box" style="background:rgba(251,191,36,.12);color:#fbbf24">✓</span>Real-time updates when market changes</li>
+        <li><span class="ck-box" style="background:rgba(251,191,36,.12);color:#fbbf24">✓</span>Weekly F&O expiry strategy included</li>
+      </ul>
+      <div class="srv-cta">
+        <a class="btn-a" style="background:linear-gradient(135deg,#d97706,#b45309);color:#fff;box-shadow:0 8px 24px rgba(217,119,6,.35)" href="#pricing">Subscribe Now →</a>
+        <a class="btn-b" href="index.html#contact">Talk to Us</a>
+      </div>
+    </div>
+  </div>
+</div>
+</section><hr class="div">
+
+<!-- ═══ 4. FUTURES ═══ -->
+<section id="futures" class="srvsec sec-fu">
+<div class="sw">
+  <div class="srv-wrap rev">
+    <div class="srv-panel" style="background:linear-gradient(160deg,#160814,#220a1a)">
+      <div class="panel-header">
+        <div class="panel-ico" style="background:rgba(244,114,182,.15)">📈</div>
+        <div class="panel-price">
+
+        </div>
+      </div>
+      <div class="panel-title">
+        <h3 style="color:#fff">Futures Trading</h3>
+        <p style="color:rgba(255,255,255,.5)">Disciplined index & stock futures with strict risk control</p>
+      </div>
+      <div class="panel-stats" style="background:rgba(255,255,255,.03)">
+        <div class="ps"><div class="pv" style="color:#f472b6">10x</div><div class="pk">Max Leverage</div></div>
+        <div class="ps"><div class="pv" style="color:#f9a8d4">6–10/mo</div><div class="pk">Calls</div></div>
+        
+        <div class="ps"><div class="pv" style="color:#f59e0b">1–5D</div><div class="pk">Hold</div></div>
+      </div>
+      <div class="panel-trades" style="background:rgba(255,255,255,.03)">
+        <div class="pt-head">Recent Calls</div>
+        <div class="pt-row"><div><div class="pt-sym">BANK NIFTY FUT</div><div class="pt-typ">Futures · 2 days</div></div><div class="pnl-p">+2.5%</div></div>
+        <div class="pt-row"><div><div class="pt-sym">TATA MOTORS FUT</div><div class="pt-typ">Futures · 3 days</div></div><div class="pnl-p">+4.1%</div></div>
+        <div class="pt-row"><div><div class="pt-sym">RELIANCE FUT</div><div class="pt-typ">Futures · 4 days</div></div><div class="pnl-p">+3.8%</div></div>
+        <div class="pt-row"><div><div class="pt-sym">NIFTY FUT</div><div class="pt-typ">Futures · 1 day</div></div><div class="pnl-l">-1.2%</div></div>
+      </div>
+    </div>
+    <div>
+      <span class="srv-label" style="color:#f472b6;border-color:rgba(244,114,182,.3);background:rgba(244,114,182,.08)">📈 Futures Trading</span>
+      <h2 class="srv-title">Leverage Markets with<br><span style="color:#f472b6">Disciplined Risk Control</span></h2>
+      <p class="srv-desc">Rules-based index and stock futures calls with precise entry, position sizing and stop-loss. Designed to maximise upside while protecting your capital.</p>
+      <ul class="srv-pts">
+        <li><span class="ck-box" style="background:rgba(244,114,182,.12);color:#f472b6">✓</span>6–10 calls every month</li>
+        <li><span class="ck-box" style="background:rgba(244,114,182,.12);color:#f472b6">✓</span>NIFTY, BANKNIFTY & stock futures</li>
+        <li><span class="ck-box" style="background:rgba(244,114,182,.12);color:#f472b6">✓</span>Position sizing & margin guidance on every call</li>
+        <li><span class="ck-box" style="background:rgba(244,114,182,.12);color:#f472b6">✓</span>Intraday & positional opportunities</li>
+        <li><span class="ck-box" style="background:rgba(244,114,182,.12);color:#f472b6">✓</span>Max 2% capital risk per trade rule enforced</li>
+        <li><span class="ck-box" style="background:rgba(244,114,182,.12);color:#f472b6">✓</span>Rollover strategies at monthly expiry</li>
+      </ul>
+      <div class="srv-cta">
+        <a class="btn-a" style="background:linear-gradient(135deg,#db2777,#be185d);color:#fff;box-shadow:0 8px 24px rgba(219,39,119,.35)" href="#pricing">Subscribe Now →</a>
+        <a class="btn-b" href="index.html#contact">Talk to Us</a>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ PRICING ═══ -->
+<section id="pricing" class="pricing-sec">
+<div class="sw">
+  <div class="sec-head">
+    <div class="sec-tag">💰 PRICING</div>
+    <h2 class="sec-title">One Simple <span class="g">Price</span></h2>
+    <p class="sec-sub">All 4 services. One flat price. No hidden fees. Cancel anytime.</p>
+  </div>
+
+  <!-- Single plan -->
+  <div style="max-width:680px;margin:0 auto">
+    <div class="plan pop" style="border-radius:24px">
+      <div class="p-bar" style="background:linear-gradient(90deg,#818cf8,#34d399,#fbbf24,#f472b6)"></div>
+      <div class="p-popular">EVERYTHING INCLUDED</div>
+      <div class="pb" style="padding:36px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center">
+          <div>
+            <div class="p-name" style="font-size:28px;margin-bottom:6px">All Services Plan</div>
+            <div class="p-tag" style="margin-bottom:24px">Equity + Swing + Options + Futures</div>
+            <div class="p-price" style="margin-bottom:8px">
+              <span class="a" style="background:linear-gradient(135deg,#818cf8,#34d399,#fbbf24,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">₹5,000</span>
+              <span class="m">/quarter</span>
+            </div>
+            <div style="font-size:13px;color:#6b7280;margin-bottom:24px">Billed every 3 months · ₹1,667/month effective</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px">
+              <span style="background:rgba(129,140,248,.1);border:1px solid rgba(129,140,248,.25);color:#818cf8;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px">📊 Equity</span>
+              <span style="background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);color:#34d399;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px">🔄 Swing</span>
+              <span style="background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);color:#fbbf24;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px">⚡ Options</span>
+              <span style="background:rgba(244,114,182,.1);border:1px solid rgba(244,114,182,.25);color:#f472b6;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px">📈 Futures</span>
+            </div>
+            <button class="pbtn fi" style="font-size:15px;padding:14px" onclick="location.href='index.html#contact'">Start ₹99 Trial →</button><p style="font-size:11px;color:rgba(255,255,255,.3);text-align:center;margin-top:10px">₹99 refunded if not satisfied after 1 month</p>
+          </div>
+          <ul class="p-feats" style="margin-bottom:0">
+            <li><span class="ck">✓</span>Equity Calls (4–6 calls/mo)</li>
+            <li><span class="ck">✓</span>Swing Trading (8–12 calls/mo)</li>
+            <li><span class="ck">✓</span>Options Trading (10–15 calls/mo)</li>
+            <li><span class="ck">✓</span>Futures Trading (6–10 calls/mo)</li>
+            <li><span class="ck">✓</span>DhanMatrix App access</li>
+            <li><span class="ck">✓</span>WhatsApp alerts</li>
+            <li><span class="ck">✓</span>Weekly research reports</li>
+            <li><span class="ck">✓</span>Sector analysis reports</li>
+            <li><span class="ck">✓</span>Priority WhatsApp support</li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<!-- ═══ FAQ ═══ -->
+<section id="faq" class="faq-sec">
+<div class="sw">
+  <div class="sec-head">
+    <div class="sec-tag">❓ FAQ</div>
+    <h2 class="sec-title">Common <span class="g">Questions</span></h2>
+  </div>
+  <div class="faq">
+    <div class="fq op"><div class="fqq" onclick="tf(this)">How are trade alerts delivered?<span class="arr">+</span></div><div class="fqa">All calls are delivered instantly via push notifications on the DhanMatrix App and WhatsApp. Every alert includes the symbol, entry range, stop-loss and all target levels clearly.</div></div>
+    <div class="fq"><div class="fqq" onclick="tf(this)">What is the pricing &amp; refund policy?<span class="arr">+</span></div><div class="fqa">We start with a ₹99 trial for your first month — all 4 services fully included. If after one month you feel we did not deliver value, your ₹99 is completely refunded. If you are satisfied, you continue at ₹5,000 per quarter (3 months). The quarterly plan is non-refundable once subscribed.</div></div>
+    <div class="fq"><div class="fqq" onclick="tf(this)">Is SEBI registration in place?<span class="arr">+</span></div><div class="fqa">DhanMatrix is currently in the process of obtaining SEBI RA (Research Analyst) registration. We are fully committed to regulatory compliance and operate with complete transparency.</div></div>
+    <div class="fq"><div class="fqq" onclick="tf(this)">How many calls can I expect per month?<span class="arr">+</span></div><div class="fqa">The plan delivers 3–7 equity + 5–25 swing + 15–45 options + 6–10 futures calls per month. Volume varies with market conditions — we only call when we see a genuine opportunity.</div></div>
+    <div class="fq"><div class="fqq" onclick="tf(this)">Do I need a Demat account?<span class="arr">+</span></div><div class="fqa">Yes, you need a Demat and trading account to act on the calls. We recommend opening one through our broker partner via the Demat section — zero account opening fee and direct DhanMatrix App integration.</div></div>
+  </div>
+</div>
+</section>
+
+<!-- CTA -->
+<div class="cta">
+  <h2>Start Trading <span class="g">Smarter Today</span></h2>
+  <p>Join genuine traders &amp; investors who believe patience and discipline build real wealth.</p>
+  <div class="cta-row">
+    <a class="btn-a" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;font-size:15px;padding:14px 32px;box-shadow:0 10px 30px rgba(124,58,237,.4)" href="#pricing">View Plans →</a>
+    <a class="btn-b" style="font-size:15px;padding:14px 32px" href="index.html">← Back to Home</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fg">
+    <div>
+      <a class="fl" href="index.html"><div class="flb">dm</div><div class="flt"><span class="w">Dhan</span><span class="t">Matrix</span></div></a>
+      <p>Smart signals. Disciplined calls. For patient traders who know that protecting capital is the first rule.</p>
+      <div class="fmeta"><p>GSTIN: 07AAXFD3406A1ZO</p><p>MSME: UDYAM-DL-09-0043446</p><p>SEBI RA: Under Process</p></div>
+    </div>
+    <div class="fc"><h4>Services</h4><ul>
+      <li><a href="#equity">📊 Equity Calls</a></li>
+      <li><a href="#swing">🔄 Swing Trading</a></li>
+      <li><a href="#options">⚡ Options Trading</a></li>
+      <li><a href="#futures">📈 Futures Trading</a></li>
+      <li><a href="#pricing" style="color:#34d399;font-weight:600">All-in-One — ₹5,000/qtr</a></li>
+    </ul></div>
+    <div class="fc"><h4>Company</h4><ul>
+      <li><a href="index.html#about">About Us</a></li>
+      <li><a href="index.html#research">Research</a></li>
+      <li><a href="index.html#education">Education</a></li>
+      <li><a href="index.html#closed">Trade History</a></li>
+      <li><a href="index.html#demat">Open Demat</a></li>
+    </ul></div>
+    <div class="fc"><h4>Support</h4><ul>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#">Privacy Policy</a></li>
+      <li><a href="#">Terms of Service</a></li>
+      <li><a href="#">Refund Policy</a></li>
+      <li><a href="index.html#contact">Contact Us</a></li>
+    </ul></div>
+  </div>
+  <div class="fbot">
+    <p>© 2025 DhanMatrix Securities. All rights reserved.</p>
+    <span>Made with ❤ for Indian investors</span>
+  </div>
+</footer>
+
+<script>
+/* PARTICLE NETWORK BG */
+try{
+  var cv=document.getElementById('bg');
+  var cx=cv.getContext('2d');
+  var pts=[],blobs=[];
+  var COLS=['129,140,248','52,211,153','251,191,36','244,114,182','6,182,212','167,139,250'];
+  var DIST=140;
+
+  function resize(){
+    cv.width=window.innerWidth;
+    cv.height=window.innerHeight;
+  }
+
+  function initPts(){
+    pts=[];
+    var n=Math.max(80,Math.min(150,Math.floor(cv.width*cv.height/7000)));
+    for(var i=0;i<n;i++){
+      pts.push({
+        x:Math.random()*cv.width, y:Math.random()*cv.height,
+        vx:(Math.random()-0.5)*0.5, vy:(Math.random()-0.5)*0.5,
+        r:1.5+Math.random()*2,
+        col:COLS[Math.floor(Math.random()*COLS.length)],
+        a:0.65+Math.random()*0.35,
+        ph:Math.random()*Math.PI*2,
+        ps:0.02+Math.random()*0.02
+      });
+    }
+    blobs=[
+      {px:0,   py:0,   sx:.00014,sy:.00011,bx:.18,by:.22,col:'99,102,241', a:.10,r:.50},
+      {px:2.1, py:0.8, sx:.00011,sy:.00016,bx:.82,by:.68,col:'52,211,153', a:.07,r:.45},
+      {px:1.0, py:3.5, sx:.00018,sy:.00009,bx:.50,by:.12,col:'251,191,36', a:.06,r:.40},
+      {px:4.2, py:1.7, sx:.00009,sy:.00018,bx:.12,by:.82,col:'244,114,182',a:.08,r:.42},
+      {px:0.6, py:2.9, sx:.00016,sy:.00012,bx:.75,by:.35,col:'6,182,212',  a:.06,r:.36},
+    ];
+  }
+
+  function draw(){
+    cx.clearRect(0,0,cv.width,cv.height);
+
+    /* Base */
+    cx.fillStyle='#080c1c';
+    cx.fillRect(0,0,cv.width,cv.height);
+
+    /* Blobs */
+    blobs.forEach(function(b){
+      b.px+=b.sx; b.py+=b.sy;
+      var bx=(b.bx+Math.sin(b.px)*0.10)*cv.width;
+      var by=(b.by+Math.cos(b.py)*0.09)*cv.height;
+      var rad=b.r*Math.min(cv.width,cv.height);
+      var g=cx.createRadialGradient(bx,by,0,bx,by,rad);
+      g.addColorStop(0,'rgba('+b.col+','+b.a+')');
+      g.addColorStop(0.55,'rgba('+b.col+','+(b.a*.3)+')');
+      g.addColorStop(1,'transparent');
+      cx.fillStyle=g;
+      cx.fillRect(0,0,cv.width,cv.height);
+    });
+
+    /* Move */
+    pts.forEach(function(p){
+      p.x+=p.vx; p.y+=p.vy; p.ph+=p.ps;
+      if(p.x<-10)p.x=cv.width+10; if(p.x>cv.width+10)p.x=-10;
+      if(p.y<-10)p.y=cv.height+10; if(p.y>cv.height+10)p.y=-10;
+    });
+
+    /* Lines */
+    for(var i=0;i<pts.length;i++){
+      for(var j=i+1;j<pts.length;j++){
+        var a=pts[i],b=pts[j];
+        var d=Math.sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y));
+        if(d<DIST){
+          var al=(1-d/DIST)*0.32;
+          var lg=cx.createLinearGradient(a.x,a.y,b.x,b.y);
+          lg.addColorStop(0,'rgba('+a.col+','+al+')');
+          lg.addColorStop(1,'rgba('+b.col+','+al+')');
+          cx.beginPath(); cx.strokeStyle=lg; cx.lineWidth=0.9;
+          cx.moveTo(a.x,a.y); cx.lineTo(b.x,b.y); cx.stroke();
+        }
+      }
+    }
+
+    /* Dots */
+    pts.forEach(function(p){
+      var pl=0.7+Math.sin(p.ph)*0.3;
+      cx.save();
+      cx.shadowBlur=14+Math.sin(p.ph)*5;
+      cx.shadowColor='rgba('+p.col+',.85)';
+      cx.beginPath();
+      cx.arc(p.x,p.y,p.r*pl,0,Math.PI*2);
+      cx.fillStyle='rgba('+p.col+','+(p.a*pl)+')';
+      cx.fill();
+      cx.restore();
+      cx.beginPath();
+      cx.arc(p.x,p.y,p.r*pl*0.3,0,Math.PI*2);
+      cx.fillStyle='rgba(255,255,255,.75)';
+      cx.fill();
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  initPts();
+  window.addEventListener('resize',function(){ resize(); initPts(); });
+  requestAnimationFrame(draw);
+
+}catch(e){ console.warn('bg:',e); }
+
+/* LOAD CONFIG & UPDATE PRICING DYNAMICALLY */
+fetch('config.json').then(r=>r.json()).then(cfg=>{
+  // Update trial price
+  var trialEls = document.querySelectorAll('[data-price="trial"]');
+  trialEls.forEach(el=>el.textContent='₹'+cfg.pricing.trial.price);
+  // Update quarterly price
+  var qEls = document.querySelectorAll('[data-price="quarterly"]');
+  qEls.forEach(el=>el.textContent='₹'+cfg.pricing.quarterly.price.toLocaleString('en-IN'));
+  // Update yearly price
+  var yEls = document.querySelectorAll('[data-price="yearly"]');
+  yEls.forEach(el=>el.textContent='₹'+cfg.pricing.yearly.price.toLocaleString('en-IN'));
+  // Update plan features dynamically
+  cfg.plans.forEach(function(plan){
+    var featEl = document.getElementById('features-'+plan.id);
+    if(featEl){
+      featEl.innerHTML = plan.features.map(f=>'<li><span class="ck">✓</span>'+f+'</li>').join('') +
+        plan.notIncluded.map(f=>'<li class="dim"><span class="no">✕</span>'+f+'</li>').join('');
+    }
+    var priceEl = document.getElementById('price-'+plan.id);
+    if(priceEl && plan.id==='starter') priceEl.textContent='₹'+cfg.pricing.quarterly.price.toLocaleString('en-IN');
+    if(priceEl && plan.id==='pro') priceEl.textContent='₹'+cfg.pricing.quarterly.price.toLocaleString('en-IN');
+    if(priceEl && plan.id==='elite') priceEl.textContent='₹'+Math.round(cfg.pricing.quarterly.price*1.5).toLocaleString('en-IN');
+  });
+}).catch(()=>console.log('Config not loaded, using static values'));
+
+/* FAQ */
+function tf(el){var it=el.parentElement,was=it.classList.contains('op');document.querySelectorAll('.fq').forEach(function(i){i.classList.remove('op');});if(!was)it.classList.add('op');}
+
+/* SUBNAV HIGHLIGHT */
+var sns=document.querySelectorAll('.sn');
+var ids=['equity','swing','options','futures','pricing','faq'];
+window.addEventListener('scroll',function(){
+  var sy=window.pageYOffset+160,cur='equity';
+  ids.forEach(function(id){var el=document.getElementById(id);if(el&&el.offsetTop<=sy)cur=id;});
+  sns.forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+cur);});
+});
+
+/* SMOOTH SCROLL */
+document.querySelectorAll('a[href^="#"]').forEach(function(a){
+  a.addEventListener('click',function(e){
+    var t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();window.scrollTo({top:t.offsetTop-130,behavior:'smooth'});}
+  });
+});
+</script>
+</body>
+</html>
