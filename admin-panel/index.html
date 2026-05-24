@@ -590,6 +590,25 @@ textarea.finput{resize:vertical;min-height:80px}
             <input class="finput" id="nu-expiry" type="date">
           </div>
         </div>
+
+        <!-- SEGMENT ACCESS -->
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;margin-bottom:16px">
+          <div style="font-size:12px;font-weight:700;color:#374151;margin-bottom:12px">📋 Segment Access — Grant on creation</div>
+          <div style="display:flex;gap:20px;flex-wrap:wrap">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:600;color:#374151">
+              <input type="checkbox" id="nu-equity" style="accent-color:#1d4ed8;width:16px;height:16px">
+              📊 Equity
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:600;color:#374151">
+              <input type="checkbox" id="nu-fno" style="accent-color:#1d4ed8;width:16px;height:16px">
+              ⚡ F&O (Futures + Options)
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:600;color:#374151">
+              <input type="checkbox" id="nu-portfolio" style="accent-color:#1d4ed8;width:16px;height:16px">
+              💼 Portfolio
+            </label>
+          </div>
+        </div>
         <button class="btn btn-primary" onclick="createUser()" id="createUserBtn">👤 Create User Account</button>
       </div>
 
@@ -624,6 +643,22 @@ textarea.finput{resize:vertical;min-height:80px}
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
 import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp, query, orderBy, setDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js';
+
+/* ── CLOUDINARY CONFIG ── */
+const CLOUDINARY_CLOUD = 'drml7hayr';
+const CLOUDINARY_PRESET = 'dhanmatrix';
+const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/upload`;
+
+async function uploadToCloudinary(file, folder) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', CLOUDINARY_PRESET);
+  formData.append('folder', folder);
+  const res = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
+  if (!res.ok) throw new Error('Upload failed');
+  const data = await res.json();
+  return data.secure_url;
+}
 
 /* ── FIREBASE CONFIG ── */
 const firebaseConfig = {
@@ -690,7 +725,7 @@ async function loadDashboard() {
 }
 
 /* ══════════════════════════════
-   ABOUT PHOTOS
+   ABOUT PHOTOS — Cloudinary
 ══════════════════════════════ */
 window.handlePhotoUpload = async function(files) {
   if (!files.length) return;
@@ -703,31 +738,22 @@ window.handlePhotoUpload = async function(files) {
     const file = files[i];
     if (file.size > 5 * 1024 * 1024) { toast(`${file.name} is too large (max 5MB)`, 'error'); continue; }
     label.textContent = `Uploading ${i+1}/${files.length}: ${file.name}`;
+    fill.style.width = '50%';
 
-    const storageRef = ref(storage, `aboutPhotos/${Date.now()}_${file.name}`);
-    const task = uploadBytesResumable(storageRef, file);
-
-    await new Promise((resolve, reject) => {
-      task.on('state_changed',
-        snap => { fill.style.width = (snap.bytesTransferred / snap.totalBytes * 100) + '%'; },
-        reject,
-        async () => {
-          const url = await getDownloadURL(task.snapshot.ref);
-          await addDoc(collection(db, 'aboutPhotos'), {
-            url, name: file.name,
-            path: storageRef.fullPath,
-            createdAt: serverTimestamp()
-          });
-          resolve();
-        }
-      );
-    });
+    try {
+      const url = await uploadToCloudinary(file, 'dhanmatrix/aboutPhotos');
+      await addDoc(collection(db, 'aboutPhotos'), {
+        url, name: file.name,
+        createdAt: serverTimestamp()
+      });
+      fill.style.width = '100%';
+    } catch(e) { toast(`Failed to upload ${file.name}`, 'error'); }
   }
 
   prog.style.display = 'none';
   fill.style.width = '0%';
   document.getElementById('photoInput').value = '';
-  toast(`${files.length} photo(s) uploaded!`);
+  toast(`${files.length} photo(s) uploaded! ✅`);
   loadPhotos();
 }
 
@@ -826,37 +852,34 @@ window.handleDocUpload = async function(files) {
   const label = document.getElementById('docProgressLabel');
   prog.style.display = 'block';
   label.textContent = `Uploading ${file.name}...`;
+  fill.style.width = '50%';
 
-  const storageRef = ref(storage, `documents/${activeDocKey.filename}`);
-  const task = uploadBytesResumable(storageRef, file);
+  try {
+    const url = await uploadToCloudinary(file, 'dhanmatrix/documents');
+    fill.style.width = '100%';
 
-  task.on('state_changed',
-    snap => { fill.style.width = (snap.bytesTransferred / snap.totalBytes * 100) + '%'; },
-    err => { toast('Upload failed: ' + err.message, 'error'); prog.style.display = 'none'; },
-    async () => {
-      const url = await getDownloadURL(task.snapshot.ref);
-      // Save/update in Firestore
-      const snap2 = await getDocs(collection(db, 'documents'));
-      let existingId = null;
-      snap2.forEach(d => { if (d.data().key === activeDocKey.key) existingId = d.id; });
-      if (existingId) {
-        await deleteDoc(doc(db, 'documents', existingId));
-      }
-      await addDoc(collection(db, 'documents'), {
-        key: activeDocKey.key,
-        label: activeDocKey.label,
-        filename: activeDocKey.filename,
-        url,
-        path: storageRef.fullPath,
-        uploadedAt: serverTimestamp()
-      });
-      prog.style.display = 'none';
-      fill.style.width = '0%';
-      toast(`${activeDocKey.label} uploaded!`);
-      cancelDocUpload();
-      loadDocuments();
-    }
-  );
+    const snap2 = await getDocs(collection(db, 'documents'));
+    let existingId = null;
+    snap2.forEach(d => { if (d.data().key === activeDocKey.key) existingId = d.id; });
+    if (existingId) await deleteDoc(doc(db, 'documents', existingId));
+
+    await addDoc(collection(db, 'documents'), {
+      key: activeDocKey.key,
+      label: activeDocKey.label,
+      filename: activeDocKey.filename,
+      url,
+      uploadedAt: serverTimestamp()
+    });
+
+    prog.style.display = 'none';
+    fill.style.width = '0%';
+    toast(`${activeDocKey.label} uploaded! ✅`);
+    cancelDocUpload();
+    loadDocuments();
+  } catch(e) {
+    toast('Upload failed: ' + e.message, 'error');
+    prog.style.display = 'none';
+  }
 }
 
 /* ══════════════════════════════
@@ -1122,30 +1145,29 @@ window.handleQRUpload = async function(files) {
   const prog = document.getElementById('qrUploadProgress');
   const fill = document.getElementById('qrProgressFill');
   prog.style.display = 'block';
+  fill.style.width = '50%';
 
-  const storageRef = ref(storage, `qr/payment-qr.${file.name.split('.').pop()}`);
-  const task = uploadBytesResumable(storageRef, file);
+  try {
+    const url = await uploadToCloudinary(file, 'dhanmatrix/qr');
+    fill.style.width = '100%';
 
-  task.on('state_changed',
-    snap => { fill.style.width = (snap.bytesTransferred / snap.totalBytes * 100) + '%'; },
-    err => { toast('Upload failed', 'error'); prog.style.display = 'none'; },
-    async () => {
-      const url = await getDownloadURL(task.snapshot.ref);
-      // Clear old QR
-      const oldSnap = await getDocs(collection(db, 'paymentQR'));
-      for (const d of oldSnap.docs) await deleteDoc(doc(db, 'paymentQR', d.id));
-      // Save new
-      await addDoc(collection(db, 'paymentQR'), {
-        url, name: file.name, path: storageRef.fullPath,
-        uploadedAt: serverTimestamp()
-      });
-      prog.style.display = 'none';
-      fill.style.width = '0%';
-      document.getElementById('qrInput').value = '';
-      toast('Payment QR uploaded! ✅');
-      loadQR();
-    }
-  );
+    const oldSnap = await getDocs(collection(db, 'paymentQR'));
+    for (const d of oldSnap.docs) await deleteDoc(doc(db, 'paymentQR', d.id));
+
+    await addDoc(collection(db, 'paymentQR'), {
+      url, name: file.name,
+      uploadedAt: serverTimestamp()
+    });
+
+    prog.style.display = 'none';
+    fill.style.width = '0%';
+    document.getElementById('qrInput').value = '';
+    toast('Payment QR uploaded! ✅');
+    loadQR();
+  } catch(e) {
+    toast('Upload failed: ' + e.message, 'error');
+    prog.style.display = 'none';
+  }
 }
 
 window.deleteQR = async function() {
@@ -1378,6 +1400,9 @@ window.createUser = async function() {
       status,
       active: true,
       blocked: false,
+      equityActive: document.getElementById('nu-equity').checked,
+      fnoActive: document.getElementById('nu-fno').checked,
+      portfolioActive: document.getElementById('nu-portfolio').checked,
       subscriptionEndDate: expiry ? new Date(expiry) : null,
       createdAt: serverTimestamp(),
       createdBy: 'admin'
@@ -1432,50 +1457,73 @@ function renderUsers() {
   el.innerHTML = `<table class="tbl">
     <thead><tr>
       <th>Name</th><th>Email</th><th>Mobile</th>
-      <th>Subscription</th><th>Expiry</th>
-      <th>Status</th><th>Active</th><th>Actions</th>
+      <th style="text-align:center">📊 Equity</th>
+      <th style="text-align:center">⚡ F&O</th>
+      <th style="text-align:center">💼 Portfolio</th>
+      <th style="text-align:center">Status</th>
+      <th style="text-align:center">Active</th>
+      <th>Actions</th>
     </tr></thead>
     <tbody>${filtered.map(u => {
       const isBlocked = u.blocked;
       const isActive = u.active !== false;
       const isPaid = u.status === 'PAID';
-      const expiry = u.subscriptionEndDate
-        ? (u.subscriptionEndDate.toDate ? u.subscriptionEndDate.toDate() : new Date(u.subscriptionEndDate)).toLocaleDateString('en-IN')
-        : '—';
+      const equityOn = u.equityActive === true;
+      const fnoOn = u.fnoActive === true;
+      const portfolioOn = u.portfolioActive === true;
       const createdBy = u.createdBy === 'admin' ? '🔑 Admin' : '📱 App';
 
-      return `<tr style="${isBlocked ? 'opacity:.6' : ''}">
+      return `<tr style="${isBlocked ? 'opacity:.55' : ''}">
         <td>
           <div style="font-weight:700;color:#0f172a">${u.name || '—'}</div>
           <div style="font-size:10px;color:#94a3b8;margin-top:2px">${createdBy}</div>
         </td>
         <td style="color:#1d4ed8;font-size:12px">${u.email || '—'}</td>
         <td style="font-size:12px">${u.mobile || '—'}</td>
-        <td>
-          <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;
-            background:${isPaid ? '#dcfce7' : '#f1f5f9'};
-            color:${isPaid ? '#16a34a' : '#64748b'}">
-            ${u.status || 'FREE'}
-          </span>
+
+        <!-- EQUITY TOGGLE -->
+        <td style="text-align:center">
+          <label style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer">
+            <div class="toggle-switch ${equityOn ? 'on' : ''}"
+              onclick="toggleAccess('${u.id}', 'equityActive', ${equityOn})"></div>
+            <span style="font-size:9px;font-weight:700;color:${equityOn?'#16a34a':'#94a3b8'}">${equityOn?'ON':'OFF'}</span>
+          </label>
         </td>
-        <td style="font-size:11px;color:#94a3b8">${expiry}</td>
-        <td>
+
+        <!-- F&O TOGGLE -->
+        <td style="text-align:center">
+          <label style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer">
+            <div class="toggle-switch ${fnoOn ? 'on' : ''}"
+              onclick="toggleAccess('${u.id}', 'fnoActive', ${fnoOn})"></div>
+            <span style="font-size:9px;font-weight:700;color:${fnoOn?'#16a34a':'#94a3b8'}">${fnoOn?'ON':'OFF'}</span>
+          </label>
+        </td>
+
+        <!-- PORTFOLIO TOGGLE -->
+        <td style="text-align:center">
+          <label style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer">
+            <div class="toggle-switch ${portfolioOn ? 'on' : ''}"
+              onclick="toggleAccess('${u.id}', 'portfolioActive', ${portfolioOn})"></div>
+            <span style="font-size:9px;font-weight:700;color:${portfolioOn?'#16a34a':'#94a3b8'}">${portfolioOn?'ON':'OFF'}</span>
+          </label>
+        </td>
+
+        <td style="text-align:center">
           ${isBlocked
             ? `<span style="font-size:10px;font-weight:700;background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:20px">🚫 Blocked</span>`
             : `<span style="font-size:10px;font-weight:700;background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:20px">✅ Active</span>`}
         </td>
-        <td>
-          <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer">
-            <div class="toggle-switch ${isActive ? 'on' : ''}" onclick="toggleActive('${u.id}', ${isActive})"></div>
-            <span style="font-size:11px;color:#64748b">${isActive ? 'Active' : 'Inactive'}</span>
+
+        <td style="text-align:center">
+          <label style="display:inline-flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer">
+            <div class="toggle-switch ${isActive ? 'on' : ''}"
+              onclick="toggleActive('${u.id}', ${isActive})"></div>
+            <span style="font-size:9px;font-weight:700;color:${isActive?'#16a34a':'#94a3b8'}">${isActive?'ON':'OFF'}</span>
           </label>
         </td>
+
         <td>
           <div style="display:flex;gap:6px;flex-wrap:wrap">
-            <select onchange="updateSubscription('${u.id}', this.value)" style="font-size:11px;padding:4px 6px;border:1px solid #e2e8f0;border-radius:5px;background:#fff;cursor:pointer">
-              <option ${u.status==='FREE'?'selected':''} value="FREE">FREE</option>
-              <option ${u.status==='PAID'?'selected':''} value="PAID">PAID</option>
-            </select>
             <button class="btn btn-sm" style="font-size:11px;padding:4px 10px;background:${isBlocked?'#dcfce7':'#fee2e2'};color:${isBlocked?'#16a34a':'#dc2626'};border:1px solid ${isBlocked?'#bbf7d0':'#fecaca'}"
               onclick="toggleBlock('${u.id}', ${isBlocked})">
               ${isBlocked ? '✅ Unblock' : '🚫 Block'}
@@ -1503,6 +1551,16 @@ window.setUserFilter = function(filter, btn) {
 window.filterUsers = function(val) {
   userSearch = val.toLowerCase();
   renderUsers();
+}
+
+window.toggleAccess = async function(uid, field, currentVal) {
+  try {
+    const { updateDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+    await updateDoc(doc(db, 'users', uid), { [field]: !currentVal });
+    const labels = { equityActive: 'Equity', fnoActive: 'F&O', portfolioActive: 'Portfolio' };
+    toast(`${labels[field]} ${!currentVal ? '✅ Enabled' : '❌ Disabled'}`);
+    loadUsers();
+  } catch(e) { toast('Failed to update access', 'error'); }
 }
 
 window.toggleBlock = async function(uid, currentlyBlocked) {
