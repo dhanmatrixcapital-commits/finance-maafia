@@ -242,17 +242,31 @@ tbody tr:hover td{background:rgba(255,255,255,.015)}
   <aside class="sidebar">
     <div class="sb-sec">
       <div class="sb-lbl">Main</div>
-      <a class="sb-item active"><span class="si">📊</span>Dashboard</a>
+      <a class="sb-item active" onclick="selectLiveSeg('all', this)"><span class="si">📊</span>Dashboard</a>
       <a class="sb-item" href="services.html"><span class="si">💳</span>Subscriptions</a>
     </div>
     <div class="sb-sec">
-      <div class="sb-lbl">My Performance</div>
-      <a class="sb-item" onclick="switchTab('equity',null)"><span class="si">📊</span>Equity <span class="sb-badge" id="sbEq">—</span></a>
-      <a class="sb-item" onclick="switchTab('futures',null)"><span class="si">📈</span>Futures <span class="sb-badge" id="sbFut">—</span></a>
-      <a class="sb-item" onclick="switchTab('options',null)"><span class="si">⚡</span>Options <span class="sb-badge" id="sbOpt">—</span></a>
+      <div class="sb-lbl">Live Trades</div>
+      <a class="sb-item" id="sb-equity" onclick="selectLiveSeg('equity', this)">
+        <span class="si">📊</span>Equity
+        <span class="sb-badge" id="sbEq">—</span>
+      </a>
+      <a class="sb-item" id="sb-futures" onclick="selectLiveSeg('futures', this)">
+        <span class="si">📈</span>Futures
+        <span class="sb-badge" id="sbFut">—</span>
+      </a>
+      <a class="sb-item" id="sb-options" onclick="selectLiveSeg('options', this)">
+        <span class="si">⚡</span>Options
+        <span class="sb-badge" id="sbOpt">—</span>
+      </a>
+      <a class="sb-item" id="sb-portfolio" onclick="selectLiveSeg('portfolio', this)">
+        <span class="si">💼</span>Portfolio
+        <span class="sb-badge" id="sbPort">—</span>
+      </a>
     </div>
     <div class="sb-sec">
       <div class="sb-lbl">Resources</div>
+      <a class="sb-item" href="performance.html"><span class="si">📈</span>Performance</a>
       <a class="sb-item"><span class="si">📋</span>Research Reports</a>
       <a class="sb-item"><span class="si">📚</span>Education</a>
       <a class="sb-item"><span class="si">🤖</span>Kooky AI</a>
@@ -289,8 +303,8 @@ tbody tr:hover td{background:rgba(255,255,255,.015)}
 
     <!-- ── LIVE TRADES ── -->
     <div class="sec-head">
-      <h2>🔴 Live Trades <span class="live-pill" id="liveCount">0 active</span></h2>
-      <a href="#" onclick="return false">Auto-updating</a>
+      <h2>🔴 Live Trades — <span id="liveSegLabel">All Segments</span> <span class="live-pill" id="liveCount">0 active</span></h2>
+      <a href="#" onclick="return false" style="color:var(--muted);font-size:11px">Auto-updating ●</a>
     </div>
     <div class="live-box" id="liveBox">
       <div class="live-empty">
@@ -314,32 +328,6 @@ tbody tr:hover td{background:rgba(255,255,255,.015)}
       <div class="sub-card"><div class="skeleton" style="height:20px;width:60%;margin-bottom:8px"></div><div class="skeleton" style="height:14px;width:80%"></div></div>
       <div class="sub-card"><div class="skeleton" style="height:20px;width:60%;margin-bottom:8px"></div><div class="skeleton" style="height:14px;width:80%"></div></div>
       <div class="sub-card"><div class="skeleton" style="height:20px;width:60%;margin-bottom:8px"></div><div class="skeleton" style="height:14px;width:80%"></div></div>
-    </div>
-
-    <!-- PERFORMANCE TABS -->
-    <div class="sec-head"><h2>📈 My Performance</h2><a href="performance.html">Full track record →</a></div>
-    <div class="tabs-wrap" id="tabBar">
-      <button class="tab-btn active" data-tab="equity" onclick="switchTab('equity', this)">
-        <span class="tb-ico">📊</span><span>Equity</span><span class="tb-count" id="tcEquity">0</span>
-      </button>
-      <button class="tab-btn" data-tab="futures" onclick="switchTab('futures', this)">
-        <span class="tb-ico">📈</span><span>Futures</span><span class="tb-count" id="tcFutures">0</span>
-      </button>
-      <button class="tab-btn" data-tab="options" onclick="switchTab('options', this)">
-        <span class="tb-ico">⚡</span><span>Options</span><span class="tb-count" id="tcOptions">0</span>
-      </button>
-    </div>
-
-    <div class="tab-stats" id="tabStats">
-      <div class="ts-card"><div class="l">Total Calls</div><div class="v" id="ts-total" style="color:#f1f5f9">—</div></div>
-      <div class="ts-card"><div class="l">Wins</div><div class="v" id="ts-wins" style="color:#34d399">—</div></div>
-      <div class="ts-card"><div class="l">Losses</div><div class="v" id="ts-losses" style="color:#f87171">—</div></div>
-      <div class="ts-card"><div class="l">Win Rate</div><div class="v" id="ts-wr" style="color:#a78bfa">—</div></div>
-      <div class="ts-card"><div class="l">Open</div><div class="v" id="ts-open" style="color:#fbbf24">—</div></div>
-    </div>
-
-    <div id="tradesContainer">
-      <div class="trades-box" style="padding:40px;text-align:center;color:var(--muted)">Loading trades...</div>
     </div>
 
     <!-- QUICK ACTIONS -->
@@ -393,6 +381,7 @@ let userData = null;
 let allClosedTrades = [];
 let currentTab = 'equity';
 let currentFilter = 'ALL';
+let currentLiveSegment = 'all'; // which segment is selected in sidebar
 let notifications = [];
 let unsubscribeActive = null;
 
@@ -447,30 +436,38 @@ function timeAgo(val) {
 function isSubscribed(segment) {
   if (!userData) return false;
 
-  /* ── Step 1: Check user status ── */
+  /* Step 1: Check user status */
   const status = userData.status;
   if (!status || status === 'FREE' || status === 'BLOCKED') return false;
   if (status !== 'ACTIVE') return false;
 
-  /* ── Step 2: Check subscription expiry ── */
+  /* Step 2: Check subscription expiry */
   if (userData.subscriptionEndDate) {
     try {
       const exp = userData.subscriptionEndDate.toDate
         ? userData.subscriptionEndDate.toDate()
         : new Date(userData.subscriptionEndDate);
-      if (exp < new Date()) return false; // expired
+      if (exp < new Date()) return false;
     } catch(e) {}
   }
 
-  /* ── Step 3: Check subscriptionAccess ── */
-  const access = userData.subscriptionAccess;
-  if (!access || access === 'no_access' || access === 'No Access') return false;
+  /* Step 3: Check subscriptionAccess field */
+  const access = (userData.subscriptionAccess || '').toLowerCase().trim();
+  if (!access || access === 'no access' || access === 'no_access') return false;
 
-  if (access === 'all' || access === 'All Pages') return true;
+  /* "all" or "all pages" = access to everything */
+  if (access === 'all' || access === 'all pages') return true;
 
-  if (segment === 'equity') return access === 'equity' || access === 'Equity Only';
-  if (segment === 'futures' || segment === 'options') return access === 'fno' || access === 'F&O Only';
-  if (segment === 'portfolio') return access === 'portfolio' || access === 'Portfolio Only';
+  /* Equity */
+  if (segment === 'equity') return access === 'equity' || access === 'equity only';
+
+  /* F&O = Futures + Options */
+  if (segment === 'futures' || segment === 'options')
+    return access === 'fno' || access === 'f&o only' || access === 'fno only';
+
+  /* Portfolio */
+  if (segment === 'portfolio')
+    return access === 'portfolio' || access === 'portfolio only';
 
   return false;
 }
@@ -481,13 +478,13 @@ function isAnySubscribed() {
 }
 
 function getAccessLabel() {
-  const access = userData?.subscriptionAccess;
-  if (!access || access === 'no_access') return 'No Access';
-  if (access === 'all' || access === 'All Pages') return 'All Segments';
-  if (access === 'equity' || access === 'Equity Only') return 'Equity Only';
-  if (access === 'fno' || access === 'F&O Only') return 'F&O Only';
-  if (access === 'portfolio' || access === 'Portfolio Only') return 'Portfolio Only';
-  return access;
+  const access = (userData?.subscriptionAccess || '').toLowerCase();
+  if (!access || access === 'no access') return 'No Access';
+  if (access === 'all' || access === 'all pages') return 'All Segments';
+  if (access === 'equity' || access === 'equity only') return 'Equity Only';
+  if (access === 'fno' || access === 'f&o only') return 'F&O Only';
+  if (access === 'portfolio' || access === 'portfolio only') return 'Portfolio Only';
+  return userData?.subscriptionAccess || 'Unknown';
 }
 
 /* ── AUTH CHECK ── */
@@ -599,20 +596,27 @@ function renderSubscriptions() {
   }).join('');
 
   /* Sidebar badges */
-  const sbMap = { equity: 'sbEq', futures: 'sbFut', options: 'sbOpt' };
+  const sbMap = {
+    equity: 'sbEq',
+    futures: 'sbFut',
+    options: 'sbOpt',
+    portfolio: 'sbPort'
+  };
   Object.entries(sbMap).forEach(([seg, id]) => {
     const el = document.getElementById(id);
     const active = isSubscribed(seg);
-    if (el) { el.textContent = active ? 'Active' : 'Free'; el.className = 'sb-badge ' + (active ? 'sb-active-b' : 'sb-locked-b'); }
+    if (el) {
+      el.textContent = active ? 'Active' : 'Free';
+      el.className = 'sb-badge ' + (active ? 'sb-active-b' : 'sb-locked-b');
+    }
   });
 
   document.getElementById('ovActive').textContent = activeCount;
   document.getElementById('freeAlert').style.display = activeCount === 0 ? 'flex' : 'none';
 }
 
-/* ── REAL-TIME ACTIVE TRADES ── */
+/* ── REAL-TIME ACTIVE TRADES — filtered by segment ── */
 function subscribeToActiveTrades() {
-  const anyActive = isAnySubscribed();
   const liveBox = document.getElementById('liveBox');
   const countEl = document.getElementById('liveCount');
   const prevCount = { count: 0 };
@@ -622,53 +626,88 @@ function subscribeToActiveTrades() {
   unsubscribeActive = onSnapshot(
     query(collection(db, 'activeTrades'), orderBy('createdAt', 'desc')),
     (snap) => {
-      const trades = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const allTrades = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
       /* Notification for new trades */
-      if (prevCount.count > 0 && trades.length > prevCount.count) {
-        const newest = trades[0];
-        const notif = { text: `New trade: ${formatSymbol(newest)} ${newest.type}`, time: new Date() };
+      if (prevCount.count > 0 && allTrades.length > prevCount.count) {
+        const newest = allTrades[0];
+        const notif = { text: `New ${newest.segment?.toUpperCase()} trade: ${formatSymbol(newest)} ${newest.type}`, time: new Date() };
         notifications.unshift(notif);
         document.getElementById('notifDot').classList.add('show');
         showToast(`🔔 New trade: ${formatSymbol(newest)} ${newest.type}!`);
         renderNotifications();
       }
-      prevCount.count = trades.length;
+      prevCount.count = allTrades.length;
+      countEl.textContent = allTrades.length + ' active';
 
-      countEl.textContent = trades.length + ' active';
-
-      if (!trades.length) {
-        liveBox.innerHTML = `<div class="live-empty"><div class="em-ico">📡</div><div class="em-title">No live trades right now</div><div class="em-sub">New trade calls will appear here instantly when posted by DhanMatrix.</div></div>`;
-        return;
-      }
-
-      if (!isAnySubscribed()) {
-        liveBox.innerHTML = `<div class="live-empty"><div class="em-ico">🔒</div><div class="em-title">${trades.length} Live Trade${trades.length>1?'s':''} Available</div><div class="em-sub">Your current plan has no active access. Contact DhanMatrix to subscribe.</div><button class="lo-btn" onclick="window.location.href='index.html#contact'" style="margin-top:12px">Contact Us →</button></div>`;
-        return;
-      }
-
-      liveBox.innerHTML = trades.map(t => {
-        const sym = formatSymbol(t);
-        const pnl = t.profitLossPercent != null ? (t.profitLossPercent >= 0 ? '+' : '') + t.profitLossPercent + '%' : '—';
-        const pnlClass = t.profitLossPercent != null ? (t.profitLossPercent >= 0 ? 'pnl-w' : 'pnl-l') : 'pnl-o';
-        return `<div class="live-row live">
-          <span class="lt-badge">LIVE</span>
-          <div><div class="lt-sym">${sym}</div><div class="lt-meta">${t.segment?.toUpperCase()} · ${t.type}</div></div>
-          <div class="lt-num"><small>ENTRY</small>₹${t.entryPrice}</div>
-          <div class="lt-num"><small>TARGET</small><span style="color:#34d399">₹${t.targetPrice || '—'}</span></div>
-          <div class="lt-num"><small>STOP LOSS</small><span style="color:#f87171">₹${t.stopLoss || '—'}</span></div>
-          <div class="lt-pnl ${pnlClass}">${pnl}</div>
-          <div class="lt-time">${timeAgo(t.createdAt)}</div>
-        </div>`;
-      }).join('');
-
-      /* Update open positions count */
-      document.getElementById('ovOpen').textContent = trades.length;
+      renderLiveTrades(allTrades);
     },
-    (err) => {
+    () => {
       liveBox.innerHTML = `<div class="live-empty"><div class="em-ico">⚠️</div><div class="em-title">Could not load live trades</div></div>`;
     }
   );
+}
+
+/* ── RENDER LIVE TRADES (with segment + access filter) ── */
+function renderLiveTrades(allTrades) {
+  const liveBox = document.getElementById('liveBox');
+
+  /* Filter by selected segment */
+  let trades = allTrades;
+  if (currentLiveSegment !== 'all') {
+    trades = allTrades.filter(t => {
+      const seg = (t.segment || '').toLowerCase();
+      if (currentLiveSegment === 'equity') return seg === 'equity';
+      if (currentLiveSegment === 'futures') return seg === 'futures';
+      if (currentLiveSegment === 'options') return seg === 'options';
+      if (currentLiveSegment === 'portfolio') return seg === 'portfolio';
+      return true;
+    });
+  }
+
+  if (!trades.length) {
+    liveBox.innerHTML = `<div class="live-empty">
+      <div class="em-ico">📡</div>
+      <div class="em-title">No live trades in ${currentLiveSegment === 'all' ? 'any segment' : currentLiveSegment.charAt(0).toUpperCase() + currentLiveSegment.slice(1)}</div>
+      <div class="em-sub">New calls will appear here instantly when posted.</div>
+    </div>`;
+    return;
+  }
+
+  /* Check if user has access to the selected segment */
+  const segToCheck = currentLiveSegment === 'all' ? null : currentLiveSegment;
+  const hasAccess = segToCheck ? isSubscribed(segToCheck) : isAnySubscribed();
+
+  if (!hasAccess) {
+    const segLabel = currentLiveSegment === 'all' ? 'any segment' : currentLiveSegment.toUpperCase();
+    liveBox.innerHTML = `<div class="live-empty">
+      <div class="em-ico">🔒</div>
+      <div class="em-title">${trades.length} Live Trade${trades.length>1?'s':''} — ${segLabel}</div>
+      <div class="em-sub">You don't have access to ${segLabel} calls. Contact DhanMatrix to subscribe.</div>
+      <button class="lo-btn" onclick="window.location.href='index.html#contact'" style="margin-top:12px">Contact Us →</button>
+    </div>`;
+    return;
+  }
+
+  liveBox.innerHTML = trades.map(t => {
+    const sym = formatSymbol(t);
+    const pnl = t.profitLossPercent != null ? (t.profitLossPercent >= 0 ? '+' : '') + t.profitLossPercent + '%' : '—';
+    const pnlClass = t.profitLossPercent != null ? (t.profitLossPercent >= 0 ? 'pnl-w' : 'pnl-l') : 'pnl-o';
+    return `<div class="live-row live">
+      <span class="lt-badge">LIVE</span>
+      <div>
+        <div class="lt-sym">${sym}</div>
+        <div class="lt-meta">${(t.segment || '').toUpperCase()} · ${t.type}</div>
+      </div>
+      <div class="lt-num"><small>ENTRY</small>₹${t.entryPrice || '—'}</div>
+      <div class="lt-num"><small>TARGET</small><span style="color:#34d399">₹${t.targetPrice || '—'}</span></div>
+      <div class="lt-num"><small>STOP LOSS</small><span style="color:#f87171">₹${t.stopLoss || '—'}</span></div>
+      <div class="lt-pnl ${pnlClass}">${pnl}</div>
+      <div class="lt-time">${timeAgo(t.createdAt)}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('ovOpen').textContent = allTrades.length;
 }
 
 /* ── LOAD CLOSED TRADES ── */
@@ -798,7 +837,27 @@ function renderTrades() {
     </div>`;
 }
 
-/* ── NOTIFICATIONS ── */
+/* ── SELECT LIVE SEGMENT (sidebar click) ── */
+window.selectLiveSeg = function(seg, el) {
+  currentLiveSegment = seg;
+
+  /* Update sidebar active state */
+  document.querySelectorAll('.sb-item').forEach(a => a.classList.remove('active'));
+  if (el) el.classList.add('active');
+
+  /* Update heading label */
+  const labels = {
+    all: 'All Segments',
+    equity: 'Equity',
+    futures: 'Futures',
+    options: 'Options',
+    portfolio: 'Portfolio Stocks'
+  };
+  document.getElementById('liveSegLabel').textContent = labels[seg] || seg;
+
+  /* Re-render with current trades (trigger re-read from snapshot) */
+  subscribeToActiveTrades();
+}
 function renderNotifications() {
   const el = document.getElementById('notifList');
   if (!notifications.length) { el.innerHTML = '<div class="np-empty">No notifications yet</div>'; return; }
