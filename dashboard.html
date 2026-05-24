@@ -183,7 +183,20 @@ tbody tr:hover td{background:rgba(255,255,255,.015)}
 .ni-text strong{color:#fff}
 .ni-time{font-size:10px;color:var(--muted);margin-top:3px}
 .np-empty{padding:24px;text-align:center;color:var(--muted);font-size:13px}
-@media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{display:none}.stats{grid-template-columns:repeat(2,1fr)}.subs{grid-template-columns:1fr}.tab-stats{grid-template-columns:repeat(2,1fr)}.research-row{grid-template-columns:1fr}.nav-ul{display:none}.live-row{grid-template-columns:1fr 1.5fr 1fr 1fr}}
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{display:none;position:fixed;top:0;left:0;width:260px;height:100vh;z-index:200;padding-top:60px}
+  .sidebar.mob-open{display:block}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .subs{grid-template-columns:1fr}
+  .tab-stats{grid-template-columns:repeat(2,1fr)}
+  .research-row{grid-template-columns:1fr}
+  .nav-ul{display:none}
+  .live-row{grid-template-columns:1fr 1.5fr 1fr 1fr}
+  .mob-ham{display:flex!important}
+  .mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199}
+  .mob-overlay.show{display:block}
+}
 </style>
 </head>
 <body>
@@ -216,7 +229,14 @@ tbody tr:hover td{background:rgba(255,255,255,.015)}
 </div></div>
 
 <!-- NAV -->
+<div class="mob-overlay" id="mobOverlay" onclick="closeSidebar()"></div>
+
 <nav>
+  <button id="mobHam" onclick="toggleSidebar()" style="display:none;background:none;border:none;cursor:pointer;padding:8px;flex-direction:column;gap:5px;margin-right:8px">
+    <span style="display:block;width:20px;height:2px;background:#fff;border-radius:2px"></span>
+    <span style="display:block;width:20px;height:2px;background:#fff;border-radius:2px"></span>
+    <span style="display:block;width:20px;height:2px;background:#fff;border-radius:2px"></span>
+  </button>
   <a class="logo" href="index.html">
     <div class="logo-box">dm</div>
     <div class="logo-text"><span class="w">Dhan</span><span class="t">Matrix</span></div>
@@ -884,6 +904,22 @@ function renderTrades() {
     </div>`;
 }
 
+/* ── MOBILE SIDEBAR ── */
+window.toggleSidebar = function(){
+  document.querySelector('.sidebar').classList.toggle('mob-open');
+  document.getElementById('mobOverlay').classList.toggle('show');
+}
+window.closeSidebar = function(){
+  document.querySelector('.sidebar').classList.remove('mob-open');
+  document.getElementById('mobOverlay').classList.remove('show');
+}
+function checkMobHam(){
+  const btn=document.getElementById('mobHam');
+  if(btn) btn.style.display=window.innerWidth<=900?'flex':'none';
+}
+checkMobHam();
+window.addEventListener('resize', checkMobHam);
+
 /* ── SELECT LIVE SEGMENT (sidebar click) ── */
 window.selectLiveSeg = function(seg, el) {
   currentLiveSegment = seg;
@@ -891,6 +927,9 @@ window.selectLiveSeg = function(seg, el) {
   /* Update sidebar active state */
   document.querySelectorAll('.sb-item').forEach(a => a.classList.remove('active'));
   if (el) el.classList.add('active');
+
+  /* Close sidebar on mobile */
+  if(window.innerWidth <= 900) closeSidebar();
 
   /* Update heading label */
   const labels = {
