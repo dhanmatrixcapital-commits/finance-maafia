@@ -535,8 +535,8 @@ footer{background:rgba(3,12,24,.98);padding:50px 56px 30px;position:relative;z-i
 
       <!-- PHOTO SLIDESHOW -->
       <div>
-        <div id="slideshow" style="position:relative;border-radius:20px;overflow:hidden;aspect-ratio:4/3;background:linear-gradient(135deg,#0a1828,#0c1e38);border:1px solid rgba(139,92,246,.18)">
-          <div id="slides" style="display:flex;transition:transform .55s cubic-bezier(.4,0,.2,1);height:100%"></div>
+        <div id="slideshow" style="position:relative;border-radius:20px;overflow:hidden;aspect-ratio:4/3;max-height:400px;background:linear-gradient(135deg,#0a1828,#0c1e38);border:1px solid rgba(139,92,246,.18)">
+          <div id="slides" style="display:flex;transition:transform .55s cubic-bezier(.4,0,.2,1);height:100%;width:100%;"></div>
           <div id="slidePlaceholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:32px;pointer-events:none">
             <div style="width:64px;height:64px;border-radius:18px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);display:flex;align-items:center;justify-content:center;font-size:30px">🖼️</div>
             <div>
@@ -905,7 +905,7 @@ function renderSlides(items){
   prev.style.display=SLIDES.length>1?'flex':'none';
   next.style.display=SLIDES.length>1?'flex':'none';
   dotsEl.style.display=SLIDES.length>1?'flex':'none';
-  slidesEl.innerHTML=SLIDES.map(function(s){ return '<img src="'+s.url+'" alt="'+(s.alt||'Office photo')+'" style="min-width:100%;height:100%;object-fit:cover;flex-shrink:0" loading="lazy">'; }).join('');
+  slidesEl.innerHTML=SLIDES.map(function(s){ return '<img src="'+s.url+'" alt="'+(s.alt||'Office photo')+'" style="min-width:100%;width:100%;height:100%;object-fit:cover;object-position:center;flex-shrink:0;display:block;" loading="lazy">'; }).join('');
   dotsEl.innerHTML=SLIDES.map(function(s,i){ return '<span onclick="goSlide('+i+')" style="width:7px;height:7px;border-radius:50%;cursor:pointer;transition:.2s;background:'+(i===0?'#00d4aa':'rgba(255,255,255,.3)')+'"></span>'; }).join('');
   goSlide(0);
 }
