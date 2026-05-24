@@ -538,11 +538,29 @@ footer{background:rgba(3,12,24,.98);padding:50px 56px 30px;position:relative;z-i
       <p style="color:rgba(255,255,255,.65);font-size:15px;line-height:1.8;margin-bottom:14px">DhanMatrix is built by traders and investors. Our team has experienced professionals in <strong style="color:#fff">investing, trading, options strategies and futures trading</strong> — people who have spent years in the market before building this platform.</p>
       <p style="color:rgba(255,255,255,.65);font-size:15px;line-height:1.8;margin-bottom:14px">We are among <strong style="color:#fff">India's few companies</strong> that provide AI-powered stock analysis and portfolio analysis tools to retail investors and traders.</p>
       <p style="color:rgba(255,255,255,.65);font-size:15px;line-height:1.8;margin-bottom:20px">We are a <strong style="color:#fff">licensed Mutual Fund Distributor (MFD)</strong> — helping clients invest in the right mutual funds with personalised guidance.</p>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">
-        <span class="chip">🏦 MFD Licensed</span>
-        <span class="chip">🤖 Kooky AI Analysis</span>
-        <span class="chip">📊 Portfolio Analysis</span>
-        <span class="chip">📈 Broking Services</span>
+
+      <!-- COMPACT ROUND SERVICE CARDS -->
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:4px">
+        <div style="display:flex;align-items:center;gap:8px;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);border-radius:40px;padding:7px 14px 7px 8px">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">🤖</div>
+          <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.85)">Kooky AI</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;background:rgba(0,212,170,.06);border:1px solid rgba(0,212,170,.18);border-radius:40px;padding:7px 14px 7px 8px">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(0,212,170,.15);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">📈</div>
+          <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.85)">Swing Trading</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.18);border-radius:40px;padding:7px 14px 7px 8px">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(251,191,36,.15);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">⚡</div>
+          <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.85)">F&amp;O Calls</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.18);border-radius:40px;padding:7px 14px 7px 8px">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(59,130,246,.15);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">💰</div>
+          <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.85)">Mutual Funds</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;background:rgba(234,179,8,.06);border:1px solid rgba(234,179,8,.18);border-radius:40px;padding:7px 14px 7px 8px">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(234,179,8,.15);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">💼</div>
+          <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.85)">Portfolio Stocks</span>
+        </div>
       </div>
 
       <!-- Note goes full width below everything -->
@@ -787,10 +805,10 @@ footer{background:rgba(3,12,24,.98);padding:50px 56px 30px;position:relative;z-i
     </div>
     <div class="contact-grid">
       <div class="cinfo">
-        <div class="cicard"><div class="ciico phone">📞</div><div><h4>Call Us</h4><p>+91 83838 98886</p><p class="sub">+91 92583 03916</p></div></div>
-        <div class="cicard"><div class="ciico email">✉️</div><div><h4>Email Support</h4><p>info@dhanmatrix.in</p><p class="sub">Response within 24 hours</p></div></div>
-        <div class="cicard"><div class="ciico whatsapp">💬</div><div><h4>WhatsApp</h4><p>+91 83838 98886</p><p class="sub">+91 92583 03916</p></div></div>
-        <div class="cicard"><div class="ciico office">📍</div><div><h4>Office</h4><p>E-2, Vasisht Marg</p><p class="sub">New Delhi – 110044</p></div></div>
+        <div class="cicard"><div class="ciico phone">📞</div><div><h4>Call Us</h4><p id="ci-phone-display">+91 83838 98886</p><p class="sub" id="ci-phone2-display">+91 92583 03916</p></div></div>
+        <div class="cicard"><div class="ciico email">✉️</div><div><h4>Email Support</h4><p id="ci-email-display">info@dhanmatrix.in</p><p class="sub">Response within 24 hours</p></div></div>
+        <div class="cicard"><div class="ciico whatsapp">💬</div><div><h4>WhatsApp</h4><p id="ci-whatsapp-display">+91 83838 98886</p><p class="sub" id="ci-hours-display">Mon–Sat: 9AM to 6PM</p></div></div>
+        <div class="cicard"><div class="ciico office">📍</div><div><h4>Office</h4><p id="ci-address-display">E-2, Vasisht Marg</p><p class="sub" id="ci-city-display">New Delhi – 110044</p></div></div>
       </div>
       <div class="cform-box">
         <h3>Send Us a Message</h3>
@@ -915,6 +933,33 @@ function goSlide(n){
 function slideMove(dir){ goSlide(slideIdx+dir); }
 setInterval(function(){ if(SLIDES.length>1) slideMove(1); }, 3000);
 
+async function loadContactInfo(){
+  try{
+    const projectId='dmat-b0ce6';
+    const apiKey='AIzaSyDuC_tvmAIAcpxdqke2TRCgZVmdZ0SjPrw';
+    const r=await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/contactInfo?key=${apiKey}&pageSize=1`);
+    if(!r.ok) return;
+    const data=await r.json();
+    if(!data.documents||!data.documents.length) return;
+    const f=data.documents[0].fields||{};
+    if(f.phone?.stringValue){ document.getElementById('ci-phone-display').textContent=f.phone.stringValue; document.getElementById('ci-whatsapp-display').textContent=f.whatsapp?.stringValue||f.phone.stringValue; }
+    if(f.email?.stringValue) document.getElementById('ci-email-display').textContent=f.email.stringValue;
+    if(f.hours?.stringValue) document.getElementById('ci-hours-display').textContent=f.hours.stringValue;
+    if(f.address?.stringValue){
+      const parts=f.address.stringValue.split('\n');
+      document.getElementById('ci-address-display').textContent=parts[0]||'';
+      document.getElementById('ci-city-display').textContent=parts[1]||'';
+    }
+    /* Update WhatsApp link */
+    if(f.whatsapp?.stringValue){
+      const num=f.whatsapp.stringValue.replace(/[^0-9]/g,'');
+      window._waNumber=num;
+    }
+  }catch(e){}
+}
+
+loadContactInfo();
+
 async function loadSlidesFromAPI(){
   try{
     const projectId = 'dmat-b0ce6';
@@ -966,7 +1011,8 @@ async function sendWhatsApp() {
 
   /* Open WhatsApp */
   var text = 'Hello DhanMatrix! 👋\n\nName: ' + name + '\nMobile: ' + (mobile||'—') + '\nInterested in: ' + interest + (message ? '\nMessage: ' + message : '');
-  window.open('https://wa.me/919258303916?text=' + encodeURIComponent(text), '_blank');
+  var waNum = window._waNumber || '919258303916';
+  window.open('https://wa.me/' + waNum + '?text=' + encodeURIComponent(text), '_blank');
 }
 
 var TRADES = [
