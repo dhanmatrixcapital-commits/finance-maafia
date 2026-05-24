@@ -1,12 +1,5 @@
 {
   "buildCommand": null,
   "outputDirectory": ".",
-  "framework": null,
-  "redirects": [
-    {
-      "source": "/",
-      "destination": "/media-admin.html",
-      "permanent": false
-    }
-  ]
+  "framework": null
 }
