@@ -173,6 +173,8 @@ textarea.finput{resize:vertical;min-height:80px}
     <a onclick="showSection('contacts')"><span class="ico">✉️</span> Contacts</a>
     <a onclick="showSection('qrcode')"><span class="ico">📱</span> Payment QR</a>
     <a onclick="showSection('closedtrades')"><span class="ico">📈</span> Closed Trades</a>
+    <a onclick="showSection('services')"><span class="ico">💼</span> Services & Pricing</a>
+    <a onclick="showSection('contactinfo')"><span class="ico">📞</span> Contact Info</a>
     <a onclick="showSection('applinks')"><span class="ico">🔗</span> App Links</a>
     <a onclick="showSection('users')"><span class="ico">👥</span> Users</a>
   </div>
@@ -635,6 +637,58 @@ textarea.finput{resize:vertical;min-height:80px}
       </div>
     </div>
 
+    <!-- SERVICES & PRICING -->
+    <div class="section" id="sec-services">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Services & Pricing</div><div class="card-sub">Edit service name, price and features — updates website automatically</div></div>
+          <button class="btn btn-primary" onclick="saveServices()">💾 Save All Services</button>
+        </div>
+        <div id="servicesList">
+          <div style="padding:20px;text-align:center;color:#94a3b8">Loading...</div>
+        </div>
+        <button class="btn btn-ghost" onclick="addServiceRow()" style="margin-top:12px">+ Add New Service</button>
+      </div>
+    </div>
+
+    <!-- CONTACT INFO -->
+    <div class="section" id="sec-contactinfo">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Contact Information</div><div class="card-sub">Phone, WhatsApp and address — updates website automatically</div></div>
+          <button class="btn btn-primary" onclick="saveContactInfo()">💾 Save Contact Info</button>
+        </div>
+        <div class="form-grid">
+          <div class="fgroup">
+            <label>📞 Phone Number</label>
+            <input class="finput" id="ci-phone" type="tel" placeholder="+91 XXXXX XXXXX">
+          </div>
+          <div class="fgroup">
+            <label>💬 WhatsApp Number</label>
+            <input class="finput" id="ci-whatsapp" type="tel" placeholder="+91 XXXXX XXXXX">
+          </div>
+        </div>
+        <div class="form-grid" style="margin-top:12px">
+          <div class="fgroup">
+            <label>📧 Email</label>
+            <input class="finput" id="ci-email" type="email" placeholder="info@dhanmatrix.com">
+          </div>
+          <div class="fgroup">
+            <label>🌐 Website</label>
+            <input class="finput" id="ci-website" type="url" placeholder="https://dhanmatrix.com">
+          </div>
+        </div>
+        <div class="fgroup" style="margin-top:12px">
+          <label>📍 Address</label>
+          <textarea class="finput" id="ci-address" rows="3" placeholder="Office address here..."></textarea>
+        </div>
+        <div class="fgroup" style="margin-top:12px">
+          <label>🕐 Business Hours</label>
+          <input class="finput" id="ci-hours" type="text" placeholder="Mon–Sat: 9AM to 6PM">
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -688,7 +742,7 @@ window.showSection = function(name) {
   document.querySelectorAll('.sb-nav a').forEach(a => a.classList.remove('active'));
   document.getElementById('sec-' + name).classList.add('active');
   event.currentTarget.classList.add('active');
-  const titles = {dashboard:'Dashboard',photos:'About Photos',documents:'Documents',signals:'Signals',announcements:'Announcements',research:'Research Reports',contacts:'Contact Inquiries',qrcode:'Payment QR Code',closedtrades:'Closed Trades',applinks:'App Download Links',users:'User Management'};
+  const titles = {dashboard:'Dashboard',photos:'About Photos',documents:'Documents',signals:'Signals',announcements:'Announcements',research:'Research Reports',contacts:'Contact Inquiries',qrcode:'Payment QR Code',closedtrades:'Closed Trades',applinks:'App Download Links',users:'User Management',services:'Services & Pricing',contactinfo:'Contact Information'};
   document.getElementById('topbarTitle').textContent = titles[name] || name;
   if(name === 'photos') loadPhotos();
   if(name === 'documents') loadDocuments();
@@ -701,6 +755,8 @@ window.showSection = function(name) {
   if(name === 'closedtrades') loadClosedTrades();
   if(name === 'applinks') loadAppLinks();
   if(name === 'users') loadUsers();
+  if(name === 'services') loadServices();
+  if(name === 'contactinfo') loadContactInfo();
 }
 
 /* ── DASHBOARD ── */
@@ -1599,12 +1655,121 @@ window.deleteUser = async function(uid, name) {
   } catch(e) { toast('Delete failed', 'error'); }
 }
 
+/* ══════════════════════════════
+   SERVICES & PRICING
+══════════════════════════════ */
+let servicesData = [];
+
+async function loadServices() {
+  const el = document.getElementById('servicesList');
+  try {
+    const snap = await getDocs(collection(db, 'services'));
+    if (!snap.empty) {
+      servicesData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } else {
+      servicesData = [
+        { name: 'Equity Calls', price: '2999', period: 'month', features: ['Live equity trades', 'Entry & exit alerts', 'Stop loss levels', 'Target prices'] },
+        { name: 'F&O Calls', price: '3999', period: 'month', features: ['Futures & options calls', 'Strike price', 'Expiry date', 'Risk management'] },
+        { name: 'All Access', price: '5999', period: 'month', features: ['All segments', 'Portfolio stocks', 'Research reports', 'Priority support'] },
+      ];
+    }
+    renderServiceRows();
+  } catch(e) { el.innerHTML = '<div class="empty"><p>Failed to load</p></div>'; }
+}
+
+function renderServiceRows() {
+  const el = document.getElementById('servicesList');
+  el.innerHTML = servicesData.map((s, i) => `
+    <div style="border:1px solid #e2e8f0;border-radius:10px;padding:18px;margin-bottom:14px;background:#fafafa">
+      <div style="display:flex;gap:12px;margin-bottom:12px;align-items:flex-end">
+        <div class="fgroup" style="flex:2;margin:0">
+          <label>Service Name</label>
+          <input class="finput" value="${s.name||''}" onchange="servicesData[${i}].name=this.value" style="margin-top:4px">
+        </div>
+        <div class="fgroup" style="flex:1;margin:0">
+          <label>Price (₹)</label>
+          <input class="finput" type="number" value="${s.price||''}" onchange="servicesData[${i}].price=this.value" style="margin-top:4px">
+        </div>
+        <div class="fgroup" style="flex:1;margin:0">
+          <label>Period</label>
+          <select class="finput" onchange="servicesData[${i}].period=this.value" style="margin-top:4px">
+            <option ${s.period==='month'?'selected':''} value="month">/ month</option>
+            <option ${s.period==='year'?'selected':''} value="year">/ year</option>
+            <option ${s.period==='quarter'?'selected':''} value="quarter">/ quarter</option>
+          </select>
+        </div>
+        <button onclick="removeService(${i})" style="background:#fee2e2;color:#dc2626;border:1px solid #fecaca;padding:8px 12px;border-radius:7px;cursor:pointer;font-size:13px;flex-shrink:0">🗑</button>
+      </div>
+      <div class="fgroup" style="margin:0">
+        <label>Features (one per line)</label>
+        <textarea class="finput" rows="4" style="margin-top:4px" onchange="servicesData[${i}].features=this.value.split('\\n').filter(f=>f.trim())">${(s.features||[]).join('\n')}</textarea>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.addServiceRow = function() {
+  servicesData.push({ name: 'New Service', price: '999', period: 'month', features: ['Feature 1', 'Feature 2'] });
+  renderServiceRows();
+}
+
+window.removeService = function(i) {
+  servicesData.splice(i, 1);
+  renderServiceRows();
+}
+
+window.saveServices = async function() {
+  try {
+    const snap = await getDocs(collection(db, 'services'));
+    for (const d of snap.docs) await deleteDoc(doc(db, 'services', d.id));
+    for (const s of servicesData) {
+      const { id, ...data } = s;
+      await addDoc(collection(db, 'services'), { ...data, updatedAt: serverTimestamp() });
+    }
+    toast('Services saved! ✅ Website updated');
+  } catch(e) { toast('Failed: ' + e.message, 'error'); }
+}
+
+/* ══════════════════════════════
+   CONTACT INFO
+══════════════════════════════ */
+async function loadContactInfo() {
+  try {
+    const snap = await getDocs(collection(db, 'contactInfo'));
+    if (!snap.empty) {
+      const d = snap.docs[0].data();
+      document.getElementById('ci-phone').value = d.phone || '';
+      document.getElementById('ci-whatsapp').value = d.whatsapp || '';
+      document.getElementById('ci-email').value = d.email || '';
+      document.getElementById('ci-website').value = d.website || '';
+      document.getElementById('ci-address').value = d.address || '';
+      document.getElementById('ci-hours').value = d.hours || '';
+    }
+  } catch(e) {}
+}
+
+window.saveContactInfo = async function() {
+  const data = {
+    phone: document.getElementById('ci-phone').value.trim(),
+    whatsapp: document.getElementById('ci-whatsapp').value.trim(),
+    email: document.getElementById('ci-email').value.trim(),
+    website: document.getElementById('ci-website').value.trim(),
+    address: document.getElementById('ci-address').value.trim(),
+    hours: document.getElementById('ci-hours').value.trim(),
+    updatedAt: serverTimestamp()
+  };
+  try {
+    const snap = await getDocs(collection(db, 'contactInfo'));
+    if (!snap.empty) await deleteDoc(doc(db, 'contactInfo', snap.docs[0].id));
+    await addDoc(collection(db, 'contactInfo'), data);
+    toast('Contact info saved! ✅ Website updated');
+  } catch(e) { toast('Failed: ' + e.message, 'error'); }
+}
+
 /* ── INIT ── */
 loadDashboard();
 loadQR();
 loadAppLinks();
-
-/* expose for contacts window */
 window.loadContacts = loadContacts;
 
 </script>
