@@ -710,6 +710,54 @@ function renderLiveTrades(allTrades) {
   document.getElementById('ovOpen').textContent = allTrades.length;
 }
 
+/* ── PORTFOLIO STOCKS (separate collection) ── */
+async function loadPortfolioStocks() {
+  const liveBox = document.getElementById('liveBox');
+
+  if (!isSubscribed('portfolio')) {
+    liveBox.innerHTML = `<div class="live-empty">
+      <div class="em-ico">🔒</div>
+      <div class="em-title">Portfolio Stocks — No Access</div>
+      <div class="em-sub">You don't have access to Portfolio calls. Contact DhanMatrix to subscribe.</div>
+      <button class="lo-btn" onclick="window.location.href='index.html#contact'" style="margin-top:12px">Contact Us →</button>
+    </div>`;
+    return;
+  }
+
+  liveBox.innerHTML = `<div class="live-empty"><div class="em-ico">⏳</div><div class="em-title">Loading portfolio stocks...</div></div>`;
+
+  try {
+    const snap = await getDocs(query(collection(db, 'portfolioStocks'), orderBy('createdAt', 'desc')));
+    const stocks = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(s => s.showInApp !== false);
+
+    if (!stocks.length) {
+      liveBox.innerHTML = `<div class="live-empty"><div class="em-ico">💼</div><div class="em-title">No portfolio stocks yet</div><div class="em-sub">Portfolio stock picks will appear here when posted.</div></div>`;
+      return;
+    }
+
+    document.getElementById('liveCount').textContent = stocks.length + ' stocks';
+
+    liveBox.innerHTML = stocks.map(s => {
+      const gain = s.targetPrice && s.entryPrice
+        ? (((s.targetPrice - s.entryPrice) / s.entryPrice) * 100).toFixed(1) : null;
+      return `<div class="live-row" style="grid-template-columns:80px 2fr 1fr 1fr 1fr 1fr 130px">
+        <span class="lt-badge" style="background:rgba(0,212,170,.12);color:#34d399;border:1px solid rgba(0,212,170,.3)">${s.action || 'BUY'}</span>
+        <div>
+          <div class="lt-sym">${s.stockName || s.symbol || '—'}</div>
+          <div class="lt-meta">PORTFOLIO · ${s.horizon || 'Long Term'}</div>
+        </div>
+        <div class="lt-num"><small>ENTRY</small>₹${s.entryPrice || '—'}</div>
+        <div class="lt-num"><small>TARGET</small><span style="color:#34d399">₹${s.targetPrice || '—'}</span></div>
+        <div class="lt-num"><small>STOP LOSS</small><span style="color:#f87171">₹${s.stopLoss || '—'}</span></div>
+        <div class="lt-pnl pnl-w">${gain ? '+'+gain+'% upside' : '—'}</div>
+        <div>${s.pdfUrl ? `<a href="${s.pdfUrl}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.25);color:#34d399;padding:5px 10px;border-radius:7px;font-size:11px;font-weight:700;text-decoration:none">📄 ${s.pdfName||'Report'}</a>` : '<span style="color:var(--muted);font-size:11px">—</span>'}</div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    liveBox.innerHTML = `<div class="live-empty"><div class="em-ico">⚠️</div><div class="em-title">Failed to load portfolio: ${e.message}</div></div>`;
+  }
+}
+
 /* ── LOAD CLOSED TRADES ── */
 async function loadClosedTrades() {
   try {
@@ -751,9 +799,8 @@ function calcOverallStats() {
   const wr = closed ? Math.round((wins/closed)*100) : 0;
   document.getElementById('ovTotal').textContent = allClosedTrades.length;
   document.getElementById('ovWR').textContent = wr + '%';
-  // ovActive set from subscription
-  const paid = isSubscribed();
-  document.getElementById('ovActive').textContent = paid ? '3' : '0';
+  const activeCount = ['equity','futures','options','portfolio'].filter(s => isSubscribed(s)).length;
+  document.getElementById('ovActive').textContent = activeCount;
 
   ['equity','futures','options'].forEach(seg => {
     const el = document.getElementById('tc' + seg.charAt(0).toUpperCase() + seg.slice(1));
@@ -855,8 +902,12 @@ window.selectLiveSeg = function(seg, el) {
   };
   document.getElementById('liveSegLabel').textContent = labels[seg] || seg;
 
-  /* Re-render with current trades (trigger re-read from snapshot) */
-  subscribeToActiveTrades();
+  /* Portfolio comes from a DIFFERENT collection */
+  if (seg === 'portfolio') {
+    loadPortfolioStocks();
+  } else {
+    subscribeToActiveTrades();
+  }
 }
 function renderNotifications() {
   const el = document.getElementById('notifList');
