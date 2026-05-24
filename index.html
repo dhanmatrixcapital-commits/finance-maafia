@@ -920,11 +920,22 @@ setInterval(function(){ if(SLIDES.length>1) slideMove(1); }, 4200);
 
 async function loadSlidesFromAPI(){
   try{
-    var r = await fetch('/api/photos');
+    const projectId = 'dmat-b0ce6';
+    const apiKey = 'AIzaSyDuC_tvmAIAcpxdqke2TRCgZVmdZ0SjPrw';
+    const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/aboutPhotos?key=${apiKey}&pageSize=20`;
+    const r = await fetch(url);
     if(!r.ok) return;
-    var data = await r.json();
-    if(Array.isArray(data) && data.length) renderSlides(data);
-  }catch(e){}
+    const data = await r.json();
+    if(!data.documents || !data.documents.length) return;
+    const photos = data.documents.map(doc => {
+      const fields = doc.fields || {};
+      return {
+        url: fields.url?.stringValue || '',
+        alt: fields.name?.stringValue || 'Office photo'
+      };
+    }).filter(p => p.url);
+    if(photos.length) renderSlides(photos);
+  }catch(e){ console.log('Slides error:', e); }
 }
 
 function sendWhatsApp() {
