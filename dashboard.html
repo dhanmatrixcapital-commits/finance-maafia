@@ -6,29 +6,16 @@
 <title>Dashboard — DhanMatrix</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#030c18;--bg2:#080f1e;--card:#0c1e38;
-  --teal:#00d4aa;--blue:#8b5cf6;--gold:#f5a623;--pink:#f472b6;
-  --green:#22c55e;--red:#ef4444;
-  --muted:#7a9abf;--text-soft:#c5d4e8;
-  --border:rgba(255,255,255,0.07);--border-2:rgba(255,255,255,0.12);
-  --text:#ffffff;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
+:root{--bg:#030c18;--bg2:#080f1e;--card:#0c1e38;--teal:#00d4aa;--blue:#8b5cf6;--gold:#f5a623;--pink:#f472b6;--green:#22c55e;--red:#ef4444;--muted:#7a9abf;--text-soft:#c5d4e8;--border:rgba(255,255,255,0.07);--border-2:rgba(255,255,255,0.12);--text:#ffffff}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
 body{font-family:'DM Sans',sans-serif;background:#030c18;color:var(--text);min-height:100vh;overflow-x:hidden}
-
-/* ── TICKER ── */
 .ticker{background:rgba(3,12,24,.95);border-bottom:1px solid var(--border);padding:7px 0;overflow:hidden;white-space:nowrap;position:relative;z-index:10}
 .tw{display:inline-flex;gap:36px;animation:tick 35s linear infinite}
 @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.tlive{display:inline-flex;align-items:center;width:18px;height:18px;justify-content:center}
-.tlive::before{content:'';width:6px;height:6px;border-radius:50%;background:#ef4444;animation:blink 1s ease-in-out infinite}
+.tlive::before{content:'';width:6px;height:6px;border-radius:50%;background:#ef4444;display:inline-block;animation:blink 1s ease-in-out infinite;margin-right:6px}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
 .ti{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600}
 .tn{color:var(--muted)}.tp{color:var(--text)}.up{color:#34d399}.dn{color:#f87171}
-
-/* ── NAV ── */
 nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;border-bottom:1px solid var(--border);background:rgba(3,10,22,.96);backdrop-filter:blur(16px);position:sticky;top:0;z-index:100}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
 .logo-box{width:34px;height:34px;background:#059669;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:'Sora',sans-serif;flex-shrink:0;letter-spacing:-.5px}
@@ -38,16 +25,15 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
 .nav-ul a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;padding:6px 12px;border-radius:6px;transition:.2s}
 .nav-ul a:hover{color:var(--text)}
 .nend{display:flex;align-items:center;gap:10px}
-.notif-btn{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,.04);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;position:relative;color:#c5d4e8}
+.notif-btn{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,.04);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;position:relative;color:#c5d4e8;transition:.2s}
 .notif-btn:hover{border-color:rgba(139,92,246,.3)}
-.notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 6px rgba(0,212,170,.6)}
+.notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 6px rgba(0,212,170,.6);display:none}
+.notif-dot.show{display:block}
 .user-chip{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;padding:5px 12px 5px 5px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;transition:.2s}
 .user-chip:hover{border-color:rgba(139,92,246,.3)}
 .user-avatar{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#8b5cf6,#00d4aa);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;font-family:'Sora',sans-serif}
 .logout-btn{background:transparent;border:1px solid var(--border);border-radius:9px;padding:7px 14px;font-size:12.5px;font-weight:600;font-family:'DM Sans',sans-serif;color:var(--muted);cursor:pointer;transition:.2s}
 .logout-btn:hover{border-color:rgba(239,68,68,.4);color:#f87171}
-
-/* ── LAYOUT ── */
 .layout{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 99px)}
 .sidebar{background:rgba(8,16,30,.65);border-right:1px solid var(--border);padding:24px 14px;position:sticky;top:99px;height:calc(100vh - 99px);overflow-y:auto}
 .sb-sec{margin-bottom:24px}
@@ -59,30 +45,15 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
 .sb-badge{margin-left:auto;font-size:9px;font-weight:800;letter-spacing:.5px;padding:2px 8px;border-radius:10px}
 .sb-active-b{background:rgba(0,212,170,.15);color:var(--teal);border:1px solid rgba(0,212,170,.25)}
 .sb-locked-b{background:rgba(255,255,255,.04);color:var(--muted);border:1px solid var(--border)}
-
-/* ── MAIN ── */
 .main{padding:28px 36px 60px;max-width:1280px}
-
-/* WELCOME */
-.welcome{
-  background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(0,212,170,.06));
-  border:1px solid rgba(139,92,246,.22);border-radius:18px;
-  padding:24px 28px;margin-bottom:22px;
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
-  position:relative;overflow:hidden;
-}
+.welcome{background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(0,212,170,.06));border:1px solid rgba(139,92,246,.22);border-radius:18px;padding:24px 28px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;gap:16px;position:relative;overflow:hidden}
 .welcome::before{content:'';position:absolute;top:-60px;right:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(0,212,170,.14),transparent 70%);pointer-events:none}
 .welcome h1{font-family:'Sora',sans-serif;font-size:24px;font-weight:800;margin-bottom:5px;letter-spacing:-.4px}
 .welcome p{font-size:13.5px;color:var(--text-soft)}
 .welcome .em{font-size:46px;opacity:.7;position:relative;z-index:1}
-
-/* ALERT */
 .alert{background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);border-radius:11px;padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;gap:10px;font-size:13px}
 .alert strong{color:var(--gold);font-weight:700}
 .alert a{color:var(--gold);font-weight:700;text-decoration:none}
-.alert a:hover{text-decoration:underline}
-
-/* STATS ROW */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
 .stat{background:rgba(12,30,56,.5);border:1px solid var(--border);border-radius:14px;padding:18px 20px;transition:.2s}
 .stat:hover{border-color:var(--border-2);transform:translateY(-2px)}
@@ -90,14 +61,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
 .stat .val{font-family:'Sora',sans-serif;font-size:26px;font-weight:800;line-height:1;margin-bottom:5px;letter-spacing:-.5px}
 .stat .sub{font-size:11px;color:rgba(255,255,255,.4)}
 .val-g{color:#34d399}.val-b{color:#a78bfa}.val-o{color:#fbbf24}.val-p{color:#f472b6}
-
-/* SECTION HEAD */
 .sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;margin-top:8px}
 .sec-head h2{font-family:'Sora',sans-serif;font-size:17px;font-weight:700;display:flex;align-items:center;gap:9px;letter-spacing:-.2px}
 .sec-head a{font-size:12.5px;color:var(--teal);text-decoration:none;font-weight:600;transition:.2s}
 .sec-head a:hover{color:#34d399}
-
-/* SUBSCRIPTION CARDS */
 .subs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
 .sub-card{background:rgba(12,30,56,.5);border:1px solid var(--border);border-radius:15px;padding:18px 20px;display:flex;flex-direction:column;gap:11px;transition:.2s;position:relative;overflow:hidden}
 .sub-card.active{border-color:rgba(0,212,170,.35)}
@@ -112,28 +79,22 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
 .sc-exp{font-size:11px;color:var(--muted)}
 .upgrade-btn{font-size:11.5px;font-weight:700;font-family:'DM Sans',sans-serif;padding:8px 14px;border-radius:9px;border:1px solid rgba(139,92,246,.3);background:rgba(139,92,246,.08);color:#a78bfa;cursor:pointer;transition:.2s;width:fit-content}
 .upgrade-btn:hover{background:rgba(139,92,246,.15);color:#fff}
-
-/* TABS — Equity / Futures / Options */
 .tabs-wrap{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
 .tab-btn{position:relative;background:rgba(12,30,56,.5);border:1px solid var(--border);border-radius:14px;padding:14px 22px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--muted);cursor:pointer;transition:.25s;display:flex;align-items:center;gap:10px;letter-spacing:.2px}
 .tab-btn:hover{color:#fff;border-color:var(--border-2);transform:translateY(-1px)}
 .tab-btn .tb-ico{font-size:18px}
 .tab-btn .tb-count{font-size:10.5px;font-weight:700;background:rgba(255,255,255,.04);color:var(--muted);padding:2px 8px;border-radius:10px;font-family:'DM Sans',sans-serif}
 .tab-btn.active{color:#fff;transform:translateY(-1px)}
-.tab-btn.active[data-tab="Equity"]{background:linear-gradient(135deg,rgba(52,211,153,.18),rgba(52,211,153,.04));border-color:rgba(52,211,153,.5)}
-.tab-btn.active[data-tab="Equity"] .tb-count{background:rgba(52,211,153,.18);color:#34d399}
-.tab-btn.active[data-tab="Futures"]{background:linear-gradient(135deg,rgba(244,114,182,.18),rgba(244,114,182,.04));border-color:rgba(244,114,182,.5)}
-.tab-btn.active[data-tab="Futures"] .tb-count{background:rgba(244,114,182,.18);color:#f472b6}
-.tab-btn.active[data-tab="Options"]{background:linear-gradient(135deg,rgba(251,191,36,.18),rgba(251,191,36,.04));border-color:rgba(251,191,36,.5)}
-.tab-btn.active[data-tab="Options"] .tb-count{background:rgba(251,191,36,.18);color:#fbbf24}
-
-/* PER-TAB STATS STRIP */
+.tab-btn.active[data-tab="equity"]{background:linear-gradient(135deg,rgba(52,211,153,.18),rgba(52,211,153,.04));border-color:rgba(52,211,153,.5)}
+.tab-btn.active[data-tab="equity"] .tb-count{background:rgba(52,211,153,.18);color:#34d399}
+.tab-btn.active[data-tab="futures"]{background:linear-gradient(135deg,rgba(244,114,182,.18),rgba(244,114,182,.04));border-color:rgba(244,114,182,.5)}
+.tab-btn.active[data-tab="futures"] .tb-count{background:rgba(244,114,182,.18);color:#f472b6}
+.tab-btn.active[data-tab="options"]{background:linear-gradient(135deg,rgba(251,191,36,.18),rgba(251,191,36,.04));border-color:rgba(251,191,36,.5)}
+.tab-btn.active[data-tab="options"] .tb-count{background:rgba(251,191,36,.18);color:#fbbf24}
 .tab-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
 .ts-card{background:rgba(12,30,56,.4);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
 .ts-card .l{font-size:9.5px;font-weight:700;color:var(--muted);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:5px}
 .ts-card .v{font-family:'Sora',sans-serif;font-size:20px;font-weight:800;line-height:1;letter-spacing:-.4px}
-
-/* TRADES TABLE */
 .trades-box{background:rgba(12,30,56,.4);border:1px solid var(--border);border-radius:16px;overflow:hidden}
 .tb-head{padding:14px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
 .tb-title{font-family:'Sora',sans-serif;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px}
@@ -141,7 +102,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px
 .tf{padding:5px 11px;border-radius:7px;font-size:11.5px;font-weight:600;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s}
 .tf:hover{color:#fff}
 .tf.on{background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.32);color:#a78bfa}
-
 table{width:100%;border-collapse:collapse}
 thead tr{background:rgba(255,255,255,.025)}
 th{padding:11px 18px;text-align:left;font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
@@ -160,9 +120,7 @@ tbody tr:hover td{background:rgba(255,255,255,.015)}
 .status.WIN{background:rgba(34,197,94,.1);color:#34d399}
 .status.LOSS{background:rgba(239,68,68,.1);color:#f87171}
 .status.OPEN{background:rgba(251,191,36,.1);color:#fbbf24}
-.status .live{width:6px;height:6px;border-radius:50%;background:#fbbf24;animation:blink 1.5s ease-in-out infinite}
-
-/* LOCKED SECTION */
+.status .live-d{width:6px;height:6px;border-radius:50%;background:#fbbf24;animation:blink 1.5s ease-in-out infinite}
 .locked-wrap{position:relative;border:1px solid var(--border);border-radius:16px;background:rgba(12,30,56,.4);overflow:hidden;margin-top:6px}
 .locked-blur{filter:blur(4px);pointer-events:none;user-select:none;opacity:.7}
 .locked-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;background:rgba(3,12,24,.65);backdrop-filter:blur(4px);padding:32px;text-align:center}
@@ -171,40 +129,14 @@ tbody tr:hover td{background:rgba(255,255,255,.015)}
 .lo-sub{font-size:12.5px;color:var(--text-soft);max-width:340px;line-height:1.6}
 .lo-btn{padding:11px 24px;border-radius:10px;border:none;background:linear-gradient(135deg,#8b5cf6,#00d4aa);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:.2s;margin-top:4px}
 .lo-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(139,92,246,.3)}
-
-/* RESEARCH MINI */
-.research-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:32px}
-.rlist{display:flex;flex-direction:column;gap:9px}
-.ritem{background:rgba(12,30,56,.4);border:1px solid var(--border);border-radius:11px;padding:12px 15px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;transition:.2s}
-.ritem:hover{border-color:rgba(139,92,246,.25)}
-.ri-left{display:flex;align-items:center;gap:11px}
-.ri-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
-.ri-title{font-size:13px;font-weight:600;color:#fff;line-height:1.3}
-.ri-date{font-size:10.5px;color:var(--muted);margin-top:2px}
-.ri-arrow{color:var(--muted);font-size:15px}
-
-.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.qcard{background:rgba(12,30,56,.4);border:1px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;transition:.2s}
-.qcard:hover{border-color:rgba(139,92,246,.25);transform:translateY(-2px)}
-.qc-ico{font-size:22px;margin-bottom:7px}
-.qc-title{font-family:'Sora',sans-serif;font-size:13.5px;font-weight:700;color:#fff;margin-bottom:2px}
-.qc-sub{font-size:11px;color:var(--muted)}
-
-/* TOAST */
-.toast{position:fixed;bottom:24px;right:24px;background:#0c1e38;border:1px solid rgba(0,212,170,.4);color:#fff;padding:13px 18px;border-radius:11px;font-size:13.5px;font-weight:600;z-index:9999;transform:translateY(100px);opacity:0;transition:.4s;max-width:300px}
-.toast.show{transform:translateY(0);opacity:1}
-
-/* LIVE TRADES */
 .live-pill{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:800;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#f87171;padding:3px 9px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase;margin-left:6px}
 .live-pill::before{content:'';width:6px;height:6px;border-radius:50%;background:#f87171;animation:blink 1s ease-in-out infinite}
 .live-box{background:rgba(12,30,56,.4);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:30px}
 .live-row{display:grid;grid-template-columns:90px 1.6fr 1fr 1fr 1fr 1fr 120px;gap:12px;align-items:center;padding:14px 22px;border-bottom:1px solid var(--border);transition:.2s}
 .live-row:last-child{border-bottom:none}
 .live-row:hover{background:rgba(255,255,255,.015)}
-.live-row .lt-badge{font-size:9px;font-weight:800;letter-spacing:.5px;padding:4px 10px;border-radius:6px;text-align:center}
-.live-row.live .lt-badge{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.3);display:inline-flex;align-items:center;gap:5px;justify-content:center}
-.live-row.live .lt-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#f87171;animation:blink 1s ease-in-out infinite}
-.live-row.closed .lt-badge{background:rgba(0,212,170,.1);color:#34d399;border:1px solid rgba(0,212,170,.25)}
+.live-row .lt-badge{font-size:9px;font-weight:800;letter-spacing:.5px;padding:4px 10px;border-radius:6px;text-align:center;background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.3);display:inline-flex;align-items:center;gap:5px;justify-content:center}
+.live-row .lt-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#f87171;animation:blink 1s ease-in-out infinite}
 .lt-sym{font-family:'Sora',sans-serif;font-weight:700;font-size:13.5px;color:#fff}
 .lt-meta{font-size:10.5px;color:var(--muted);margin-top:2px}
 .lt-num{font-size:13px;font-weight:600;color:#e5edf7}
@@ -215,27 +147,56 @@ tbody tr:hover td{background:rgba(255,255,255,.015)}
 .live-empty .em-ico{font-size:38px;margin-bottom:12px;opacity:.7}
 .live-empty .em-title{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:6px}
 .live-empty .em-sub{font-size:12.5px;color:var(--text-soft);max-width:380px;margin:0 auto;line-height:1.6}
-.live-empty .em-hint{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);padding:5px 11px;border-radius:20px;margin-top:14px;font-weight:600}
-
-/* DISCLAIMER */
+.skeleton{background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.04) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px;height:16px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.research-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:32px}
+.rlist{display:flex;flex-direction:column;gap:9px}
+.ritem{background:rgba(12,30,56,.4);border:1px solid var(--border);border-radius:11px;padding:12px 15px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;transition:.2s}
+.ritem:hover{border-color:rgba(139,92,246,.25)}
+.ri-left{display:flex;align-items:center;gap:11px}
+.ri-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ri-title{font-size:13px;font-weight:600;color:#fff;line-height:1.3}
+.ri-date{font-size:10.5px;color:var(--muted);margin-top:2px}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qcard{background:rgba(12,30,56,.4);border:1px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;transition:.2s}
+.qcard:hover{border-color:rgba(139,92,246,.25);transform:translateY(-2px)}
+.qc-ico{font-size:22px;margin-bottom:7px}
+.qc-title{font-family:'Sora',sans-serif;font-size:13.5px;font-weight:700;color:#fff;margin-bottom:2px}
+.qc-sub{font-size:11px;color:var(--muted)}
+.toast{position:fixed;bottom:24px;right:24px;background:#0c1e38;border:1px solid rgba(0,212,170,.4);color:#fff;padding:13px 18px;border-radius:11px;font-size:13.5px;font-weight:600;z-index:9999;transform:translateY(100px);opacity:0;transition:.4s;max-width:300px}
+.toast.show{transform:translateY(0);opacity:1}
 .disclaimer{background:rgba(3,12,24,.95);border-top:1px solid var(--border);padding:14px 36px;margin-top:40px}
 .disclaimer p{font-size:11.5px;color:var(--muted);line-height:1.6;max-width:1280px}
 .disclaimer p strong{color:var(--gold)}
-
-@media (max-width:900px){
-  .layout{grid-template-columns:1fr}
-  .sidebar{display:none}
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .subs{grid-template-columns:1fr}
-  .tab-stats{grid-template-columns:repeat(2,1fr)}
-  .research-row{grid-template-columns:1fr}
-  .nav-ul{display:none}
-}
+/* Notification panel */
+.notif-panel{position:fixed;top:72px;right:24px;width:320px;background:#0c1e38;border:1px solid rgba(139,92,246,.3);border-radius:14px;z-index:999;box-shadow:0 20px 60px rgba(0,0,0,.6);display:none}
+.notif-panel.show{display:block}
+.np-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.np-head h3{font-size:14px;font-weight:700;font-family:'Sora',sans-serif}
+.np-close{background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer}
+.notif-item{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start}
+.notif-item:last-child{border-bottom:none}
+.ni-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.ni-dot.new{background:var(--teal)}
+.ni-dot.old{background:rgba(255,255,255,.2)}
+.ni-text{font-size:12.5px;color:var(--text-soft);line-height:1.5}
+.ni-text strong{color:#fff}
+.ni-time{font-size:10px;color:var(--muted);margin-top:3px}
+.np-empty{padding:24px;text-align:center;color:var(--muted);font-size:13px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{display:none}.stats{grid-template-columns:repeat(2,1fr)}.subs{grid-template-columns:1fr}.tab-stats{grid-template-columns:repeat(2,1fr)}.research-row{grid-template-columns:1fr}.nav-ul{display:none}.live-row{grid-template-columns:1fr 1.5fr 1fr 1fr}}
 </style>
 </head>
 <body>
-
 <div class="toast" id="toast"></div>
+
+<!-- NOTIFICATION PANEL -->
+<div class="notif-panel" id="notifPanel">
+  <div class="np-head">
+    <h3>🔔 Notifications</h3>
+    <button class="np-close" onclick="toggleNotif()">×</button>
+  </div>
+  <div id="notifList"><div class="np-empty">No notifications yet</div></div>
+</div>
 
 <!-- TICKER -->
 <div class="ticker"><div class="tw">
@@ -247,9 +208,6 @@ tbody tr:hover td{background:rgba(255,255,255,.015)}
   <span class="ti"><span class="tn">TCS</span><span class="tp">4,210</span><span class="up">▲ +55.20</span></span>
   <span class="ti"><span class="tn">HDFC BANK</span><span class="tp">1,698</span><span class="up">▲ +22.10</span></span>
   <span class="ti"><span class="tn">INFY</span><span class="tp">1,532</span><span class="dn">▼ -8.65</span></span>
-  <span class="ti"><span class="tn">WIPRO</span><span class="tp">502</span><span class="up">▲ +6.30</span></span>
-  <span class="ti"><span class="tn">ICICI BANK</span><span class="tp">1,245</span><span class="up">▲ +14.80</span></span>
-  <span class="ti"><span class="tn">SBI</span><span class="tp">812</span><span class="up">▲ +9.60</span></span>
   <span class="tlive"></span>
   <span class="ti"><span class="tn">NIFTY</span><span class="tp">24,812</span><span class="up">▲ +142.30</span></span>
   <span class="ti"><span class="tn">SENSEX</span><span class="tp">81,532</span><span class="up">▲ +498.60</span></span>
@@ -270,10 +228,10 @@ tbody tr:hover td{background:rgba(255,255,255,.015)}
     <li><a href="index.html#contact">Contact</a></li>
   </ul>
   <div class="nend">
-    <div class="notif-btn" title="Notifications">🔔<div class="notif-dot"></div></div>
+    <div class="notif-btn" onclick="toggleNotif()" title="Notifications">🔔<div class="notif-dot" id="notifDot"></div></div>
     <div class="user-chip">
       <div class="user-avatar" id="userAvatar">DM</div>
-      <span id="userName">subscriber</span>
+      <span id="userName">Loading...</span>
     </div>
     <button class="logout-btn" onclick="doLogout()">↩ Logout</button>
   </div>
@@ -281,374 +239,473 @@ tbody tr:hover td{background:rgba(255,255,255,.015)}
 
 <!-- LAYOUT -->
 <div class="layout">
-
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sb-sec">
       <div class="sb-lbl">Main</div>
       <a class="sb-item active"><span class="si">📊</span>Dashboard</a>
-      <a class="sb-item"><span class="si">💳</span>Subscriptions</a>
+      <a class="sb-item" href="services.html"><span class="si">💳</span>Subscriptions</a>
     </div>
     <div class="sb-sec">
       <div class="sb-lbl">My Performance</div>
-      <a class="sb-item" onclick="switchTab('Equity',null)"><span class="si">📊</span>Equity <span class="sb-badge sb-active-b" id="sbEq">Active</span></a>
-      <a class="sb-item" onclick="switchTab('Futures',null)"><span class="si">📈</span>Futures <span class="sb-badge sb-active-b" id="sbFut">Active</span></a>
-      <a class="sb-item" onclick="switchTab('Options',null)"><span class="si">⚡</span>Options <span class="sb-badge sb-locked-b" id="sbOpt">Locked</span></a>
+      <a class="sb-item" onclick="switchTab('equity',null)"><span class="si">📊</span>Equity <span class="sb-badge" id="sbEq">—</span></a>
+      <a class="sb-item" onclick="switchTab('futures',null)"><span class="si">📈</span>Futures <span class="sb-badge" id="sbFut">—</span></a>
+      <a class="sb-item" onclick="switchTab('options',null)"><span class="si">⚡</span>Options <span class="sb-badge" id="sbOpt">—</span></a>
     </div>
     <div class="sb-sec">
       <div class="sb-lbl">Resources</div>
       <a class="sb-item"><span class="si">📋</span>Research Reports</a>
       <a class="sb-item"><span class="si">📚</span>Education</a>
-      <a class="sb-item"><span class="si">🤖</span>Kooky AI <span class="sb-badge sb-locked-b">Locked</span></a>
+      <a class="sb-item"><span class="si">🤖</span>Kooky AI <span class="sb-badge sb-locked-b">Soon</span></a>
     </div>
     <div class="sb-sec">
       <div class="sb-lbl">Account</div>
       <a class="sb-item"><span class="si">👤</span>Profile</a>
-      <a class="sb-item"><span class="si">🔔</span>Notifications</a>
-      <a class="sb-item"><span class="si">⚙️</span>Settings</a>
+      <a class="sb-item" onclick="toggleNotif()"><span class="si">🔔</span>Notifications</a>
     </div>
   </aside>
 
-  <!-- MAIN -->
   <main class="main">
 
     <!-- WELCOME -->
     <div class="welcome">
       <div>
-        <h1>Welcome back, <span id="welcomeName">subscriber</span> 👋</h1>
-        <p>Here's your performance summary across Equity, Futures and Options — switch tabs below to view each segment independently.</p>
+        <h1>Welcome back, <span id="welcomeName">...</span> 👋</h1>
+        <p>Here's your performance summary across Equity, Futures and Options — switch tabs below to view each segment.</p>
       </div>
       <div class="em">📊</div>
     </div>
 
-    <!-- ALERT -->
-    <div class="alert">
+    <!-- EXPIRY ALERT -->
+    <div class="alert" id="expiryAlert" style="display:none">
       <span>⚠️</span>
-      <span><strong>Futures Plan</strong> expires in <strong>12 days</strong> — <a href="#" onclick="showToast('Redirecting to renewal…');return false">Renew now</a> to avoid interruption.</span>
+      <span id="expiryMsg"></span>
     </div>
 
-    <!-- ────────── LIVE TRADES (from backend) ────────── -->
+    <!-- FREE USER ALERT -->
+    <div class="alert" id="freeAlert" style="display:none;border-color:rgba(139,92,246,.25);background:rgba(139,92,246,.08)">
+      <span>💡</span>
+      <span>You're on a <strong style="color:#a78bfa">Free Plan</strong> — <a href="services.html" style="color:#a78bfa;font-weight:700">Subscribe now</a> to access live trade calls.</span>
+    </div>
+
+    <!-- ── LIVE TRADES ── -->
     <div class="sec-head">
       <h2>🔴 Live Trades <span class="live-pill" id="liveCount">0 active</span></h2>
-      <a href="#" onclick="loadLiveTrades();showToast('Refreshing live feed…');return false">Refresh →</a>
+      <a href="#" onclick="return false">Auto-updating</a>
     </div>
     <div class="live-box" id="liveBox">
-      <!-- Rendered by JS — shows placeholder when backend is not connected -->
+      <div class="live-empty">
+        <div class="em-ico">⏳</div>
+        <div class="em-title">Loading live trades...</div>
+        <div class="em-sub">Connecting to Firebase real-time database</div>
+      </div>
     </div>
 
     <!-- OVERALL STATS -->
     <div class="stats">
-      <div class="stat"><div class="lbl">Active Plans</div><div class="val val-g" id="ovActive">2</div><div class="sub">of 3 segments</div></div>
-      <div class="stat"><div class="lbl">Total Calls (All)</div><div class="val val-b" id="ovTotal">0</div><div class="sub">across all segments</div></div>
-      <div class="stat"><div class="lbl">Overall Win Rate</div><div class="val val-o" id="ovWR">0%</div><div class="sub">closed trades only</div></div>
-      <div class="stat"><div class="lbl">Open Positions</div><div class="val val-p" id="ovOpen">0</div><div class="sub">currently live</div></div>
+      <div class="stat"><div class="lbl">Active Plans</div><div class="val val-g" id="ovActive">—</div><div class="sub">of 3 segments</div></div>
+      <div class="stat"><div class="lbl">Total Calls</div><div class="val val-b" id="ovTotal">—</div><div class="sub">across all segments</div></div>
+      <div class="stat"><div class="lbl">Win Rate</div><div class="val val-o" id="ovWR">—</div><div class="sub">closed trades only</div></div>
+      <div class="stat"><div class="lbl">Open Positions</div><div class="val val-p" id="ovOpen">—</div><div class="sub">currently live</div></div>
     </div>
 
     <!-- SUBSCRIPTIONS -->
     <div class="sec-head"><h2>📋 My Subscriptions</h2><a href="services.html">Manage plans →</a></div>
-    <div class="subs" id="subsGrid"></div>
+    <div class="subs" id="subsGrid">
+      <div class="sub-card"><div class="skeleton" style="height:20px;width:60%;margin-bottom:8px"></div><div class="skeleton" style="height:14px;width:80%"></div></div>
+      <div class="sub-card"><div class="skeleton" style="height:20px;width:60%;margin-bottom:8px"></div><div class="skeleton" style="height:14px;width:80%"></div></div>
+      <div class="sub-card"><div class="skeleton" style="height:20px;width:60%;margin-bottom:8px"></div><div class="skeleton" style="height:14px;width:80%"></div></div>
+    </div>
 
-    <!-- ────────── PERFORMANCE — 3 TABS ────────── -->
+    <!-- PERFORMANCE TABS -->
     <div class="sec-head"><h2>📈 My Performance</h2><a href="performance.html">Full track record →</a></div>
-
     <div class="tabs-wrap" id="tabBar">
-      <button class="tab-btn active" data-tab="Equity" onclick="switchTab('Equity', this)">
+      <button class="tab-btn active" data-tab="equity" onclick="switchTab('equity', this)">
         <span class="tb-ico">📊</span><span>Equity</span><span class="tb-count" id="tcEquity">0</span>
       </button>
-      <button class="tab-btn" data-tab="Futures" onclick="switchTab('Futures', this)">
+      <button class="tab-btn" data-tab="futures" onclick="switchTab('futures', this)">
         <span class="tb-ico">📈</span><span>Futures</span><span class="tb-count" id="tcFutures">0</span>
       </button>
-      <button class="tab-btn" data-tab="Options" onclick="switchTab('Options', this)">
+      <button class="tab-btn" data-tab="options" onclick="switchTab('options', this)">
         <span class="tb-ico">⚡</span><span>Options</span><span class="tb-count" id="tcOptions">0</span>
       </button>
     </div>
 
-    <!-- Per-tab stats -->
     <div class="tab-stats" id="tabStats">
-      <div class="ts-card"><div class="l">Total Calls</div><div class="v" id="ts-total" style="color:#f1f5f9">0</div></div>
-      <div class="ts-card"><div class="l">Wins</div><div class="v" id="ts-wins" style="color:#34d399">0</div></div>
-      <div class="ts-card"><div class="l">Losses</div><div class="v" id="ts-losses" style="color:#f87171">0</div></div>
-      <div class="ts-card"><div class="l">Win Rate</div><div class="v" id="ts-wr" style="color:#a78bfa">0%</div></div>
-      <div class="ts-card"><div class="l">Open</div><div class="v" id="ts-open" style="color:#fbbf24">0</div></div>
+      <div class="ts-card"><div class="l">Total Calls</div><div class="v" id="ts-total" style="color:#f1f5f9">—</div></div>
+      <div class="ts-card"><div class="l">Wins</div><div class="v" id="ts-wins" style="color:#34d399">—</div></div>
+      <div class="ts-card"><div class="l">Losses</div><div class="v" id="ts-losses" style="color:#f87171">—</div></div>
+      <div class="ts-card"><div class="l">Win Rate</div><div class="v" id="ts-wr" style="color:#a78bfa">—</div></div>
+      <div class="ts-card"><div class="l">Open</div><div class="v" id="ts-open" style="color:#fbbf24">—</div></div>
     </div>
 
-    <!-- Trades box -->
-    <div id="tradesContainer"></div>
+    <div id="tradesContainer">
+      <div class="trades-box" style="padding:40px;text-align:center;color:var(--muted)">Loading trades...</div>
+    </div>
 
-    <!-- QUICK + RESEARCH -->
+    <!-- QUICK ACTIONS -->
     <div class="research-row">
       <div>
         <div class="sec-head"><h2>⚡ Quick Actions</h2></div>
         <div class="quick-grid">
           <div class="qcard" onclick="window.location.href='services.html'"><div class="qc-ico">💳</div><div class="qc-title">Subscribe</div><div class="qc-sub">Add a new plan</div></div>
-          <div class="qcard" onclick="showToast('Opening research library…')"><div class="qc-ico">📋</div><div class="qc-title">Research</div><div class="qc-sub">148 reports</div></div>
-          <div class="qcard" onclick="showToast('Opening education portal…')"><div class="qc-ico">📚</div><div class="qc-title">Education</div><div class="qc-sub">Learn trading</div></div>
-          <div class="qcard" onclick="showToast('No new alerts.')"><div class="qc-ico">🔔</div><div class="qc-title">Alerts</div><div class="qc-sub">3 new updates</div></div>
+          <div class="qcard" onclick="window.location.href='performance.html'"><div class="qc-ico">📊</div><div class="qc-title">Track Record</div><div class="qc-sub">Full performance</div></div>
+          <div class="qcard" onclick="window.location.href='index.html#research'"><div class="qc-ico">📋</div><div class="qc-title">Research</div><div class="qc-sub">Sector reports</div></div>
+          <div class="qcard" onclick="window.location.href='index.html#contact'"><div class="qc-ico">📞</div><div class="qc-title">Support</div><div class="qc-sub">Contact our team</div></div>
         </div>
       </div>
       <div>
-        <div class="sec-head"><h2>📋 Latest Research</h2><a href="#">View all →</a></div>
-        <div class="rlist">
-          <div class="ritem">
-            <div class="ri-left">
-              <div class="ri-icon" style="background:rgba(0,212,170,.1);color:#34d399">📊</div>
-              <div><div class="ri-title">Tata Motors — EV Supercycle Deep Dive</div><div class="ri-date">05 May 2026 · Equity</div></div>
-            </div><div class="ri-arrow">→</div>
-          </div>
-          <div class="ritem">
-            <div class="ri-left">
-              <div class="ri-icon" style="background:rgba(244,114,182,.1);color:#f472b6">📈</div>
-              <div><div class="ri-title">BankNifty Futures — Weekly OI Setup</div><div class="ri-date">04 May 2026 · Futures</div></div>
-            </div><div class="ri-arrow">→</div>
-          </div>
-          <div class="ritem">
-            <div class="ri-left">
-              <div class="ri-icon" style="background:rgba(251,191,36,.1);color:#fbbf24">⚡</div>
-              <div><div class="ri-title">Nifty 24,500 PE — Hedge Strategy</div><div class="ri-date">02 May 2026 · Options</div></div>
-            </div><div class="ri-arrow">→</div>
-          </div>
+        <div class="sec-head"><h2>📋 Latest Research</h2><a href="index.html#research">View all →</a></div>
+        <div class="rlist" id="researchList">
+          <div class="ritem"><div class="ri-left"><div class="ri-icon" style="background:rgba(0,212,170,.1)">📊</div><div><div class="ri-title">Tata Motors — EV Supercycle Deep Dive</div><div class="ri-date">05 May 2026 · Equity</div></div></div><div>→</div></div>
+          <div class="ritem"><div class="ri-left"><div class="ri-icon" style="background:rgba(244,114,182,.1)">📈</div><div><div class="ri-title">BankNifty Futures — Weekly OI Setup</div><div class="ri-date">04 May 2026 · Futures</div></div></div><div>→</div></div>
+          <div class="ritem"><div class="ri-left"><div class="ri-icon" style="background:rgba(251,191,36,.1)">⚡</div><div><div class="ri-title">Nifty 24,500 PE — Hedge Strategy</div><div class="ri-date">02 May 2026 · Options</div></div></div><div>→</div></div>
         </div>
       </div>
     </div>
-
   </main>
 </div>
 
-<!-- DISCLAIMER -->
 <div class="disclaimer">
   <p>⚠ <strong>Disclaimer:</strong> DhanMatrix is not a SEBI Registered Research Analyst. All trade ideas are for informational and educational purposes only. Past performance does not guarantee future results. GSTIN: 07AAXFD3406A1ZO | MSME: UDYAM-DL-09-0043446</p>
 </div>
 
-<script>
-/* ── LIVE TRADES (backend-driven) ── */
-/* Demo data — replace with fetch('/api/live-trades') when backend is live */
-let LIVE_TRADES = [
-  // Demo seed so the section isn't empty before backend is wired.
-  // Once the admin panel goes live, posted trades from /api/live-trades will replace these.
-  { sym:'BANKNIFTY 50000 CE', cat:'Options', type:'BUY',  entry:180, target:280, sl:130, pnl:'+23%', status:'LIVE',   postedAt:'2026-05-22T09:18:00' },
-  { sym:'TATA MOTORS',        cat:'Equity',  type:'BUY',  entry:920, target:1010, sl:880, pnl:'+3.1%', status:'LIVE',  postedAt:'2026-05-22T10:42:00' },
-  { sym:'NIFTY FUT',          cat:'Futures', type:'SELL', entry:24820, target:24600, sl:24920, pnl:'+0.4%', status:'LIVE', postedAt:'2026-05-23T09:21:00' },
-];
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+import { getFirestore, collection, doc, getDoc, getDocs, query, where, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
-function timeAgo(iso){
-  try{
-    const diff = (Date.now() - new Date(iso).getTime()) / 1000;
-    if(diff < 60) return Math.floor(diff)+'s ago';
-    if(diff < 3600) return Math.floor(diff/60)+'m ago';
-    if(diff < 86400) return Math.floor(diff/3600)+'h ago';
-    return Math.floor(diff/86400)+'d ago';
-  }catch(e){ return ''; }
+const firebaseConfig = {
+  apiKey: "AIzaSyDuC_tvmAIAcpxdqke2TRCgZVmdZ0SjPrw",
+  authDomain: "dmat-b0ce6.firebaseapp.com",
+  projectId: "dmat-b0ce6",
+  storageBucket: "dmat-b0ce6.firebasestorage.app",
+  messagingSenderId: "160685363693",
+  appId: "1:160685363693:web:b1ab5c94f171d1d70ad7e4"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* ── STATE ── */
+let currentUser = null;
+let userData = null;
+let allClosedTrades = [];
+let currentTab = 'equity';
+let currentFilter = 'ALL';
+let notifications = [];
+let unsubscribeActive = null;
+
+/* ── HELPERS ── */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-function renderLiveTrades(){
-  const box = document.getElementById('liveBox');
-  const countEl = document.getElementById('liveCount');
-  const liveOnly = LIVE_TRADES.filter(t => t.status === 'LIVE');
-  countEl.textContent = liveOnly.length + ' active';
-
-  if(!LIVE_TRADES.length){
-    box.innerHTML = `
-      <div class="live-empty">
-        <div class="em-ico">📡</div>
-        <div class="em-title">No live trades posted yet</div>
-        <div class="em-sub">Live calls posted from the DhanMatrix admin panel will appear here in real time — entry, target, SL and live P&L updates.</div>
-        <div class="em-hint">⚡ Backend not connected · /api/live-trades</div>
-      </div>`;
-    return;
+function formatSymbol(data) {
+  const name = data.stockName || data.symbol || 'Unknown';
+  if (data.segment === 'options' && data.strikePrice) {
+    return `${name} ${data.strikePrice} ${data.optionType || ''}`.trim();
   }
-
-  box.innerHTML = LIVE_TRADES.map(t => {
-    const isLive = t.status === 'LIVE';
-    const pnlClass = (t.pnl && t.pnl.startsWith('-')) ? 'pnl-l' : 'pnl-w';
-    return `<div class="live-row ${isLive ? 'live' : 'closed'}">
-      <span class="lt-badge">${isLive ? 'LIVE' : 'CLOSED'}</span>
-      <div>
-        <div class="lt-sym">${t.sym}</div>
-        <div class="lt-meta">${t.cat} · ${t.type}</div>
-      </div>
-      <div class="lt-num"><small>ENTRY</small>₹${t.entry}</div>
-      <div class="lt-num"><small>TARGET</small><span style="color:#34d399">₹${t.target}</span></div>
-      <div class="lt-num"><small>STOP LOSS</small><span style="color:#f87171">₹${t.sl}</span></div>
-      <div class="lt-pnl ${pnlClass}">${t.pnl}</div>
-      <div class="lt-time">${timeAgo(t.postedAt)}</div>
-    </div>`;
-  }).join('');
+  if (data.segment === 'futures') return `${name} FUT`;
+  return name;
 }
 
-async function loadLiveTrades(){
-  try{
-    const r = await fetch('/api/live-trades');
-    if(!r.ok) return;
-    const data = await r.json();
-    if(Array.isArray(data)){
-      LIVE_TRADES = data;
-      renderLiveTrades();
+function getTradeStatus(data) {
+  if (!data.exitPrice && data.exitPrice !== 0) return 'OPEN';
+  return (data.profitLossPercent >= 0) ? 'WIN' : 'LOSS';
+}
+
+function formatPnl(data) {
+  const pct = data.profitLossPercent;
+  if (pct === null || pct === undefined) return '—';
+  return (pct >= 0 ? '+' : '') + pct + '%';
+}
+
+function formatDate(val) {
+  if (!val) return '—';
+  try {
+    const d = val.toDate ? val.toDate() : new Date(val);
+    return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  } catch(e) { return String(val).split('T')[0] || '—'; }
+}
+
+function timeAgo(val) {
+  if (!val) return '';
+  try {
+    const d = val.toDate ? val.toDate() : new Date(val);
+    const diff = (Date.now() - d.getTime()) / 1000;
+    if (diff < 60) return Math.floor(diff) + 's ago';
+    if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+    return Math.floor(diff/86400) + 'd ago';
+  } catch(e) { return ''; }
+}
+
+function isSubscribed() {
+  if (!userData) return false;
+  if (userData.status === 'PAID') {
+    if (userData.subscriptionEndDate) {
+      const exp = userData.subscriptionEndDate.toDate ? userData.subscriptionEndDate.toDate() : new Date(userData.subscriptionEndDate);
+      return exp > new Date();
     }
-  }catch(e){ /* backend not connected — use demo data */ }
+    return true;
+  }
+  return false;
 }
 
-/* ── USER STATE ── */
-function loadUser() {
-  let user;
-  try { user = JSON.parse(sessionStorage.getItem('dm_user') || 'null'); } catch(e) {}
-  if (!user) {
-    // No session — kick to login (after small delay so we don't loop in iframe testing)
-    window.location.href = 'login.html';
-    return null;
+/* ── AUTH CHECK ── */
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  currentUser = user;
+  await loadUserData(user.uid);
+  setupUI();
+  subscribeToActiveTrades();
+  await loadClosedTrades();
+});
+
+/* ── LOAD USER DATA ── */
+async function loadUserData(uid) {
+  try {
+    const snap = await getDoc(doc(db, 'users', uid));
+    userData = snap.exists() ? snap.data() : { name: currentUser.email?.split('@')[0] || 'Subscriber', status: 'FREE' };
+  } catch(e) {
+    userData = { name: currentUser.email?.split('@')[0] || 'Subscriber', status: 'FREE' };
   }
-  const name = (user.name || 'subscriber').split(' ')[0];
+}
+
+/* ── SETUP UI ── */
+function setupUI() {
+  const name = userData.name?.split(' ')[0] || 'Subscriber';
   document.getElementById('userName').textContent = name;
   document.getElementById('welcomeName').textContent = name;
   document.getElementById('userAvatar').textContent = name.slice(0,2).toUpperCase();
-  return user;
+
+  const paid = isSubscribed();
+
+  /* Alerts */
+  if (!paid) {
+    document.getElementById('freeAlert').style.display = 'flex';
+  } else if (userData.subscriptionEndDate) {
+    const exp = userData.subscriptionEndDate.toDate ? userData.subscriptionEndDate.toDate() : new Date(userData.subscriptionEndDate);
+    const daysLeft = Math.ceil((exp - new Date()) / (1000 * 60 * 60 * 24));
+    if (daysLeft <= 15) {
+      document.getElementById('expiryAlert').style.display = 'flex';
+      document.getElementById('expiryMsg').innerHTML = `Your plan expires in <strong>${daysLeft} days</strong> — <a href="services.html" style="color:var(--gold);font-weight:700">Renew now</a> to avoid interruption.`;
+    }
+  }
+
+  /* Subscription cards */
+  renderSubscriptions(paid);
 }
 
-/* ── SUBSCRIPTIONS (mock state) ── */
-const SUBS = {
-  Equity:  { active:true,  price:'₹2,999 / mo',  exp:'Expires: 22 Jun 2026', icon:'📊' },
-  Futures: { active:true,  price:'₹3,999 / mo',  exp:'Expires: 17 May 2026', icon:'📈' },
-  Options: { active:false, price:'₹3,999 / mo',  exp:'—',                    icon:'⚡' },
-};
-
-function renderSubs() {
+/* ── SUBSCRIPTIONS ── */
+function renderSubscriptions(paid) {
+  const segments = [
+    { key: 'equity', label: 'Equity Calls', icon: '📊', price: '₹2,999 / mo' },
+    { key: 'futures', label: 'Futures Calls', icon: '📈', price: '₹3,999 / mo' },
+    { key: 'options', label: 'Options Calls', icon: '⚡', price: '₹3,999 / mo' },
+  ];
   const grid = document.getElementById('subsGrid');
-  grid.innerHTML = Object.entries(SUBS).map(([key, s]) => `
-    <div class="sub-card ${s.active ? 'active' : 'locked'}">
+  const expText = userData.subscriptionEndDate
+    ? 'Expires: ' + formatDate(userData.subscriptionEndDate)
+    : '—';
+
+  grid.innerHTML = segments.map(s => `
+    <div class="sub-card ${paid ? 'active' : 'locked'}">
       <div class="sct">
-        <div class="sc-name">${s.icon} ${key} Calls</div>
-        <span class="sc-status ${s.active ? 's-on' : 's-off'}">${s.active ? 'Active' : 'Not Subscribed'}</span>
+        <div class="sc-name">${s.icon} ${s.label}</div>
+        <span class="sc-status ${paid ? 's-on' : 's-off'}">${paid ? 'Active' : 'Inactive'}</span>
       </div>
-      <div class="sc-plan">${s.active ? s.price : 'No active plan'}</div>
-      <div class="sc-exp">${s.active ? s.exp : 'Subscribe to access calls'}</div>
-      ${!s.active ? `<button class="upgrade-btn" onclick="showToast('Redirecting to plans…');setTimeout(()=>window.location.href='services.html',600)">Subscribe →</button>` : ''}
+      <div class="sc-plan">${paid ? s.price : 'No active plan'}</div>
+      <div class="sc-exp">${paid ? expText : 'Subscribe to access calls'}</div>
+      ${!paid ? `<button class="upgrade-btn" onclick="window.location.href='services.html'">Subscribe →</button>` : ''}
     </div>
   `).join('');
-  // sidebar badges
-  document.getElementById('sbEq').textContent  = SUBS.Equity.active  ? 'Active' : 'Locked';
-  document.getElementById('sbEq').className    = 'sb-badge ' + (SUBS.Equity.active  ? 'sb-active-b' : 'sb-locked-b');
-  document.getElementById('sbFut').textContent = SUBS.Futures.active ? 'Active' : 'Locked';
-  document.getElementById('sbFut').className   = 'sb-badge ' + (SUBS.Futures.active ? 'sb-active-b' : 'sb-locked-b');
-  document.getElementById('sbOpt').textContent = SUBS.Options.active ? 'Active' : 'Locked';
-  document.getElementById('sbOpt').className   = 'sb-badge ' + (SUBS.Options.active ? 'sb-active-b' : 'sb-locked-b');
 
-  // overall stats
-  const active = Object.values(SUBS).filter(s=>s.active).length;
-  document.getElementById('ovActive').textContent = active;
+  /* Sidebar badges */
+  ['Eq','Fut','Opt'].forEach(k => {
+    const el = document.getElementById('sb'+k);
+    if (el) { el.textContent = paid ? 'Active' : 'Free'; el.className = 'sb-badge ' + (paid ? 'sb-active-b' : 'sb-locked-b'); }
+  });
 }
 
-/* ── TRADES (same model as performance.html) ── */
-const TRADES = [
-  /* EQUITY */
-  { sym:'RELIANCE',   type:'BUY', cat:'Equity',  entry:2780, exit:2960, sl:2700, t1:2860, pnl:'+6.5%',  status:'WIN',  date:'2026-04-14' },
-  { sym:'HDFC BANK',  type:'BUY', cat:'Equity',  entry:1620, exit:1685, sl:1580, t1:1680, pnl:'+4.0%',  status:'WIN',  date:'2026-04-08' },
-  { sym:'TCS',        type:'BUY', cat:'Equity',  entry:4100, exit:4028, sl:4000, t1:4220, pnl:'-1.8%',  status:'LOSS', date:'2026-03-28' },
-  { sym:'ICICI BANK', type:'BUY', cat:'Equity',  entry:1180, exit:1240, sl:1130, t1:1230, pnl:'+5.1%',  status:'WIN',  date:'2026-04-15' },
-  { sym:'TATA MOTORS',type:'BUY', cat:'Equity',  entry:920,  exit:null, sl:880,  t1:1010, pnl:'+3.1%',  status:'OPEN', date:'2026-05-02' },
-  { sym:'SBI',        type:'BUY', cat:'Equity',  entry:782,  exit:815,  sl:755,  t1:820,  pnl:'+4.2%',  status:'WIN',  date:'2026-04-22' },
-  { sym:'BAJAJ AUTO', type:'BUY', cat:'Equity',  entry:8200, exit:8888, sl:7900, t1:8700, pnl:'+8.4%',  status:'WIN',  date:'2026-04-20' },
+/* ── REAL-TIME ACTIVE TRADES ── */
+function subscribeToActiveTrades() {
+  const paid = isSubscribed();
+  const liveBox = document.getElementById('liveBox');
+  const countEl = document.getElementById('liveCount');
+  const prevCount = { count: 0 };
 
-  /* FUTURES */
-  { sym:'NIFTY FUT',     type:'BUY',  cat:'Futures', entry:23200, exit:23918, sl:22900, t1:23800, pnl:'+3.1%', status:'WIN',  date:'2026-04-22' },
-  { sym:'BANKNIFTY FUT', type:'BUY',  cat:'Futures', entry:48200, exit:50512, sl:47200, t1:50000, pnl:'+4.8%', status:'WIN',  date:'2026-04-19' },
-  { sym:'RELIANCE FUT',  type:'SELL', cat:'Futures', entry:2860,  exit:2810,  sl:2900,  t1:2780,  pnl:'+1.7%', status:'WIN',  date:'2026-03-12' },
-  { sym:'HDFCBANK FUT',  type:'BUY',  cat:'Futures', entry:1680,  exit:1652,  sl:1650,  t1:1750,  pnl:'-1.7%', status:'LOSS', date:'2026-04-28' },
-  { sym:'BANKNIFTY FUT', type:'BUY',  cat:'Futures', entry:49800, exit:null,  sl:49100, t1:51200, pnl:'+1.6%', status:'OPEN', date:'2026-05-04' },
+  if (unsubscribeActive) unsubscribeActive();
 
-  /* OPTIONS — locked tab, but data is here for when user subscribes */
-  { sym:'NIFTY 23500 CE',     type:'BUY', cat:'Options', entry:180, exit:568, sl:90,  t1:400, pnl:'+216%', status:'WIN',  date:'2026-04-18' },
-  { sym:'BANKNIFTY 49000 CE', type:'BUY', cat:'Options', entry:240, exit:454, sl:110, t1:400, pnl:'+89%',  status:'WIN',  date:'2026-04-10' },
-  { sym:'INFY 1500 PE',       type:'BUY', cat:'Options', entry:62,  exit:153, sl:30,  t1:130, pnl:'+147%', status:'WIN',  date:'2026-04-12' },
-  { sym:'BANKNIFTY 50000 CE', type:'BUY', cat:'Options', entry:180, exit:null,sl:130, t1:280, pnl:'+23%',  status:'OPEN', date:'2026-05-05' },
-];
+  unsubscribeActive = onSnapshot(
+    query(collection(db, 'activeTrades'), orderBy('createdAt', 'desc')),
+    (snap) => {
+      const trades = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-/* ── STATE ── */
-let currentTab = 'Equity';
-let currentFilter = 'ALL';
+      /* Notification for new trades */
+      if (prevCount.count > 0 && trades.length > prevCount.count) {
+        const newest = trades[0];
+        const notif = { text: `New trade: ${formatSymbol(newest)} ${newest.type}`, time: new Date() };
+        notifications.unshift(notif);
+        document.getElementById('notifDot').classList.add('show');
+        showToast(`🔔 New trade: ${formatSymbol(newest)} ${newest.type}!`);
+        renderNotifications();
+      }
+      prevCount.count = trades.length;
 
-function tabTrades() { return TRADES.filter(t => t.cat === currentTab); }
+      countEl.textContent = trades.length + ' active';
+
+      if (!trades.length) {
+        liveBox.innerHTML = `<div class="live-empty"><div class="em-ico">📡</div><div class="em-title">No live trades right now</div><div class="em-sub">New trade calls will appear here instantly when posted by DhanMatrix.</div></div>`;
+        return;
+      }
+
+      if (!paid) {
+        liveBox.innerHTML = `<div class="live-empty"><div class="em-ico">🔒</div><div class="em-title">${trades.length} Live Trade${trades.length>1?'s':''} Available</div><div class="em-sub">Subscribe to a plan to view live Equity, Futures and Options calls.</div><button class="lo-btn" onclick="window.location.href='services.html'" style="margin-top:12px">Subscribe Now →</button></div>`;
+        return;
+      }
+
+      liveBox.innerHTML = trades.map(t => {
+        const sym = formatSymbol(t);
+        const pnl = t.profitLossPercent != null ? (t.profitLossPercent >= 0 ? '+' : '') + t.profitLossPercent + '%' : '—';
+        const pnlClass = t.profitLossPercent != null ? (t.profitLossPercent >= 0 ? 'pnl-w' : 'pnl-l') : 'pnl-o';
+        return `<div class="live-row live">
+          <span class="lt-badge">LIVE</span>
+          <div><div class="lt-sym">${sym}</div><div class="lt-meta">${t.segment?.toUpperCase()} · ${t.type}</div></div>
+          <div class="lt-num"><small>ENTRY</small>₹${t.entryPrice}</div>
+          <div class="lt-num"><small>TARGET</small><span style="color:#34d399">₹${t.targetPrice || '—'}</span></div>
+          <div class="lt-num"><small>STOP LOSS</small><span style="color:#f87171">₹${t.stopLoss || '—'}</span></div>
+          <div class="lt-pnl ${pnlClass}">${pnl}</div>
+          <div class="lt-time">${timeAgo(t.createdAt)}</div>
+        </div>`;
+      }).join('');
+
+      /* Update open positions count */
+      document.getElementById('ovOpen').textContent = trades.length;
+    },
+    (err) => {
+      liveBox.innerHTML = `<div class="live-empty"><div class="em-ico">⚠️</div><div class="em-title">Could not load live trades</div></div>`;
+    }
+  );
+}
+
+/* ── LOAD CLOSED TRADES ── */
+async function loadClosedTrades() {
+  try {
+    const snap = await getDocs(query(collection(db, 'closedTrades'), orderBy('closedAt', 'desc')));
+    allClosedTrades = snap.docs.map(d => {
+      const data = d.data();
+      return {
+        id: d.id,
+        sym: formatSymbol(data),
+        type: data.type || 'BUY',
+        cat: data.segment || 'equity',
+        entry: data.entryPrice,
+        exit: data.exitPrice || null,
+        sl: data.stopLoss || data.stopLossPrice || null,
+        t1: data.targetPrice || data.strikePrice || null,
+        pnl: formatPnl(data),
+        pnlRaw: data.profitLossPercent,
+        status: getTradeStatus(data),
+        date: formatDate(data.closedAt),
+      };
+    });
+    calcOverallStats();
+    calcTabStats();
+    renderTrades();
+  } catch(e) {
+    console.error('Failed to load closed trades:', e);
+    allClosedTrades = [];
+    calcTabStats();
+    renderTrades();
+  }
+}
+
+/* ── STATS ── */
+function calcOverallStats() {
+  const wins = allClosedTrades.filter(t => t.status === 'WIN').length;
+  const losses = allClosedTrades.filter(t => t.status === 'LOSS').length;
+  const open = allClosedTrades.filter(t => t.status === 'OPEN').length;
+  const closed = wins + losses;
+  const wr = closed ? Math.round((wins/closed)*100) : 0;
+  document.getElementById('ovTotal').textContent = allClosedTrades.length;
+  document.getElementById('ovWR').textContent = wr + '%';
+  // ovActive set from subscription
+  const paid = isSubscribed();
+  document.getElementById('ovActive').textContent = paid ? '3' : '0';
+
+  ['equity','futures','options'].forEach(seg => {
+    const el = document.getElementById('tc' + seg.charAt(0).toUpperCase() + seg.slice(1));
+    if (el) el.textContent = allClosedTrades.filter(t => t.cat === seg).length;
+  });
+}
 
 function calcTabStats() {
-  const data = tabTrades();
-  const total = data.length;
+  const data = allClosedTrades.filter(t => t.cat === currentTab);
   const wins = data.filter(t => t.status === 'WIN').length;
   const losses = data.filter(t => t.status === 'LOSS').length;
   const open = data.filter(t => t.status === 'OPEN').length;
-  const closed = wins + losses;
-  const wr = closed ? Math.round((wins/closed)*100) : 0;
-  document.getElementById('ts-total').textContent = total;
+  const wr = (wins + losses) ? Math.round((wins/(wins+losses))*100) : 0;
+  document.getElementById('ts-total').textContent = data.length;
   document.getElementById('ts-wins').textContent = wins;
   document.getElementById('ts-losses').textContent = losses;
   document.getElementById('ts-open').textContent = open;
   document.getElementById('ts-wr').textContent = wr + '%';
-
-  ['Equity','Futures','Options'].forEach(c => {
-    const el = document.getElementById('tc' + c);
-    if (el) el.textContent = TRADES.filter(t => t.cat === c).length;
-  });
 }
 
-function renderOverallStats() {
-  const total = TRADES.length;
-  const wins = TRADES.filter(t => t.status === 'WIN').length;
-  const losses = TRADES.filter(t => t.status === 'LOSS').length;
-  const open = TRADES.filter(t => t.status === 'OPEN').length;
-  const closed = wins + losses;
-  const wr = closed ? Math.round((wins/closed)*100) : 0;
-  document.getElementById('ovTotal').textContent = total;
-  document.getElementById('ovWR').textContent = wr + '%';
-  document.getElementById('ovOpen').textContent = open;
-}
-
+/* ── RENDER TRADES ── */
 function renderTrades() {
   const container = document.getElementById('tradesContainer');
-  const seg = currentTab;
-  const sub = SUBS[seg];
+  const paid = isSubscribed();
 
-  if (!sub.active) {
+  if (!paid) {
     container.innerHTML = `
       <div class="locked-wrap">
         <div class="locked-blur">
-          <div class="tb-head"><div class="tb-title">🔒 ${seg} Calls</div></div>
-          <table>
-            <thead><tr><th>Symbol</th><th>Type</th><th>Entry</th><th>Target</th><th>SL</th><th>P&L</th><th>Status</th></tr></thead>
-            <tbody>
-              <tr><td>████████</td><td>BUY</td><td>₹███</td><td>₹███</td><td>₹███</td><td>+███%</td><td>WIN</td></tr>
-              <tr><td>████████</td><td>BUY</td><td>₹███</td><td>₹███</td><td>₹███</td><td>+███%</td><td>WIN</td></tr>
-              <tr><td>████████</td><td>SELL</td><td>₹███</td><td>₹███</td><td>₹███</td><td>−███%</td><td>LOSS</td></tr>
-            </tbody>
-          </table>
+          <div class="tb-head"><div class="tb-title">🔒 ${currentTab.charAt(0).toUpperCase() + currentTab.slice(1)} Calls</div></div>
+          <table><thead><tr><th>Symbol</th><th>Type</th><th>Entry</th><th>Target</th><th>SL</th><th>P&L</th><th>Status</th></tr></thead>
+          <tbody><tr><td>████████</td><td>BUY</td><td>₹███</td><td>₹███</td><td>₹███</td><td>+██%</td><td>WIN</td></tr>
+          <tr><td>████████</td><td>BUY</td><td>₹███</td><td>₹███</td><td>₹███</td><td>+██%</td><td>WIN</td></tr></tbody></table>
         </div>
         <div class="locked-overlay">
           <div class="lo-icon">🔒</div>
-          <div class="lo-title">${seg} — Not Subscribed</div>
-          <div class="lo-sub">Subscribe to <strong>${seg}</strong> calls at ${sub.price} to view live entries, exits and P&L for this segment.</div>
-          <button class="lo-btn" onclick="showToast('Redirecting to plans…');setTimeout(()=>window.location.href='services.html',600)">Subscribe — ${sub.price}</button>
+          <div class="lo-title">Subscription Required</div>
+          <div class="lo-sub">Subscribe to access live Equity, Futures and Options calls with full entry, exit, SL and P&L details.</div>
+          <button class="lo-btn" onclick="window.location.href='services.html'">Subscribe Now →</button>
         </div>
       </div>`;
     return;
   }
 
-  // Active — show real table
-  const filtered = tabTrades().filter(t => currentFilter === 'ALL' || t.status === currentFilter);
-  const rows = filtered.length ? filtered.map(t => {
-    const pnlClass = t.status === 'WIN' ? 'pnl-w' : t.status === 'LOSS' ? 'pnl-l' : 'pnl-o';
-    return `<tr>
-      <td><div class="td-sym">${t.sym}</div><div class="td-meta">${t.cat} · ${t.type}</div></td>
-      <td><span class="badge ${t.type}">${t.type}</span></td>
-      <td>₹${t.entry}</td>
-      <td>${t.exit ? '₹'+t.exit : '—'}</td>
-      <td style="color:#f87171">₹${t.sl}</td>
-      <td style="color:#34d399">₹${t.t1}</td>
-      <td><span class="${pnlClass}">${t.pnl}</span></td>
-      <td><span class="status ${t.status}">${t.status === 'OPEN' ? '<span class="live"></span>' : ''}${t.status}</span></td>
-      <td style="color:var(--muted);font-size:11.5px">${t.date}</td>
-    </tr>`;
-  }).join('') : `<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:36px">No trades match this filter.</td></tr>`;
+  const filtered = allClosedTrades
+    .filter(t => t.cat === currentTab)
+    .filter(t => currentFilter === 'ALL' || t.status === currentFilter);
+
+  const rows = filtered.length
+    ? filtered.map(t => {
+        const pnlClass = t.status === 'WIN' ? 'pnl-w' : t.status === 'LOSS' ? 'pnl-l' : 'pnl-o';
+        return `<tr>
+          <td><div class="td-sym">${t.sym}</div><div class="td-meta">${t.cat.toUpperCase()} · ${t.type}</div></td>
+          <td><span class="badge ${t.type}">${t.type}</span></td>
+          <td>₹${t.entry}</td>
+          <td>${t.exit ? '₹'+t.exit : '—'}</td>
+          <td style="color:#f87171">${t.sl ? '₹'+t.sl : '—'}</td>
+          <td style="color:#34d399">${t.t1 ? '₹'+t.t1 : '—'}</td>
+          <td><span class="${pnlClass}">${t.pnl}</span></td>
+          <td><span class="status ${t.status}">${t.status === 'OPEN' ? '<span class="live-d"></span>' : ''}${t.status}</span></td>
+          <td style="color:var(--muted);font-size:11.5px">${t.date}</td>
+        </tr>`;
+      }).join('')
+    : `<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:36px">No trades match this filter.</td></tr>`;
 
   container.innerHTML = `
     <div class="trades-box">
       <div class="tb-head">
-        <div class="tb-title">Live & Closed Calls — ${seg}</div>
+        <div class="tb-title">${currentTab.charAt(0).toUpperCase() + currentTab.slice(1)} Calls — Closed & Open</div>
         <div class="tb-filter">
           <button class="tf ${currentFilter==='ALL'?'on':''}" onclick="setFilter('ALL')">All</button>
           <button class="tf ${currentFilter==='OPEN'?'on':''}" onclick="setFilter('OPEN')">Open</button>
@@ -657,69 +714,57 @@ function renderTrades() {
         </div>
       </div>
       <table>
-        <thead>
-          <tr>
-            <th>Symbol</th>
-            <th>Type</th>
-            <th>Entry</th>
-            <th>Exit</th>
-            <th>SL</th>
-            <th>Target</th>
-            <th>P&L</th>
-            <th>Status</th>
-            <th>Date</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Symbol</th><th>Type</th><th>Entry</th><th>Exit</th><th>SL</th><th>Target</th><th>P&L</th><th>Status</th><th>Date</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>`;
 }
 
+/* ── NOTIFICATIONS ── */
+function renderNotifications() {
+  const el = document.getElementById('notifList');
+  if (!notifications.length) { el.innerHTML = '<div class="np-empty">No notifications yet</div>'; return; }
+  el.innerHTML = notifications.map((n, i) => `
+    <div class="notif-item">
+      <div class="ni-dot ${i === 0 ? 'new' : 'old'}"></div>
+      <div><div class="ni-text"><strong>📡 New Trade Posted</strong><br>${n.text}</div><div class="ni-time">${timeAgo({ toDate: () => n.time })}</div></div>
+    </div>`).join('');
+}
+
 /* ── ACTIONS ── */
-function switchTab(tab, btn) {
+window.switchTab = function(tab, btn) {
   currentTab = tab;
   currentFilter = 'ALL';
   document.querySelectorAll('#tabBar .tab-btn').forEach(b => b.classList.remove('active'));
-  // find button by data-tab if no btn passed (sidebar click)
   const target = btn || document.querySelector(`#tabBar .tab-btn[data-tab="${tab}"]`);
   if (target) target.classList.add('active');
   calcTabStats();
   renderTrades();
 }
 
-function setFilter(f) {
+window.setFilter = function(f) {
   currentFilter = f;
   renderTrades();
 }
 
-function doLogout() {
-  sessionStorage.removeItem('dm_user');
-  showToast('Logged out');
-  setTimeout(() => { window.location.href = 'login.html'; }, 500);
+window.doLogout = async function() {
+  try { await signOut(auth); window.location.href = 'login.html'; }
+  catch(e) { showToast('Logout failed'); }
 }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-/* ── INIT ── */
-window.addEventListener('DOMContentLoaded', () => {
-  // Allow direct preview without login (auto-create demo session)
-  if (!sessionStorage.getItem('dm_user')) {
-    sessionStorage.setItem('dm_user', JSON.stringify({ name: 'Rahul Sharma', email: 'demo@dhanmatrix.in', loggedAt: Date.now() }));
+window.toggleNotif = function() {
+  const panel = document.getElementById('notifPanel');
+  panel.classList.toggle('show');
+  if (panel.classList.contains('show')) {
+    document.getElementById('notifDot').classList.remove('show');
+    renderNotifications();
   }
-  loadUser();
-  renderSubs();
-  renderOverallStats();
-  calcTabStats();
-  renderTrades();
-  renderLiveTrades();      // show demo data immediately
-  loadLiveTrades();        // try backend (silent fallback)
-  // poll backend every 30s for new live trades
-  setInterval(loadLiveTrades, 30000);
+}
+
+/* Close notif panel on outside click */
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#notifPanel') && !e.target.closest('.notif-btn'))
+    document.getElementById('notifPanel').classList.remove('show');
 });
 </script>
 </body>
