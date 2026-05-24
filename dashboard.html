@@ -255,7 +255,7 @@ tbody tr:hover td{background:rgba(255,255,255,.015)}
       <div class="sb-lbl">Resources</div>
       <a class="sb-item"><span class="si">📋</span>Research Reports</a>
       <a class="sb-item"><span class="si">📚</span>Education</a>
-      <a class="sb-item"><span class="si">🤖</span>Kooky AI <span class="sb-badge sb-locked-b">Soon</span></a>
+      <a class="sb-item"><span class="si">🤖</span>Kooky AI</a>
     </div>
     <div class="sb-sec">
       <div class="sb-lbl">Account</div>
@@ -444,37 +444,98 @@ function timeAgo(val) {
   } catch(e) { return ''; }
 }
 
-function isSubscribed() {
+function isSubscribed(segment) {
   if (!userData) return false;
-  if (userData.status === 'PAID') {
-    if (userData.subscriptionEndDate) {
-      const exp = userData.subscriptionEndDate.toDate ? userData.subscriptionEndDate.toDate() : new Date(userData.subscriptionEndDate);
-      return exp > new Date();
-    }
-    return true;
+
+  /* ── Step 1: Check user status ── */
+  const status = userData.status;
+  if (!status || status === 'FREE' || status === 'BLOCKED') return false;
+  if (status !== 'ACTIVE') return false;
+
+  /* ── Step 2: Check subscription expiry ── */
+  if (userData.subscriptionEndDate) {
+    try {
+      const exp = userData.subscriptionEndDate.toDate
+        ? userData.subscriptionEndDate.toDate()
+        : new Date(userData.subscriptionEndDate);
+      if (exp < new Date()) return false; // expired
+    } catch(e) {}
   }
+
+  /* ── Step 3: Check subscriptionAccess ── */
+  const access = userData.subscriptionAccess;
+  if (!access || access === 'no_access' || access === 'No Access') return false;
+
+  if (access === 'all' || access === 'All Pages') return true;
+
+  if (segment === 'equity') return access === 'equity' || access === 'Equity Only';
+  if (segment === 'futures' || segment === 'options') return access === 'fno' || access === 'F&O Only';
+  if (segment === 'portfolio') return access === 'portfolio' || access === 'Portfolio Only';
+
   return false;
 }
 
+function isAnySubscribed() {
+  return isSubscribed('equity') || isSubscribed('futures') ||
+         isSubscribed('options') || isSubscribed('portfolio');
+}
+
+function getAccessLabel() {
+  const access = userData?.subscriptionAccess;
+  if (!access || access === 'no_access') return 'No Access';
+  if (access === 'all' || access === 'All Pages') return 'All Segments';
+  if (access === 'equity' || access === 'Equity Only') return 'Equity Only';
+  if (access === 'fno' || access === 'F&O Only') return 'F&O Only';
+  if (access === 'portfolio' || access === 'Portfolio Only') return 'Portfolio Only';
+  return access;
+}
+
 /* ── AUTH CHECK ── */
-onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, (user) => {
   if (!user) { window.location.href = 'login.html'; return; }
   currentUser = user;
-  await loadUserData(user.uid);
-  setupUI();
-  subscribeToActiveTrades();
-  await loadClosedTrades();
-});
 
-/* ── LOAD USER DATA ── */
-async function loadUserData(uid) {
-  try {
-    const snap = await getDoc(doc(db, 'users', uid));
-    userData = snap.exists() ? snap.data() : { name: currentUser.email?.split('@')[0] || 'Subscriber', status: 'FREE' };
-  } catch(e) {
-    userData = { name: currentUser.email?.split('@')[0] || 'Subscriber', status: 'FREE' };
-  }
-}
+  /* Real-time listener — updates INSTANTLY when admin changes status or access */
+  onSnapshot(doc(db, 'users', user.uid), (snap) => {
+    if (!snap.exists()) {
+      userData = { name: user.email?.split('@')[0] || 'Subscriber', status: 'FREE' };
+      setupUI();
+      if (!unsubscribeActive) { subscribeToActiveTrades(); loadClosedTrades(); }
+      return;
+    }
+
+    const prev = userData ? { ...userData } : null;
+    userData = snap.data();
+
+    /* Blocked → sign out immediately */
+    if (userData.status === 'BLOCKED') {
+      signOut(auth);
+      alert('🚫 Your account has been blocked. Please contact DhanMatrix support.');
+      window.location.href = 'login.html';
+      return;
+    }
+
+    setupUI();
+
+    /* First load */
+    if (!prev) {
+      subscribeToActiveTrades();
+      loadClosedTrades();
+      return;
+    }
+
+    /* Access changed → refresh UI immediately */
+    const statusChanged = prev.status !== userData.status;
+    const accessChanged = prev.subscriptionAccess !== userData.subscriptionAccess;
+
+    if (statusChanged || accessChanged) {
+      showToast('🔔 Your subscription access has been updated!');
+      renderSubscriptions();
+      renderTrades();
+      subscribeToActiveTrades();
+    }
+  });
+});
 
 /* ── SETUP UI ── */
 function setupUI() {
@@ -483,58 +544,75 @@ function setupUI() {
   document.getElementById('welcomeName').textContent = name;
   document.getElementById('userAvatar').textContent = name.slice(0,2).toUpperCase();
 
-  const paid = isSubscribed();
-
-  /* Alerts */
-  if (!paid) {
-    document.getElementById('freeAlert').style.display = 'flex';
-  } else if (userData.subscriptionEndDate) {
-    const exp = userData.subscriptionEndDate.toDate ? userData.subscriptionEndDate.toDate() : new Date(userData.subscriptionEndDate);
+  /* Expiry alert */
+  if (userData.subscriptionEndDate) {
+    const exp = userData.subscriptionEndDate.toDate
+      ? userData.subscriptionEndDate.toDate()
+      : new Date(userData.subscriptionEndDate);
     const daysLeft = Math.ceil((exp - new Date()) / (1000 * 60 * 60 * 24));
-    if (daysLeft <= 15) {
+    if (daysLeft > 0 && daysLeft <= 15) {
       document.getElementById('expiryAlert').style.display = 'flex';
-      document.getElementById('expiryMsg').innerHTML = `Your plan expires in <strong>${daysLeft} days</strong> — <a href="services.html" style="color:var(--gold);font-weight:700">Renew now</a> to avoid interruption.`;
+      document.getElementById('expiryMsg').innerHTML =
+        `Your plan expires in <strong>${daysLeft} days</strong> — <a href="services.html" style="color:var(--gold);font-weight:700">Renew now</a>`;
     }
   }
 
-  /* Subscription cards */
-  renderSubscriptions(paid);
+  renderSubscriptions();
 }
 
 /* ── SUBSCRIPTIONS ── */
-function renderSubscriptions(paid) {
+function renderSubscriptions() {
   const segments = [
-    { key: 'equity', label: 'Equity Calls', icon: '📊', price: '₹2,999 / mo' },
-    { key: 'futures', label: 'Futures Calls', icon: '📈', price: '₹3,999 / mo' },
-    { key: 'options', label: 'Options Calls', icon: '⚡', price: '₹3,999 / mo' },
+    { key: 'equity',  label: 'Equity Calls',  icon: '📊', color: '#34d399' },
+    { key: 'futures', label: 'F&O Calls',      icon: '📈', color: '#f472b6' },
+    { key: 'options', label: 'Options Calls',  icon: '⚡', color: '#fbbf24' },
   ];
-  const grid = document.getElementById('subsGrid');
-  const expText = userData.subscriptionEndDate
-    ? 'Expires: ' + formatDate(userData.subscriptionEndDate)
-    : '—';
 
-  grid.innerHTML = segments.map(s => `
-    <div class="sub-card ${paid ? 'active' : 'locked'}">
+  const grid = document.getElementById('subsGrid');
+  let activeCount = 0;
+
+  /* Expiry text */
+  let expText = 'Contact DhanMatrix to subscribe';
+  if (userData?.subscriptionEndDate) {
+    try {
+      const exp = userData.subscriptionEndDate.toDate
+        ? userData.subscriptionEndDate.toDate()
+        : new Date(userData.subscriptionEndDate);
+      expText = 'Expires: ' + exp.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+    } catch(e) {}
+  }
+
+  grid.innerHTML = segments.map(s => {
+    const active = isSubscribed(s.key);
+    if (active) activeCount++;
+    return `<div class="sub-card ${active ? 'active' : 'locked'}">
       <div class="sct">
         <div class="sc-name">${s.icon} ${s.label}</div>
-        <span class="sc-status ${paid ? 's-on' : 's-off'}">${paid ? 'Active' : 'Inactive'}</span>
+        <span class="sc-status ${active ? 's-on' : 's-off'}">${active ? 'Active' : 'Inactive'}</span>
       </div>
-      <div class="sc-plan">${paid ? s.price : 'No active plan'}</div>
-      <div class="sc-exp">${paid ? expText : 'Subscribe to access calls'}</div>
-      ${!paid ? `<button class="upgrade-btn" onclick="window.location.href='services.html'">Subscribe →</button>` : ''}
-    </div>
-  `).join('');
+      <div class="sc-plan" style="color:${active ? s.color : 'var(--text-soft)'}">
+        ${active ? '✅ Access Granted — ' + getAccessLabel() : 'No Access'}
+      </div>
+      <div class="sc-exp">${active ? expText : 'Contact DhanMatrix to subscribe'}</div>
+      ${!active ? `<button class="upgrade-btn" onclick="window.location.href='index.html#contact'">Contact Us →</button>` : ''}
+    </div>`;
+  }).join('');
 
   /* Sidebar badges */
-  ['Eq','Fut','Opt'].forEach(k => {
-    const el = document.getElementById('sb'+k);
-    if (el) { el.textContent = paid ? 'Active' : 'Free'; el.className = 'sb-badge ' + (paid ? 'sb-active-b' : 'sb-locked-b'); }
+  const sbMap = { equity: 'sbEq', futures: 'sbFut', options: 'sbOpt' };
+  Object.entries(sbMap).forEach(([seg, id]) => {
+    const el = document.getElementById(id);
+    const active = isSubscribed(seg);
+    if (el) { el.textContent = active ? 'Active' : 'Free'; el.className = 'sb-badge ' + (active ? 'sb-active-b' : 'sb-locked-b'); }
   });
+
+  document.getElementById('ovActive').textContent = activeCount;
+  document.getElementById('freeAlert').style.display = activeCount === 0 ? 'flex' : 'none';
 }
 
 /* ── REAL-TIME ACTIVE TRADES ── */
 function subscribeToActiveTrades() {
-  const paid = isSubscribed();
+  const anyActive = isAnySubscribed();
   const liveBox = document.getElementById('liveBox');
   const countEl = document.getElementById('liveCount');
   const prevCount = { count: 0 };
@@ -564,8 +642,8 @@ function subscribeToActiveTrades() {
         return;
       }
 
-      if (!paid) {
-        liveBox.innerHTML = `<div class="live-empty"><div class="em-ico">🔒</div><div class="em-title">${trades.length} Live Trade${trades.length>1?'s':''} Available</div><div class="em-sub">Subscribe to a plan to view live Equity, Futures and Options calls.</div><button class="lo-btn" onclick="window.location.href='services.html'" style="margin-top:12px">Subscribe Now →</button></div>`;
+      if (!isAnySubscribed()) {
+        liveBox.innerHTML = `<div class="live-empty"><div class="em-ico">🔒</div><div class="em-title">${trades.length} Live Trade${trades.length>1?'s':''} Available</div><div class="em-sub">Your current plan has no active access. Contact DhanMatrix to subscribe.</div><button class="lo-btn" onclick="window.location.href='index.html#contact'" style="margin-top:12px">Contact Us →</button></div>`;
         return;
       }
 
@@ -660,9 +738,9 @@ function calcTabStats() {
 /* ── RENDER TRADES ── */
 function renderTrades() {
   const container = document.getElementById('tradesContainer');
-  const paid = isSubscribed();
+  const segActive = isSubscribed(currentTab);
 
-  if (!paid) {
+  if (!segActive) {
     container.innerHTML = `
       <div class="locked-wrap">
         <div class="locked-blur">
