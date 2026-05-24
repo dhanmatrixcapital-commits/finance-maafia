@@ -507,47 +507,49 @@ footer{background:rgba(3,12,24,.98);padding:50px 56px 30px;position:relative;z-i
       <div class="tagp" style="margin:0 auto 18px">ABOUT DHANMATRIX</div>
       <h2 class="st" style="text-align:center;font-size:46px">Built by Traders, <span class="hl">For Traders & Investors</span></h2>
     </div>
-    <div class="about-row" style="grid-template-columns:1.6fr 1fr;gap:40px">
-      <div style="display:flex;flex-direction:column">
-        <h3 style="font-family:'Sora',sans-serif;font-size:22px;font-weight:800;margin-bottom:16px;color:#fff">Who We Are</h3>
-        <p style="color:rgba(255,255,255,.65);font-size:15px;line-height:1.8;margin-bottom:14px">DhanMatrix is built by traders and investors. Our team has experienced professionals in <strong style="color:#fff">investing, trading, options strategies and futures trading</strong> — people who have spent years in the market before building this platform.</p>
-        <p style="color:rgba(255,255,255,.65);font-size:15px;line-height:1.8;margin-bottom:14px">We are among <strong style="color:#fff">India's few companies</strong> that provide AI-powered stock analysis and portfolio analysis tools to retail investors and traders.</p>
-        <p style="color:rgba(255,255,255,.65);font-size:15px;line-height:1.8;margin-bottom:20px">We are a <strong style="color:#fff">licensed Mutual Fund Distributor (MFD)</strong> — helping clients invest in the right mutual funds with personalised guidance.</p>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">
-          <span class="chip">🏦 MFD Licensed</span>
-          <span class="chip">🤖 Kooky AI Analysis</span>
-          <span class="chip">📊 Portfolio Analysis</span>
-          <span class="chip">📈 Broking Services</span>
-        </div>
-        <div style="background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:12px;padding:14px 18px;margin-bottom:16px">
-          <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:#00d4aa;text-transform:uppercase;margin-bottom:10px">Registrations</div>
-          <div style="display:flex;flex-direction:column;gap:6px">
-            <div style="display:flex;gap:8px;font-size:13px"><span style="color:rgba(255,255,255,.4);min-width:100px">GST No.</span><span style="color:#fff;font-weight:600">07AAXFD3406A1ZO</span></div>
-            <div style="display:flex;gap:8px;font-size:13px"><span style="color:rgba(255,255,255,.4);min-width:100px">MSME No.</span><span style="color:#fff;font-weight:600">UDYAM-DL-09-0043446</span></div>
-            <div style="display:flex;gap:8px;font-size:13px"><span style="color:rgba(255,255,255,.4);min-width:100px">D-U-N-S®</span><span style="color:#fff;font-weight:600">772478655</span></div>
+    <div style="overflow:hidden">
+
+      <!-- IMAGE floated right — text wraps around it -->
+      <div style="float:right;width:48%;margin:0 0 20px 36px;border-radius:16px;overflow:hidden;border:1px solid rgba(139,92,246,.25)">
+        <div id="slideshow" style="position:relative;width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#0a1828,#0c1e38)">
+          <div id="slides" style="display:flex;transition:transform .55s cubic-bezier(.4,0,.2,1);height:100%;width:100%"></div>
+          <div id="slidePlaceholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:24px;pointer-events:none">
+            <div style="font-size:28px">🖼️</div>
+            <div style="font-size:13px;font-weight:700;color:#fff">Office Gallery</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.4)">Uploaded via admin panel</div>
           </div>
+          <button id="slidePrev" onclick="slideMove(-1)" style="display:none;position:absolute;left:10px;top:50%;transform:translateY(-50%);background:rgba(3,12,24,.6);border:1px solid rgba(255,255,255,.15);color:#fff;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;align-items:center;justify-content:center">‹</button>
+          <button id="slideNext" onclick="slideMove(1)" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(3,12,24,.6);border:1px solid rgba(255,255,255,.15);color:#fff;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;align-items:center;justify-content:center">›</button>
+          <div id="slideDots" style="display:none;position:absolute;bottom:10px;left:50%;transform:translateX(-50%);gap:6px"></div>
         </div>
-        <div class="abox" style="border-color:rgba(245,166,35,.3);background:rgba(245,166,35,.06)">
-          <p style="margin-bottom:6px;font-size:13px;color:rgba(255,255,255,.7)">⚠️ <strong style="color:var(--gold)">Regulatory Disclosure</strong></p>
-          <p style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.7">We are <strong>not yet a registered SEBI Research Analyst</strong>. All trade ideas are for informational and educational purposes only. Advisory services will be offered only after SEBI RA registration.</p>
+        <!-- Reg below image -->
+        <div style="background:rgba(0,212,170,.05);border-top:1px solid rgba(0,212,170,.15);padding:12px 16px">
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:#00d4aa;text-transform:uppercase;margin-bottom:8px">Registrations</div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <div style="display:flex;gap:8px;font-size:12px"><span style="color:rgba(255,255,255,.4);min-width:90px">GST No.</span><span style="color:#fff;font-weight:600">07AAXFD3406A1ZO</span></div>
+            <div style="display:flex;gap:8px;font-size:12px"><span style="color:rgba(255,255,255,.4);min-width:90px">MSME No.</span><span style="color:#fff;font-weight:600">UDYAM-DL-09-0043446</span></div>
+            <div style="display:flex;gap:8px;font-size:12px"><span style="color:rgba(255,255,255,.4);min-width:90px">D-U-N-S®</span><span style="color:#fff;font-weight:600">772478655</span></div>
+          </div>
         </div>
       </div>
 
-      <!-- PHOTO SLIDESHOW -->
-      <div>
-        <div id="slideshow" style="position:relative;border-radius:20px;overflow:hidden;width:100%;height:520px;background:linear-gradient(135deg,#0a1828,#0c1e38);border:1px solid rgba(139,92,246,.18)">
-          <div id="slides" style="display:flex;transition:transform .55s cubic-bezier(.4,0,.2,1);height:100%;width:100%"></div>
-          <div id="slidePlaceholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:32px;pointer-events:none">
-            <div style="width:64px;height:64px;border-radius:18px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);display:flex;align-items:center;justify-content:center;font-size:30px">🖼️</div>
-            <div>
-              <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:5px">Office Gallery</div>
-              <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.6;max-width:280px">Photos of our trading desk &amp; team will appear here.<br><span style="color:rgba(167,139,250,.7);font-weight:600">Uploaded via admin panel.</span></div>
-            </div>
-          </div>
-          <button id="slidePrev" onclick="slideMove(-1)" style="display:none;position:absolute;left:12px;top:50%;transform:translateY(-50%);background:rgba(3,12,24,.6);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);color:#fff;width:38px;height:38px;border-radius:50%;font-size:18px;cursor:pointer;align-items:center;justify-content:center;transition:.2s">‹</button>
-          <button id="slideNext" onclick="slideMove(1)" style="display:none;position:absolute;right:12px;top:50%;transform:translateY(-50%);background:rgba(3,12,24,.6);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);color:#fff;width:38px;height:38px;border-radius:50%;font-size:18px;cursor:pointer;align-items:center;justify-content:center;transition:.2s">›</button>
-          <div id="slideDots" style="display:none;position:absolute;bottom:14px;left:50%;transform:translateX(-50%);gap:6px"></div>
-        </div>
+      <!-- TEXT wraps around image -->
+      <h3 style="font-family:'Sora',sans-serif;font-size:22px;font-weight:800;margin-bottom:16px;color:#fff">Who We Are</h3>
+      <p style="color:rgba(255,255,255,.65);font-size:15px;line-height:1.8;margin-bottom:14px">DhanMatrix is built by traders and investors. Our team has experienced professionals in <strong style="color:#fff">investing, trading, options strategies and futures trading</strong> — people who have spent years in the market before building this platform.</p>
+      <p style="color:rgba(255,255,255,.65);font-size:15px;line-height:1.8;margin-bottom:14px">We are among <strong style="color:#fff">India's few companies</strong> that provide AI-powered stock analysis and portfolio analysis tools to retail investors and traders.</p>
+      <p style="color:rgba(255,255,255,.65);font-size:15px;line-height:1.8;margin-bottom:20px">We are a <strong style="color:#fff">licensed Mutual Fund Distributor (MFD)</strong> — helping clients invest in the right mutual funds with personalised guidance.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">
+        <span class="chip">🏦 MFD Licensed</span>
+        <span class="chip">🤖 Kooky AI Analysis</span>
+        <span class="chip">📊 Portfolio Analysis</span>
+        <span class="chip">📈 Broking Services</span>
+      </div>
+
+      <!-- Note goes full width below everything -->
+      <div style="clear:both"></div>
+      <div class="abox" style="border-color:rgba(245,166,35,.3);background:rgba(245,166,35,.06);margin-top:16px">
+        <p style="margin-bottom:6px;font-size:13px;color:rgba(255,255,255,.7)">⚠️ <strong style="color:var(--gold)">Regulatory Disclosure</strong></p>
+        <p style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.7">We are <strong>not yet a registered SEBI Research Analyst</strong>. All trade ideas are for informational and educational purposes only. Advisory services will be offered only after SEBI RA registration.</p>
       </div>
     </div>
   </div>
@@ -933,12 +935,36 @@ async function loadSlidesFromAPI(){
   }catch(e){ console.log('Slides error:', e); }
 }
 
-function sendWhatsApp() {
+async function sendWhatsApp() {
   var name = (document.getElementById('fname').value + ' ' + (document.getElementById('lname').value||'')).trim();
   var mobile = document.getElementById('fmobile').value;
   var interest = document.getElementById('finterest').value;
   var message = document.getElementById('fmessage').value;
   if (!name) { showToast('Please enter your name', true); return; }
+
+  /* Save to Firebase Firestore */
+  try {
+    const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js');
+    const { getFirestore, collection, addDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+    const fbConfig = {
+      apiKey:"AIzaSyDuC_tvmAIAcpxdqke2TRCgZVmdZ0SjPrw",
+      authDomain:"dmat-b0ce6.firebaseapp.com",
+      projectId:"dmat-b0ce6",
+      storageBucket:"dmat-b0ce6.firebasestorage.app",
+      messagingSenderId:"160685363693",
+      appId:"1:160685363693:web:b1ab5c94f171d1d70ad7e4"
+    };
+    const existing = getApps().find(a => a.name === 'contact');
+    const app = existing || initializeApp(fbConfig, 'contact');
+    const db = getFirestore(app);
+    await addDoc(collection(db, 'contacts'), {
+      name, mobile, interest, message,
+      submittedAt: serverTimestamp(),
+      source: 'website'
+    });
+  } catch(e) { console.log('Contact save error:', e); }
+
+  /* Open WhatsApp */
   var text = 'Hello DhanMatrix! 👋\n\nName: ' + name + '\nMobile: ' + (mobile||'—') + '\nInterested in: ' + interest + (message ? '\nMessage: ' + message : '');
   window.open('https://wa.me/919258303916?text=' + encodeURIComponent(text), '_blank');
 }
