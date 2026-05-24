@@ -287,6 +287,43 @@ footer{background:rgba(3,12,24,.98);padding:50px 56px 30px;position:relative;z-i
 /* ── PLACEHOLDER LOADING DOTS ── */
 @keyframes loadDot{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-4px);opacity:1}}
 
+/* ── MOBILE RESPONSIVE ── */
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;border:none;background:transparent;z-index:200}
+.ham span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:.3s}
+.ham.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.ham.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.ham.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mob-menu{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(3,10,22,.98);backdrop-filter:blur(20px);z-index:99;padding:12px 16px 20px;border-bottom:1px solid var(--border);flex-direction:column;gap:2px}
+.mob-menu.open{display:flex}
+.mob-menu a{display:block;padding:11px 14px;color:var(--muted);text-decoration:none;font-size:15px;font-weight:500;border-radius:8px;transition:.15s}
+.mob-menu a:hover,.mob-menu a.on{background:rgba(255,255,255,.05);color:#fff}
+.mob-btns{display:flex;gap:8px;margin-top:10px;padding-top:12px;border-top:1px solid var(--border)}
+.mob-btns .blo,.mob-btns .bgs{flex:1;justify-content:center}
+
+@media(max-width:768px){
+  .nav-ul,.nend{display:none!important}
+  .ham{display:flex}
+  .hero{grid-template-columns:1fr!important;padding:28px 20px 32px!important}
+  .phone-wrap{display:none!important}
+  .hero h1{font-size:32px!important;line-height:1.15!important}
+  .sw{padding:40px 20px!important}
+  #about .sw>div>div[style*="float"]{float:none!important;width:100%!important;margin:0 0 24px 0!important}
+  .srv-tiles{grid-template-columns:repeat(2,1fr)!important}
+  .contact-grid{grid-template-columns:1fr!important;gap:24px!important}
+  .cinfo{grid-template-columns:1fr 1fr!important}
+  .footer-grid{grid-template-columns:1fr 1fr!important;gap:24px!important}
+  .h-pills{flex-wrap:wrap!important;gap:6px!important}
+  .stats-row{grid-template-columns:repeat(2,1fr)!important}
+  .round-cards{gap:8px!important}
+  .about-row{grid-template-columns:1fr!important}
+  section{padding:0!important}
+}
+@media(max-width:480px){
+  .hero h1{font-size:26px!important}
+  .cinfo,.footer-grid{grid-template-columns:1fr!important}
+  .srv-tiles{grid-template-columns:1fr!important}
+}
+
 /* ── BULL & BEAR WILDLIFE ── */
 .market-animal{position:fixed;z-index:60;pointer-events:none;opacity:0;transform:translate(var(--tx,0), var(--ty,0)) rotate(var(--rot,0deg)) scale(.7);transition:opacity .65s ease, transform .8s cubic-bezier(.34,1.56,.5,1);filter:drop-shadow(0 8px 22px rgba(0,0,0,.55));line-height:1;will-change:opacity,transform}
 .market-animal.in{opacity:1;transform:translate(0,0) rotate(var(--rot,0deg)) scale(1)}
@@ -408,7 +445,25 @@ footer{background:rgba(3,12,24,.98);padding:50px 56px 30px;position:relative;z-i
     <button class="blo" onclick="window.location.href='login.html'">Login</button>
     <button class="bgs" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Started</button>
   </div>
+  <button class="ham" onclick="toggleMenu()" id="hamBtn" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mobMenu">
+  <a href="#home" onclick="closeMenu()">🏠 Home</a>
+  <a href="#about" onclick="closeMenu()">ℹ️ About</a>
+  <a href="#services" onclick="closeMenu()">💼 Services</a>
+  <a href="#closed" onclick="closeMenu()">📈 Performance</a>
+  <a href="#research" onclick="closeMenu()">📋 Research</a>
+  <a href="#ai-tools" onclick="closeMenu()">🤖 AI Tools</a>
+  <a href="#contact" onclick="closeMenu()">📞 Contact Us</a>
+  <div style="display:flex;gap:10px;margin-top:8px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08)">
+    <button class="blo" style="flex:1" onclick="window.location.href='login.html'">Login</button>
+    <button class="bgs" style="flex:1" onclick="closeMenu();document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Started</button>
+  </div>
+</div>
 
 <!-- HERO -->
 <section id="home">
@@ -958,7 +1013,61 @@ async function loadContactInfo(){
   }catch(e){}
 }
 
-loadContactInfo();
+/* ── HAMBURGER MENU ── */
+function toggleMenu(){
+  var btn=document.getElementById('hamBtn');
+  var menu=document.getElementById('mobMenu');
+  btn.classList.toggle('open');
+  menu.classList.toggle('open');
+}
+function closeMenu(){
+  document.getElementById('hamBtn').classList.remove('open');
+  document.getElementById('mobMenu').classList.remove('open');
+}
+
+/* ── LOAD SERVICES FROM FIREBASE ── */
+async function loadServicesFromFirebase(){
+  try{
+    const projectId='dmat-b0ce6';
+    const apiKey='AIzaSyDuC_tvmAIAcpxdqke2TRCgZVmdZ0SjPrw';
+    const r=await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/services?key=${apiKey}&pageSize=10`);
+    if(!r.ok) return;
+    const data=await r.json();
+    if(!data.documents||!data.documents.length) return;
+
+    const services=data.documents.map(doc=>{
+      const f=doc.fields||{};
+      const feats=(f.features?.arrayValue?.values||[]).map(v=>v.stringValue||'').filter(Boolean);
+      return{
+        name: f.name?.stringValue||'Service',
+        price: f.price?.stringValue||f.price?.integerValue||'',
+        period: f.period?.stringValue||'month',
+        features: feats
+      };
+    });
+
+    /* Update services section tiles */
+    const tilesEl=document.querySelector('.srv-tiles');
+    if(tilesEl && services.length){
+      const colors=[
+        {bg:'rgba(5,150,105,.25)',border:'rgba(52,211,153,.4)',color:'#34d399',glow:'rgba(52,211,153,.15)'},
+        {bg:'rgba(217,119,6,.25)',border:'rgba(251,191,36,.4)',color:'#fbbf24',glow:'rgba(251,191,36,.15)'},
+        {bg:'rgba(190,24,93,.25)',border:'rgba(244,114,182,.4)',color:'#f472b6',glow:'rgba(244,114,182,.15)'},
+        {bg:'rgba(139,92,246,.25)',border:'rgba(139,92,246,.4)',color:'#a78bfa',glow:'rgba(139,92,246,.15)'},
+      ];
+      tilesEl.innerHTML=services.map((s,i)=>{
+        const c=colors[i%colors.length];
+        return `<div class="srv-tile" style="background:linear-gradient(135deg,${c.bg},transparent);border-color:${c.border};box-shadow:0 0 20px ${c.glow}">
+          <div class="srv-tile-name" style="color:${c.color};font-size:13px;font-weight:700">${s.name}</div>
+          ${s.price?`<div class="srv-tile-sub" style="color:#fff;font-weight:800;font-size:15px">₹${s.price}<span style="font-size:10px;opacity:.6">/${s.period}</span></div>`:''}
+          ${s.features.slice(0,2).map(f=>`<div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:2px">✓ ${f}</div>`).join('')}
+        </div>`;
+      }).join('');
+    }
+  }catch(e){}
+}
+
+loadServicesFromFirebase();
 
 async function loadSlidesFromAPI(){
   try{
