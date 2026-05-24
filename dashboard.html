@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — DhanMatrix</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030c18;--bg2:#080f1e;--card:#0c1e38;--teal:#00d4aa;--blue:#8b5cf6;--gold:#f5a623;--pink:#f472b6;--green:#22c55e;--red:#ef4444;--muted:#7a9abf;--text-soft:#c5d4e8;--border:rgba(255,255,255,0.07);--border-2:rgba(255,255,255,0.12);--text:#ffffff}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:#030c18;color:var(--text);min-height:100vh;overflow-x:hidden}
+.ticker{background:rgba(3,12,24,.95);border-bottom:1px solid var(--border);padding:7px 0;overflow:hidden;white-space:nowrap;position:relative;z-index:10}
+.tw{display:inline-flex;gap:36px;animation:tick 35s linear infinite}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.tlive::before{content:'';width:6px;height:6px;border-radius:50%;background:#ef4444;display:inline-block;animation:blink 1s ease-in-out infinite;margin-right:6px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+.ti{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600}
+.tn{color:var(--muted)}.tp{color:var(--text)}.up{color:#34d399}.dn{color:#f87171}
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;border-bottom:1px solid var(--border);background:rgba(3,10,22,.96);backdrop-filter:blur(16px);position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-box{width:34px;height:34px;background:#059669;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:'Sora',sans-serif;flex-shrink:0;letter-spacing:-.5px}
+.logo-text{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;line-height:1}
+.logo-text .w{color:#fff}.logo-text .t{color:var(--teal)}
+.nav-ul{display:flex;align-items:center;gap:4px;list-style:none}
+.nav-ul a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;padding:6px 12px;border-radius:6px;transition:.2s}
+.nav-ul a:hover{color:var(--text)}
+.nend{display:flex;align-items:center;gap:10px}
+.notif-btn{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,.04);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;position:relative;color:#c5d4e8;transition:.2s}
+.notif-btn:hover{border-color:rgba(139,92,246,.3)}
+.notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 6px rgba(0,212,170,.6);display:none}
+.notif-dot.show{display:block}
+.user-chip{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;padding:5px 12px 5px 5px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;transition:.2s}
+.user-chip:hover{border-color:rgba(139,92,246,.3)}
+.user-avatar{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#8b5cf6,#00d4aa);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;font-family:'Sora',sans-serif}
+.logout-btn{background:transparent;border:1px solid var(--border);border-radius:9px;padding:7px 14px;font-size:12.5px;font-weight:600;font-family:'DM Sans',sans-serif;color:var(--muted);cursor:pointer;transition:.2s}
+.logout-btn:hover{border-color:rgba(239,68,68,.4);color:#f87171}
+.layout{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 99px)}
+.sidebar{background:rgba(8,16,30,.65);border-right:1px solid var(--border);padding:24px 14px;position:sticky;top:99px;height:calc(100vh - 99px);overflow-y:auto}
+.sb-sec{margin-bottom:24px}
+.sb-lbl{font-size:10px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);padding:0 12px;margin-bottom:10px}
+.sb-item{display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;font-size:13.5px;font-weight:500;color:var(--text-soft);cursor:pointer;transition:.2s;text-decoration:none;margin-bottom:3px;border:1px solid transparent}
+.sb-item:hover{background:rgba(255,255,255,.04);color:#fff}
+.sb-item.active{background:linear-gradient(135deg,rgba(139,92,246,.14),rgba(0,212,170,.08));border-color:rgba(139,92,246,.22);color:#fff}
+.sb-item .si{font-size:15px;width:20px;text-align:center}
+.sb-badge{margin-left:auto;font-size:9px;font-weight:800;letter-spacing:.5px;padding:2px 8px;border-radius:10px}
+.sb-active-b{background:rgba(0,212,170,.15);color:var(--teal);border:1px solid rgba(0,212,170,.25)}
+.sb-locked-b{background:rgba(255,255,255,.04);color:var(--muted);border:1px solid var(--border)}
+.main{padding:28px 36px 60px;max-width:1280px}
+.welcome{background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(0,212,170,.06));border:1px solid rgba(139,92,246,.22);border-radius:18px;padding:24px 28px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;gap:16px;position:relative;overflow:hidden}
+.welcome::before{content:'';position:absolute;top:-60px;right:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(0,212,170,.14),transparent 70%);pointer-events:none}
+.welcome h1{font-family:'Sora',sans-serif;font-size:24px;font-weight:800;margin-bottom:5px;letter-spacing:-.4px}
+.welcome p{font-size:13.5px;color:var(--text-soft)}
+.welcome .em{font-size:46px;opacity:.7;position:relative;z-index:1}
+.alert{background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);border-radius:11px;padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;gap:10px;font-size:13px}
+.alert strong{color:var(--gold);font-weight:700}
+.alert a{color:var(--gold);font-weight:700;text-decoration:none}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat{background:rgba(12,30,56,.5);border:1px solid var(--border);border-radius:14px;padding:18px 20px;transition:.2s}
+.stat:hover{border-color:var(--border-2);transform:translateY(-2px)}
+.stat .lbl{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:9px}
+.stat .val{font-family:'Sora',sans-serif;font-size:26px;font-weight:800;line-height:1;margin-bottom:5px;letter-spacing:-.5px}
+.stat .sub{font-size:11px;color:rgba(255,255,255,.4)}
+.val-g{color:#34d399}.val-b{color:#a78bfa}.val-o{color:#fbbf24}.val-p{color:#f472b6}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;margin-top:8px}
+.sec-head h2{font-family:'Sora',sans-serif;font-size:17px;font-weight:700;display:flex;align-items:center;gap:9px;letter-spacing:-.2px}
+.sec-head a{font-size:12.5px;color:var(--teal);text-decoration:none;font-weight:600;transition:.2s}
+.sec-head a:hover{color:#34d399}
+.subs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+.sub-card{background:rgba(12,30,56,.5);border:1px solid var(--border);border-radius:15px;padding:18px 20px;display:flex;flex-direction:column;gap:11px;transition:.2s;position:relative;overflow:hidden}
+.sub-card.active{border-color:rgba(0,212,170,.35)}
+.sub-card.active::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#00d4aa,#34d399);border-radius:15px 15px 0 0}
+.sub-card.locked{opacity:.75}
+.sct{display:flex;align-items:center;justify-content:space-between}
+.sc-name{font-family:'Sora',sans-serif;font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:8px;letter-spacing:-.1px}
+.sc-status{font-size:9px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;padding:3px 9px;border-radius:20px}
+.s-on{background:rgba(0,212,170,.12);color:var(--teal);border:1px solid rgba(0,212,170,.3)}
+.s-off{background:rgba(255,255,255,.04);color:var(--muted);border:1px solid var(--border)}
+.sc-plan{font-size:12px;color:var(--text-soft)}
+.sc-exp{font-size:11px;color:var(--muted)}
+.upgrade-btn{font-size:11.5px;font-weight:700;font-family:'DM Sans',sans-serif;padding:8px 14px;border-radius:9px;border:1px solid rgba(139,92,246,.3);background:rgba(139,92,246,.08);color:#a78bfa;cursor:pointer;transition:.2s;width:fit-content}
+.upgrade-btn:hover{background:rgba(139,92,246,.15);color:#fff}
+.tabs-wrap{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.tab-btn{position:relative;background:rgba(12,30,56,.5);border:1px solid var(--border);border-radius:14px;padding:14px 22px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--muted);cursor:pointer;transition:.25s;display:flex;align-items:center;gap:10px;letter-spacing:.2px}
+.tab-btn:hover{color:#fff;border-color:var(--border-2);transform:translateY(-1px)}
+.tab-btn .tb-ico{font-size:18px}
+.tab-btn .tb-count{font-size:10.5px;font-weight:700;background:rgba(255,255,255,.04);color:var(--muted);padding:2px 8px;border-radius:10px;font-family:'DM Sans',sans-serif}
+.tab-btn.active{color:#fff;transform:translateY(-1px)}
+.tab-btn.active[data-tab="equity"]{background:linear-gradient(135deg,rgba(52,211,153,.18),rgba(52,211,153,.04));border-color:rgba(52,211,153,.5)}
+.tab-btn.active[data-tab="equity"] .tb-count{background:rgba(52,211,153,.18);color:#34d399}
+.tab-btn.active[data-tab="futures"]{background:linear-gradient(135deg,rgba(244,114,182,.18),rgba(244,114,182,.04));border-color:rgba(244,114,182,.5)}
+.tab-btn.active[data-tab="futures"] .tb-count{background:rgba(244,114,182,.18);color:#f472b6}
+.tab-btn.active[data-tab="options"]{background:linear-gradient(135deg,rgba(251,191,36,.18),rgba(251,191,36,.04));border-color:rgba(251,191,36,.5)}
+.tab-btn.active[data-tab="options"] .tb-count{background:rgba(251,191,36,.18);color:#fbbf24}
+.tab-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+.ts-card{background:rgba(12,30,56,.4);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.ts-card .l{font-size:9.5px;font-weight:700;color:var(--muted);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:5px}
+.ts-card .v{font-family:'Sora',sans-serif;font-size:20px;font-weight:800;line-height:1;letter-spacing:-.4px}
+.trades-box{background:rgba(12,30,56,.4);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.tb-head{padding:14px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.tb-title{font-family:'Sora',sans-serif;font-size:14px;font-weight:700;display:flex;align-items:center;gap:9px}
+.tb-filter{display:flex;gap:6px}
+.tf{padding:5px 11px;border-radius:7px;font-size:11.5px;font-weight:600;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s}
+.tf:hover{color:#fff}
+.tf.on{background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.32);color:#a78bfa}
+table{width:100%;border-collapse:collapse}
+thead tr{background:rgba(255,255,255,.025)}
+th{padding:11px 18px;text-align:left;font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+td{padding:13px 18px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(255,255,255,.015)}
+.td-sym{font-family:'Sora',sans-serif;font-weight:700;font-size:13.5px;color:#fff}
+.td-meta{font-size:10.5px;color:var(--muted);margin-top:2px}
+.badge{display:inline-flex;font-size:9.5px;font-weight:800;letter-spacing:.5px;padding:3px 9px;border-radius:6px;white-space:nowrap}
+.badge.BUY{background:rgba(34,197,94,.12);color:#34d399;border:1px solid rgba(34,197,94,.25)}
+.badge.SELL{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.25)}
+.pnl-w{color:#34d399;font-weight:700}
+.pnl-l{color:#f87171;font-weight:700}
+.pnl-o{color:#fbbf24;font-weight:700}
+.status{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:6px}
+.status.WIN{background:rgba(34,197,94,.1);color:#34d399}
+.status.LOSS{background:rgba(239,68,68,.1);color:#f87171}
+.status.OPEN{background:rgba(251,191,36,.1);color:#fbbf24}
+.status .live-d{width:6px;height:6px;border-radius:50%;background:#fbbf24;animation:blink 1.5s ease-in-out infinite}
+.locked-wrap{position:relative;border:1px solid var(--border);border-radius:16px;background:rgba(12,30,56,.4);overflow:hidden;margin-top:6px}
+.locked-blur{filter:blur(4px);pointer-events:none;user-select:none;opacity:.7}
+.locked-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;background:rgba(3,12,24,.65);backdrop-filter:blur(4px);padding:32px;text-align:center}
+.lo-icon{font-size:38px}
+.lo-title{font-family:'Sora',sans-serif;font-size:17px;font-weight:800;color:#fff;letter-spacing:-.2px}
+.lo-sub{font-size:12.5px;color:var(--text-soft);max-width:340px;line-height:1.6}
+.lo-btn{padding:11px 24px;border-radius:10px;border:none;background:linear-gradient(135deg,#8b5cf6,#00d4aa);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:.2s;margin-top:4px}
+.lo-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(139,92,246,.3)}
+.live-pill{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:800;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#f87171;padding:3px 9px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase;margin-left:6px}
+.live-pill::before{content:'';width:6px;height:6px;border-radius:50%;background:#f87171;animation:blink 1s ease-in-out infinite}
+.live-box{background:rgba(12,30,56,.4);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:30px}
+.live-row{display:grid;grid-template-columns:90px 1.6fr 1fr 1fr 1fr 1fr 120px;gap:12px;align-items:center;padding:14px 22px;border-bottom:1px solid var(--border);transition:.2s}
+.live-row:last-child{border-bottom:none}
+.live-row:hover{background:rgba(255,255,255,.015)}
+.live-row .lt-badge{font-size:9px;font-weight:800;letter-spacing:.5px;padding:4px 10px;border-radius:6px;text-align:center;background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.3);display:inline-flex;align-items:center;gap:5px;justify-content:center}
+.live-row .lt-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#f87171;animation:blink 1s ease-in-out infinite}
+.lt-sym{font-family:'Sora',sans-serif;font-weight:700;font-size:13.5px;color:#fff}
+.lt-meta{font-size:10.5px;color:var(--muted);margin-top:2px}
+.lt-num{font-size:13px;font-weight:600;color:#e5edf7}
+.lt-num small{font-size:10px;color:var(--muted);font-weight:500;display:block;margin-bottom:2px;letter-spacing:.5px}
+.lt-pnl{font-size:13px;font-weight:700;text-align:right}
+.lt-time{font-size:11px;color:var(--muted);text-align:right}
+.live-empty{padding:42px 24px;text-align:center}
+.live-empty .em-ico{font-size:38px;margin-bottom:12px;opacity:.7}
+.live-empty .em-title{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:6px}
+.live-empty .em-sub{font-size:12.5px;color:var(--text-soft);max-width:380px;margin:0 auto;line-height:1.6}
+.skeleton{background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.04) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px;height:16px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.research-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:32px}
+.rlist{display:flex;flex-direction:column;gap:9px}
+.ritem{background:rgba(12,30,56,.4);border:1px solid var(--border);border-radius:11px;padding:12px 15px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;transition:.2s}
+.ritem:hover{border-color:rgba(139,92,246,.25)}
+.ri-left{display:flex;align-items:center;gap:11px}
+.ri-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ri-title{font-size:13px;font-weight:600;color:#fff;line-height:1.3}
+.ri-date{font-size:10.5px;color:var(--muted);margin-top:2px}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qcard{background:rgba(12,30,56,.4);border:1px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;transition:.2s}
+.qcard:hover{border-color:rgba(139,92,246,.25);transform:translateY(-2px)}
+.qc-ico{font-size:22px;margin-bottom:7px}
+.qc-title{font-family:'Sora',sans-serif;font-size:13.5px;font-weight:700;color:#fff;margin-bottom:2px}
+.qc-sub{font-size:11px;color:var(--muted)}
+.toast{position:fixed;bottom:24px;right:24px;background:#0c1e38;border:1px solid rgba(0,212,170,.4);color:#fff;padding:13px 18px;border-radius:11px;font-size:13.5px;font-weight:600;z-index:9999;transform:translateY(100px);opacity:0;transition:.4s;max-width:300px}
+.toast.show{transform:translateY(0);opacity:1}
+.disclaimer{background:rgba(3,12,24,.95);border-top:1px solid var(--border);padding:14px 36px;margin-top:40px}
+.disclaimer p{font-size:11.5px;color:var(--muted);line-height:1.6;max-width:1280px}
+.disclaimer p strong{color:var(--gold)}
+/* Notification panel */
+.notif-panel{position:fixed;top:72px;right:24px;width:320px;background:#0c1e38;border:1px solid rgba(139,92,246,.3);border-radius:14px;z-index:999;box-shadow:0 20px 60px rgba(0,0,0,.6);display:none}
+.notif-panel.show{display:block}
+.np-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.np-head h3{font-size:14px;font-weight:700;font-family:'Sora',sans-serif}
+.np-close{background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer}
+.notif-item{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start}
+.notif-item:last-child{border-bottom:none}
+.ni-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.ni-dot.new{background:var(--teal)}
+.ni-dot.old{background:rgba(255,255,255,.2)}
+.ni-text{font-size:12.5px;color:var(--text-soft);line-height:1.5}
+.ni-text strong{color:#fff}
+.ni-time{font-size:10px;color:var(--muted);margin-top:3px}
+.np-empty{padding:24px;text-align:center;color:var(--muted);font-size:13px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{display:none}.stats{grid-template-columns:repeat(2,1fr)}.subs{grid-template-columns:1fr}.tab-stats{grid-template-columns:repeat(2,1fr)}.research-row{grid-template-columns:1fr}.nav-ul{display:none}.live-row{grid-template-columns:1fr 1.5fr 1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<!-- NOTIFICATION PANEL -->
+<div class="notif-panel" id="notifPanel">
+  <div class="np-head">
+    <h3>🔔 Notifications</h3>
+    <button class="np-close" onclick="toggleNotif()">×</button>
+  </div>
+  <div id="notifList"><div class="np-empty">No notifications yet</div></div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker"><div class="tw">
+  <span class="tlive"></span>
+  <span class="ti"><span class="tn">NIFTY</span><span class="tp">24,812</span><span class="up">▲ +142.30</span></span>
+  <span class="ti"><span class="tn">SENSEX</span><span class="tp">81,532</span><span class="up">▲ +498.60</span></span>
+  <span class="ti"><span class="tn">BANKNIFTY</span><span class="tp">50,128</span><span class="up">▲ +312.40</span></span>
+  <span class="ti"><span class="tn">RELIANCE</span><span class="tp">2,845</span><span class="dn">▼ -18.40</span></span>
+  <span class="ti"><span class="tn">TCS</span><span class="tp">4,210</span><span class="up">▲ +55.20</span></span>
+  <span class="ti"><span class="tn">HDFC BANK</span><span class="tp">1,698</span><span class="up">▲ +22.10</span></span>
+  <span class="ti"><span class="tn">INFY</span><span class="tp">1,532</span><span class="dn">▼ -8.65</span></span>
+  <span class="tlive"></span>
+  <span class="ti"><span class="tn">NIFTY</span><span class="tp">24,812</span><span class="up">▲ +142.30</span></span>
+  <span class="ti"><span class="tn">SENSEX</span><span class="tp">81,532</span><span class="up">▲ +498.60</span></span>
+  <span class="ti"><span class="tn">BANKNIFTY</span><span class="tp">50,128</span><span class="up">▲ +312.40</span></span>
+  <span class="ti"><span class="tn">RELIANCE</span><span class="tp">2,845</span><span class="dn">▼ -18.40</span></span>
+</div></div>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="index.html">
+    <div class="logo-box">dm</div>
+    <div class="logo-text"><span class="w">Dhan</span><span class="t">Matrix</span></div>
+  </a>
+  <ul class="nav-ul">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="performance.html">Performance</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <div class="nend">
+    <div class="notif-btn" onclick="toggleNotif()" title="Notifications">🔔<div class="notif-dot" id="notifDot"></div></div>
+    <div class="user-chip">
+      <div class="user-avatar" id="userAvatar">DM</div>
+      <span id="userName">Loading...</span>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">↩ Logout</button>
+  </div>
+</nav>
+
+<!-- LAYOUT -->
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sb-sec">
+      <div class="sb-lbl">Main</div>
+      <a class="sb-item active" onclick="selectLiveSeg('all', this)"><span class="si">📊</span>Dashboard</a>
+      <a class="sb-item" href="services.html"><span class="si">💳</span>Subscriptions</a>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-lbl">Live Trades</div>
+      <a class="sb-item" id="sb-equity" onclick="selectLiveSeg('equity', this)">
+        <span class="si">📊</span>Equity
+        <span class="sb-badge" id="sbEq">—</span>
+      </a>
+      <a class="sb-item" id="sb-futures" onclick="selectLiveSeg('futures', this)">
+        <span class="si">📈</span>Futures
+        <span class="sb-badge" id="sbFut">—</span>
+      </a>
+      <a class="sb-item" id="sb-options" onclick="selectLiveSeg('options', this)">
+        <span class="si">⚡</span>Options
+        <span class="sb-badge" id="sbOpt">—</span>
+      </a>
+      <a class="sb-item" id="sb-portfolio" onclick="selectLiveSeg('portfolio', this)">
+        <span class="si">💼</span>Portfolio
+        <span class="sb-badge" id="sbPort">—</span>
+      </a>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-lbl">Resources</div>
+      <a class="sb-item" href="performance.html"><span class="si">📈</span>Performance</a>
+      <a class="sb-item"><span class="si">📋</span>Research Reports</a>
+      <a class="sb-item"><span class="si">📚</span>Education</a>
+      <a class="sb-item"><span class="si">🤖</span>Kooky AI</a>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-lbl">Account</div>
+      <a class="sb-item"><span class="si">👤</span>Profile</a>
+      <a class="sb-item" onclick="toggleNotif()"><span class="si">🔔</span>Notifications</a>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- WELCOME -->
+    <div class="welcome">
+      <div>
+        <h1>Welcome back, <span id="welcomeName">...</span> 👋</h1>
+        <p>Here's your performance summary across Equity, Futures and Options — switch tabs below to view each segment.</p>
+      </div>
+      <div class="em">📊</div>
+    </div>
+
+    <!-- EXPIRY ALERT -->
+    <div class="alert" id="expiryAlert" style="display:none">
+      <span>⚠️</span>
+      <span id="expiryMsg"></span>
+    </div>
+
+    <!-- FREE USER ALERT -->
+    <div class="alert" id="freeAlert" style="display:none;border-color:rgba(139,92,246,.25);background:rgba(139,92,246,.08)">
+      <span>💡</span>
+      <span>You're on a <strong style="color:#a78bfa">Free Plan</strong> — <a href="services.html" style="color:#a78bfa;font-weight:700">Subscribe now</a> to access live trade calls.</span>
+    </div>
+
+    <!-- ── LIVE TRADES ── -->
+    <div class="sec-head">
+      <h2>🔴 Live Trades — <span id="liveSegLabel">All Segments</span> <span class="live-pill" id="liveCount">0 active</span></h2>
+      <a href="#" onclick="return false" style="color:var(--muted);font-size:11px">Auto-updating ●</a>
+    </div>
+    <div class="live-box" id="liveBox">
+      <div class="live-empty">
+        <div class="em-ico">⏳</div>
+        <div class="em-title">Loading live trades...</div>
+        <div class="em-sub">Connecting to Firebase real-time database</div>
+      </div>
+    </div>
+
+    <!-- OVERALL STATS -->
+    <div class="stats">
+      <div class="stat"><div class="lbl">Active Plans</div><div class="val val-g" id="ovActive">—</div><div class="sub">of 3 segments</div></div>
+      <div class="stat"><div class="lbl">Total Calls</div><div class="val val-b" id="ovTotal">—</div><div class="sub">across all segments</div></div>
+      <div class="stat"><div class="lbl">Win Rate</div><div class="val val-o" id="ovWR">—</div><div class="sub">closed trades only</div></div>
+      <div class="stat"><div class="lbl">Open Positions</div><div class="val val-p" id="ovOpen">—</div><div class="sub">currently live</div></div>
+    </div>
+
+    <!-- SUBSCRIPTIONS -->
+    <div class="sec-head"><h2>📋 My Subscriptions</h2><a href="services.html">Manage plans →</a></div>
+    <div class="subs" id="subsGrid">
+      <div class="sub-card"><div class="skeleton" style="height:20px;width:60%;margin-bottom:8px"></div><div class="skeleton" style="height:14px;width:80%"></div></div>
+      <div class="sub-card"><div class="skeleton" style="height:20px;width:60%;margin-bottom:8px"></div><div class="skeleton" style="height:14px;width:80%"></div></div>
+      <div class="sub-card"><div class="skeleton" style="height:20px;width:60%;margin-bottom:8px"></div><div class="skeleton" style="height:14px;width:80%"></div></div>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="research-row">
+      <div>
+        <div class="sec-head"><h2>⚡ Quick Actions</h2></div>
+        <div class="quick-grid">
+          <div class="qcard" onclick="window.location.href='services.html'"><div class="qc-ico">💳</div><div class="qc-title">Subscribe</div><div class="qc-sub">Add a new plan</div></div>
+          <div class="qcard" onclick="window.location.href='performance.html'"><div class="qc-ico">📊</div><div class="qc-title">Track Record</div><div class="qc-sub">Full performance</div></div>
+          <div class="qcard" onclick="window.location.href='index.html#research'"><div class="qc-ico">📋</div><div class="qc-title">Research</div><div class="qc-sub">Sector reports</div></div>
+          <div class="qcard" onclick="window.location.href='index.html#contact'"><div class="qc-ico">📞</div><div class="qc-title">Support</div><div class="qc-sub">Contact our team</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="sec-head"><h2>📋 Latest Research</h2><a href="index.html#research">View all →</a></div>
+        <div class="rlist" id="researchList">
+          <div class="ritem"><div class="ri-left"><div class="ri-icon" style="background:rgba(0,212,170,.1)">📊</div><div><div class="ri-title">Tata Motors — EV Supercycle Deep Dive</div><div class="ri-date">05 May 2026 · Equity</div></div></div><div>→</div></div>
+          <div class="ritem"><div class="ri-left"><div class="ri-icon" style="background:rgba(244,114,182,.1)">📈</div><div><div class="ri-title">BankNifty Futures — Weekly OI Setup</div><div class="ri-date">04 May 2026 · Futures</div></div></div><div>→</div></div>
+          <div class="ritem"><div class="ri-left"><div class="ri-icon" style="background:rgba(251,191,36,.1)">⚡</div><div><div class="ri-title">Nifty 24,500 PE — Hedge Strategy</div><div class="ri-date">02 May 2026 · Options</div></div></div><div>→</div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="disclaimer">
+  <p>⚠ <strong>Disclaimer:</strong> DhanMatrix is not a SEBI Registered Research Analyst. All trade ideas are for informational and educational purposes only. Past performance does not guarantee future results. GSTIN: 07AAXFD3406A1ZO | MSME: UDYAM-DL-09-0043446</p>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+import { getFirestore, collection, doc, getDoc, getDocs, query, where, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDuC_tvmAIAcpxdqke2TRCgZVmdZ0SjPrw",
+  authDomain: "dmat-b0ce6.firebaseapp.com",
+  projectId: "dmat-b0ce6",
+  storageBucket: "dmat-b0ce6.firebasestorage.app",
+  messagingSenderId: "160685363693",
+  appId: "1:160685363693:web:b1ab5c94f171d1d70ad7e4"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* ── STATE ── */
+let currentUser = null;
+let userData = null;
+let allClosedTrades = [];
+let currentTab = 'equity';
+let currentFilter = 'ALL';
+let currentLiveSegment = 'all'; // which segment is selected in sidebar
+let notifications = [];
+let unsubscribeActive = null;
+
+/* ── HELPERS ── */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function formatSymbol(data) {
+  const name = data.stockName || data.symbol || 'Unknown';
+  if (data.segment === 'options' && data.strikePrice) {
+    return `${name} ${data.strikePrice} ${data.optionType || ''}`.trim();
+  }
+  if (data.segment === 'futures') return `${name} FUT`;
+  return name;
+}
+
+function getTradeStatus(data) {
+  if (!data.exitPrice && data.exitPrice !== 0) return 'OPEN';
+  return (data.profitLossPercent >= 0) ? 'WIN' : 'LOSS';
+}
+
+function formatPnl(data) {
+  const pct = data.profitLossPercent;
+  if (pct === null || pct === undefined) return '—';
+  return (pct >= 0 ? '+' : '') + pct + '%';
+}
+
+function formatDate(val) {
+  if (!val) return '—';
+  try {
+    const d = val.toDate ? val.toDate() : new Date(val);
+    return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  } catch(e) { return String(val).split('T')[0] || '—'; }
+}
+
+function timeAgo(val) {
+  if (!val) return '';
+  try {
+    const d = val.toDate ? val.toDate() : new Date(val);
+    const diff = (Date.now() - d.getTime()) / 1000;
+    if (diff < 60) return Math.floor(diff) + 's ago';
+    if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+    return Math.floor(diff/86400) + 'd ago';
+  } catch(e) { return ''; }
+}
+
+function isSubscribed(segment) {
+  if (!userData) return false;
+
+  /* Step 1: Check user status */
+  const status = userData.status;
+  if (!status || status === 'FREE' || status === 'BLOCKED') return false;
+  if (status !== 'ACTIVE') return false;
+
+  /* Step 2: Check subscription expiry */
+  if (userData.subscriptionEndDate) {
+    try {
+      const exp = userData.subscriptionEndDate.toDate
+        ? userData.subscriptionEndDate.toDate()
+        : new Date(userData.subscriptionEndDate);
+      if (exp < new Date()) return false;
+    } catch(e) {}
+  }
+
+  /* Step 3: Check subscriptionAccess field */
+  const access = (userData.subscriptionAccess || '').toLowerCase().trim();
+  if (!access || access === 'no access' || access === 'no_access') return false;
+
+  /* "all" or "all pages" = access to everything */
+  if (access === 'all' || access === 'all pages') return true;
+
+  /* Equity */
+  if (segment === 'equity') return access === 'equity' || access === 'equity only';
+
+  /* F&O = Futures + Options */
+  if (segment === 'futures' || segment === 'options')
+    return access === 'fno' || access === 'f&o only' || access === 'fno only';
+
+  /* Portfolio */
+  if (segment === 'portfolio')
+    return access === 'portfolio' || access === 'portfolio only';
+
+  return false;
+}
+
+function isAnySubscribed() {
+  return isSubscribed('equity') || isSubscribed('futures') ||
+         isSubscribed('options') || isSubscribed('portfolio');
+}
+
+function getAccessLabel() {
+  const access = (userData?.subscriptionAccess || '').toLowerCase();
+  if (!access || access === 'no access') return 'No Access';
+  if (access === 'all' || access === 'all pages') return 'All Segments';
+  if (access === 'equity' || access === 'equity only') return 'Equity Only';
+  if (access === 'fno' || access === 'f&o only') return 'F&O Only';
+  if (access === 'portfolio' || access === 'portfolio only') return 'Portfolio Only';
+  return userData?.subscriptionAccess || 'Unknown';
+}
+
+/* ── AUTH CHECK ── */
+onAuthStateChanged(auth, (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  currentUser = user;
+
+  /* Real-time listener — updates INSTANTLY when admin changes status or access */
+  onSnapshot(doc(db, 'users', user.uid), (snap) => {
+    if (!snap.exists()) {
+      userData = { name: user.email?.split('@')[0] || 'Subscriber', status: 'FREE' };
+      setupUI();
+      if (!unsubscribeActive) { subscribeToActiveTrades(); loadClosedTrades(); }
+      return;
+    }
+
+    const prev = userData ? { ...userData } : null;
+    userData = snap.data();
+
+    /* Blocked → sign out immediately */
+    if (userData.status === 'BLOCKED') {
+      signOut(auth);
+      alert('🚫 Your account has been blocked. Please contact DhanMatrix support.');
+      window.location.href = 'login.html';
+      return;
+    }
+
+    setupUI();
+
+    /* First load */
+    if (!prev) {
+      subscribeToActiveTrades();
+      loadClosedTrades();
+      return;
+    }
+
+    /* Access changed → refresh UI immediately */
+    const statusChanged = prev.status !== userData.status;
+    const accessChanged = prev.subscriptionAccess !== userData.subscriptionAccess;
+
+    if (statusChanged || accessChanged) {
+      showToast('🔔 Your subscription access has been updated!');
+      renderSubscriptions();
+      renderTrades();
+      subscribeToActiveTrades();
+    }
+  });
+});
+
+/* ── SETUP UI ── */
+function setupUI() {
+  const name = userData.name?.split(' ')[0] || 'Subscriber';
+  document.getElementById('userName').textContent = name;
+  document.getElementById('welcomeName').textContent = name;
+  document.getElementById('userAvatar').textContent = name.slice(0,2).toUpperCase();
+
+  /* Expiry alert */
+  if (userData.subscriptionEndDate) {
+    const exp = userData.subscriptionEndDate.toDate
+      ? userData.subscriptionEndDate.toDate()
+      : new Date(userData.subscriptionEndDate);
+    const daysLeft = Math.ceil((exp - new Date()) / (1000 * 60 * 60 * 24));
+    if (daysLeft > 0 && daysLeft <= 15) {
+      document.getElementById('expiryAlert').style.display = 'flex';
+      document.getElementById('expiryMsg').innerHTML =
+        `Your plan expires in <strong>${daysLeft} days</strong> — <a href="services.html" style="color:var(--gold);font-weight:700">Renew now</a>`;
+    }
+  }
+
+  renderSubscriptions();
+}
+
+/* ── SUBSCRIPTIONS ── */
+function renderSubscriptions() {
+  const segments = [
+    { key: 'equity',  label: 'Equity Calls',  icon: '📊', color: '#34d399' },
+    { key: 'futures', label: 'F&O Calls',      icon: '📈', color: '#f472b6' },
+    { key: 'options', label: 'Options Calls',  icon: '⚡', color: '#fbbf24' },
+  ];
+
+  const grid = document.getElementById('subsGrid');
+  let activeCount = 0;
+
+  /* Expiry text */
+  let expText = 'Contact DhanMatrix to subscribe';
+  if (userData?.subscriptionEndDate) {
+    try {
+      const exp = userData.subscriptionEndDate.toDate
+        ? userData.subscriptionEndDate.toDate()
+        : new Date(userData.subscriptionEndDate);
+      expText = 'Expires: ' + exp.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+    } catch(e) {}
+  }
+
+  grid.innerHTML = segments.map(s => {
+    const active = isSubscribed(s.key);
+    if (active) activeCount++;
+    return `<div class="sub-card ${active ? 'active' : 'locked'}">
+      <div class="sct">
+        <div class="sc-name">${s.icon} ${s.label}</div>
+        <span class="sc-status ${active ? 's-on' : 's-off'}">${active ? 'Active' : 'Inactive'}</span>
+      </div>
+      <div class="sc-plan" style="color:${active ? s.color : 'var(--text-soft)'}">
+        ${active ? '✅ Access Granted — ' + getAccessLabel() : 'No Access'}
+      </div>
+      <div class="sc-exp">${active ? expText : 'Contact DhanMatrix to subscribe'}</div>
+      ${!active ? `<button class="upgrade-btn" onclick="window.location.href='index.html#contact'">Contact Us →</button>` : ''}
+    </div>`;
+  }).join('');
+
+  /* Sidebar badges */
+  const sbMap = {
+    equity: 'sbEq',
+    futures: 'sbFut',
+    options: 'sbOpt',
+    portfolio: 'sbPort'
+  };
+  Object.entries(sbMap).forEach(([seg, id]) => {
+    const el = document.getElementById(id);
+    const active = isSubscribed(seg);
+    if (el) {
+      el.textContent = active ? 'Active' : 'Free';
+      el.className = 'sb-badge ' + (active ? 'sb-active-b' : 'sb-locked-b');
+    }
+  });
+
+  document.getElementById('ovActive').textContent = activeCount;
+  document.getElementById('freeAlert').style.display = activeCount === 0 ? 'flex' : 'none';
+}
+
+/* ── REAL-TIME ACTIVE TRADES — filtered by segment ── */
+function subscribeToActiveTrades() {
+  const liveBox = document.getElementById('liveBox');
+  const countEl = document.getElementById('liveCount');
+  const prevCount = { count: 0 };
+
+  if (unsubscribeActive) unsubscribeActive();
+
+  unsubscribeActive = onSnapshot(
+    query(collection(db, 'activeTrades'), orderBy('createdAt', 'desc')),
+    (snap) => {
+      const allTrades = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      /* Notification for new trades */
+      if (prevCount.count > 0 && allTrades.length > prevCount.count) {
+        const newest = allTrades[0];
+        const notif = { text: `New ${newest.segment?.toUpperCase()} trade: ${formatSymbol(newest)} ${newest.type}`, time: new Date() };
+        notifications.unshift(notif);
+        document.getElementById('notifDot').classList.add('show');
+        showToast(`🔔 New trade: ${formatSymbol(newest)} ${newest.type}!`);
+        renderNotifications();
+      }
+      prevCount.count = allTrades.length;
+      countEl.textContent = allTrades.length + ' active';
+
+      renderLiveTrades(allTrades);
+    },
+    () => {
+      liveBox.innerHTML = `<div class="live-empty"><div class="em-ico">⚠️</div><div class="em-title">Could not load live trades</div></div>`;
+    }
+  );
+}
+
+/* ── RENDER LIVE TRADES (with segment + access filter) ── */
+function renderLiveTrades(allTrades) {
+  const liveBox = document.getElementById('liveBox');
+
+  /* Filter by selected segment */
+  let trades = allTrades;
+  if (currentLiveSegment !== 'all') {
+    trades = allTrades.filter(t => {
+      const seg = (t.segment || '').toLowerCase();
+      if (currentLiveSegment === 'equity') return seg === 'equity';
+      if (currentLiveSegment === 'futures') return seg === 'futures';
+      if (currentLiveSegment === 'options') return seg === 'options';
+      if (currentLiveSegment === 'portfolio') return seg === 'portfolio';
+      return true;
+    });
+  }
+
+  if (!trades.length) {
+    liveBox.innerHTML = `<div class="live-empty">
+      <div class="em-ico">📡</div>
+      <div class="em-title">No live trades in ${currentLiveSegment === 'all' ? 'any segment' : currentLiveSegment.charAt(0).toUpperCase() + currentLiveSegment.slice(1)}</div>
+      <div class="em-sub">New calls will appear here instantly when posted.</div>
+    </div>`;
+    return;
+  }
+
+  /* Check if user has access to the selected segment */
+  const segToCheck = currentLiveSegment === 'all' ? null : currentLiveSegment;
+  const hasAccess = segToCheck ? isSubscribed(segToCheck) : isAnySubscribed();
+
+  if (!hasAccess) {
+    const segLabel = currentLiveSegment === 'all' ? 'any segment' : currentLiveSegment.toUpperCase();
+    liveBox.innerHTML = `<div class="live-empty">
+      <div class="em-ico">🔒</div>
+      <div class="em-title">${trades.length} Live Trade${trades.length>1?'s':''} — ${segLabel}</div>
+      <div class="em-sub">You don't have access to ${segLabel} calls. Contact DhanMatrix to subscribe.</div>
+      <button class="lo-btn" onclick="window.location.href='index.html#contact'" style="margin-top:12px">Contact Us →</button>
+    </div>`;
+    return;
+  }
+
+  liveBox.innerHTML = trades.map(t => {
+    const sym = formatSymbol(t);
+    const pnl = t.profitLossPercent != null ? (t.profitLossPercent >= 0 ? '+' : '') + t.profitLossPercent + '%' : '—';
+    const pnlClass = t.profitLossPercent != null ? (t.profitLossPercent >= 0 ? 'pnl-w' : 'pnl-l') : 'pnl-o';
+    return `<div class="live-row live">
+      <span class="lt-badge">LIVE</span>
+      <div>
+        <div class="lt-sym">${sym}</div>
+        <div class="lt-meta">${(t.segment || '').toUpperCase()} · ${t.type}</div>
+      </div>
+      <div class="lt-num"><small>ENTRY</small>₹${t.entryPrice || '—'}</div>
+      <div class="lt-num"><small>TARGET</small><span style="color:#34d399">₹${t.targetPrice || '—'}</span></div>
+      <div class="lt-num"><small>STOP LOSS</small><span style="color:#f87171">₹${t.stopLoss || '—'}</span></div>
+      <div class="lt-pnl ${pnlClass}">${pnl}</div>
+      <div class="lt-time">${timeAgo(t.createdAt)}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('ovOpen').textContent = allTrades.length;
+}
+
+/* ── PORTFOLIO STOCKS (separate collection) ── */
+async function loadPortfolioStocks() {
+  const liveBox = document.getElementById('liveBox');
+
+  if (!isSubscribed('portfolio')) {
+    liveBox.innerHTML = `<div class="live-empty">
+      <div class="em-ico">🔒</div>
+      <div class="em-title">Portfolio Stocks — No Access</div>
+      <div class="em-sub">You don't have access to Portfolio calls. Contact DhanMatrix to subscribe.</div>
+      <button class="lo-btn" onclick="window.location.href='index.html#contact'" style="margin-top:12px">Contact Us →</button>
+    </div>`;
+    return;
+  }
+
+  liveBox.innerHTML = `<div class="live-empty"><div class="em-ico">⏳</div><div class="em-title">Loading portfolio stocks...</div></div>`;
+
+  try {
+    const snap = await getDocs(query(collection(db, 'portfolioStocks'), orderBy('createdAt', 'desc')));
+    const stocks = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(s => s.showInApp !== false);
+
+    if (!stocks.length) {
+      liveBox.innerHTML = `<div class="live-empty"><div class="em-ico">💼</div><div class="em-title">No portfolio stocks yet</div><div class="em-sub">Portfolio stock picks will appear here when posted.</div></div>`;
+      return;
+    }
+
+    document.getElementById('liveCount').textContent = stocks.length + ' stocks';
+
+    liveBox.innerHTML = stocks.map(s => {
+      const gain = s.targetPrice && s.entryPrice
+        ? (((s.targetPrice - s.entryPrice) / s.entryPrice) * 100).toFixed(1) : null;
+      return `<div class="live-row" style="grid-template-columns:80px 2fr 1fr 1fr 1fr 1fr 130px">
+        <span class="lt-badge" style="background:rgba(0,212,170,.12);color:#34d399;border:1px solid rgba(0,212,170,.3)">${s.action || 'BUY'}</span>
+        <div>
+          <div class="lt-sym">${s.stockName || s.symbol || '—'}</div>
+          <div class="lt-meta">PORTFOLIO · ${s.horizon || 'Long Term'}</div>
+        </div>
+        <div class="lt-num"><small>ENTRY</small>₹${s.entryPrice || '—'}</div>
+        <div class="lt-num"><small>TARGET</small><span style="color:#34d399">₹${s.targetPrice || '—'}</span></div>
+        <div class="lt-num"><small>STOP LOSS</small><span style="color:#f87171">₹${s.stopLoss || '—'}</span></div>
+        <div class="lt-pnl pnl-w">${gain ? '+'+gain+'% upside' : '—'}</div>
+        <div>${s.pdfUrl ? `<a href="${s.pdfUrl}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.25);color:#34d399;padding:5px 10px;border-radius:7px;font-size:11px;font-weight:700;text-decoration:none">📄 ${s.pdfName||'Report'}</a>` : '<span style="color:var(--muted);font-size:11px">—</span>'}</div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    liveBox.innerHTML = `<div class="live-empty"><div class="em-ico">⚠️</div><div class="em-title">Failed to load portfolio: ${e.message}</div></div>`;
+  }
+}
+
+/* ── LOAD CLOSED TRADES ── */
+async function loadClosedTrades() {
+  try {
+    const snap = await getDocs(query(collection(db, 'closedTrades'), orderBy('closedAt', 'desc')));
+    allClosedTrades = snap.docs.map(d => {
+      const data = d.data();
+      return {
+        id: d.id,
+        sym: formatSymbol(data),
+        type: data.type || 'BUY',
+        cat: data.segment || 'equity',
+        entry: data.entryPrice,
+        exit: data.exitPrice || null,
+        sl: data.stopLoss || data.stopLossPrice || null,
+        t1: data.targetPrice || data.strikePrice || null,
+        pnl: formatPnl(data),
+        pnlRaw: data.profitLossPercent,
+        status: getTradeStatus(data),
+        date: formatDate(data.closedAt),
+      };
+    });
+    calcOverallStats();
+    calcTabStats();
+    renderTrades();
+  } catch(e) {
+    console.error('Failed to load closed trades:', e);
+    allClosedTrades = [];
+    calcTabStats();
+    renderTrades();
+  }
+}
+
+/* ── STATS ── */
+function calcOverallStats() {
+  const wins = allClosedTrades.filter(t => t.status === 'WIN').length;
+  const losses = allClosedTrades.filter(t => t.status === 'LOSS').length;
+  const open = allClosedTrades.filter(t => t.status === 'OPEN').length;
+  const closed = wins + losses;
+  const wr = closed ? Math.round((wins/closed)*100) : 0;
+  document.getElementById('ovTotal').textContent = allClosedTrades.length;
+  document.getElementById('ovWR').textContent = wr + '%';
+  const activeCount = ['equity','futures','options','portfolio'].filter(s => isSubscribed(s)).length;
+  document.getElementById('ovActive').textContent = activeCount;
+
+  ['equity','futures','options'].forEach(seg => {
+    const el = document.getElementById('tc' + seg.charAt(0).toUpperCase() + seg.slice(1));
+    if (el) el.textContent = allClosedTrades.filter(t => t.cat === seg).length;
+  });
+}
+
+function calcTabStats() {
+  const data = allClosedTrades.filter(t => t.cat === currentTab);
+  const wins = data.filter(t => t.status === 'WIN').length;
+  const losses = data.filter(t => t.status === 'LOSS').length;
+  const open = data.filter(t => t.status === 'OPEN').length;
+  const wr = (wins + losses) ? Math.round((wins/(wins+losses))*100) : 0;
+  document.getElementById('ts-total').textContent = data.length;
+  document.getElementById('ts-wins').textContent = wins;
+  document.getElementById('ts-losses').textContent = losses;
+  document.getElementById('ts-open').textContent = open;
+  document.getElementById('ts-wr').textContent = wr + '%';
+}
+
+/* ── RENDER TRADES ── */
+function renderTrades() {
+  const container = document.getElementById('tradesContainer');
+  const segActive = isSubscribed(currentTab);
+
+  if (!segActive) {
+    container.innerHTML = `
+      <div class="locked-wrap">
+        <div class="locked-blur">
+          <div class="tb-head"><div class="tb-title">🔒 ${currentTab.charAt(0).toUpperCase() + currentTab.slice(1)} Calls</div></div>
+          <table><thead><tr><th>Symbol</th><th>Type</th><th>Entry</th><th>Target</th><th>SL</th><th>P&L</th><th>Status</th></tr></thead>
+          <tbody><tr><td>████████</td><td>BUY</td><td>₹███</td><td>₹███</td><td>₹███</td><td>+██%</td><td>WIN</td></tr>
+          <tr><td>████████</td><td>BUY</td><td>₹███</td><td>₹███</td><td>₹███</td><td>+██%</td><td>WIN</td></tr></tbody></table>
+        </div>
+        <div class="locked-overlay">
+          <div class="lo-icon">🔒</div>
+          <div class="lo-title">Subscription Required</div>
+          <div class="lo-sub">Subscribe to access live Equity, Futures and Options calls with full entry, exit, SL and P&L details.</div>
+          <button class="lo-btn" onclick="window.location.href='services.html'">Subscribe Now →</button>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const filtered = allClosedTrades
+    .filter(t => t.cat === currentTab)
+    .filter(t => currentFilter === 'ALL' || t.status === currentFilter);
+
+  const rows = filtered.length
+    ? filtered.map(t => {
+        const pnlClass = t.status === 'WIN' ? 'pnl-w' : t.status === 'LOSS' ? 'pnl-l' : 'pnl-o';
+        return `<tr>
+          <td><div class="td-sym">${t.sym}</div><div class="td-meta">${t.cat.toUpperCase()} · ${t.type}</div></td>
+          <td><span class="badge ${t.type}">${t.type}</span></td>
+          <td>₹${t.entry}</td>
+          <td>${t.exit ? '₹'+t.exit : '—'}</td>
+          <td style="color:#f87171">${t.sl ? '₹'+t.sl : '—'}</td>
+          <td style="color:#34d399">${t.t1 ? '₹'+t.t1 : '—'}</td>
+          <td><span class="${pnlClass}">${t.pnl}</span></td>
+          <td><span class="status ${t.status}">${t.status === 'OPEN' ? '<span class="live-d"></span>' : ''}${t.status}</span></td>
+          <td style="color:var(--muted);font-size:11.5px">${t.date}</td>
+        </tr>`;
+      }).join('')
+    : `<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:36px">No trades match this filter.</td></tr>`;
+
+  container.innerHTML = `
+    <div class="trades-box">
+      <div class="tb-head">
+        <div class="tb-title">${currentTab.charAt(0).toUpperCase() + currentTab.slice(1)} Calls — Closed & Open</div>
+        <div class="tb-filter">
+          <button class="tf ${currentFilter==='ALL'?'on':''}" onclick="setFilter('ALL')">All</button>
+          <button class="tf ${currentFilter==='OPEN'?'on':''}" onclick="setFilter('OPEN')">Open</button>
+          <button class="tf ${currentFilter==='WIN'?'on':''}" onclick="setFilter('WIN')">Wins</button>
+          <button class="tf ${currentFilter==='LOSS'?'on':''}" onclick="setFilter('LOSS')">Losses</button>
+        </div>
+      </div>
+      <table>
+        <thead><tr><th>Symbol</th><th>Type</th><th>Entry</th><th>Exit</th><th>SL</th><th>Target</th><th>P&L</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+/* ── SELECT LIVE SEGMENT (sidebar click) ── */
+window.selectLiveSeg = function(seg, el) {
+  currentLiveSegment = seg;
+
+  /* Update sidebar active state */
+  document.querySelectorAll('.sb-item').forEach(a => a.classList.remove('active'));
+  if (el) el.classList.add('active');
+
+  /* Update heading label */
+  const labels = {
+    all: 'All Segments',
+    equity: 'Equity',
+    futures: 'Futures',
+    options: 'Options',
+    portfolio: 'Portfolio Stocks'
+  };
+  document.getElementById('liveSegLabel').textContent = labels[seg] || seg;
+
+  /* Portfolio comes from a DIFFERENT collection */
+  if (seg === 'portfolio') {
+    loadPortfolioStocks();
+  } else {
+    subscribeToActiveTrades();
+  }
+}
+function renderNotifications() {
+  const el = document.getElementById('notifList');
+  if (!notifications.length) { el.innerHTML = '<div class="np-empty">No notifications yet</div>'; return; }
+  el.innerHTML = notifications.map((n, i) => `
+    <div class="notif-item">
+      <div class="ni-dot ${i === 0 ? 'new' : 'old'}"></div>
+      <div><div class="ni-text"><strong>📡 New Trade Posted</strong><br>${n.text}</div><div class="ni-time">${timeAgo({ toDate: () => n.time })}</div></div>
+    </div>`).join('');
+}
+
+/* ── ACTIONS ── */
+window.switchTab = function(tab, btn) {
+  currentTab = tab;
+  currentFilter = 'ALL';
+  document.querySelectorAll('#tabBar .tab-btn').forEach(b => b.classList.remove('active'));
+  const target = btn || document.querySelector(`#tabBar .tab-btn[data-tab="${tab}"]`);
+  if (target) target.classList.add('active');
+  calcTabStats();
+  renderTrades();
+}
+
+window.setFilter = function(f) {
+  currentFilter = f;
+  renderTrades();
+}
+
+window.doLogout = async function() {
+  try { await signOut(auth); window.location.href = 'login.html'; }
+  catch(e) { showToast('Logout failed'); }
+}
+
+window.toggleNotif = function() {
+  const panel = document.getElementById('notifPanel');
+  panel.classList.toggle('show');
+  if (panel.classList.contains('show')) {
+    document.getElementById('notifDot').classList.remove('show');
+    renderNotifications();
+  }
+}
+
+/* Close notif panel on outside click */
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#notifPanel') && !e.target.closest('.notif-btn'))
+    document.getElementById('notifPanel').classList.remove('show');
+});
+</script>
+</body>
+</html>

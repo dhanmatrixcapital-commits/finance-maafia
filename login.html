@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — DhanMatrix</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030c18;--bg2:#080f1e;--card:#0c1e38;--teal:#00d4aa;--blue:#8b5cf6;--gold:#f5a623;--green:#22c55e;--red:#ef4444;--muted:#7a9abf;--border:rgba(255,255,255,0.07);--text:#ffffff}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:#030c18;color:var(--text);min-height:100vh;overflow-x:hidden}
+#liveChart{position:fixed;inset:0;z-index:0;pointer-events:none}
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;border-bottom:1px solid var(--border);background:rgba(3,10,22,.96);backdrop-filter:blur(16px);position:relative;z-index:10}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-box{width:34px;height:34px;background:#059669;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:'Sora',sans-serif;letter-spacing:-.5px}
+.logo-text{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;line-height:1}
+.logo-text .w{color:#fff}.logo-text .t{color:var(--teal)}
+.back-link{color:var(--muted);font-size:13px;text-decoration:none;display:flex;align-items:center;gap:6px;transition:.2s}
+.back-link:hover{color:var(--teal)}
+.page{position:relative;z-index:1;min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;padding:48px 24px}
+.card{width:100%;max-width:440px;background:linear-gradient(160deg,rgba(12,30,56,.92),rgba(8,16,32,.95));border:1px solid rgba(139,92,246,.22);border-radius:24px;padding:44px 40px 32px;position:relative;box-shadow:0 0 0 1px rgba(139,92,246,.08),0 30px 80px rgba(0,0,0,.5),0 0 60px rgba(139,92,246,.08);overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#8b5cf6,#00d4aa,#f5a623);border-radius:24px 24px 0 0}
+.card::after{content:'';position:absolute;top:-100px;right:-100px;width:280px;height:280px;background:radial-gradient(circle,rgba(139,92,246,.12),transparent 70%);pointer-events:none}
+.brand{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:24px}
+.brand .lb{width:38px;height:38px;background:linear-gradient(135deg,#059669,#00b8a0);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;font-family:'Sora',sans-serif;letter-spacing:-.5px}
+.brand .lt{font-family:'Sora',sans-serif;font-size:22px;font-weight:700}
+.brand .lt .w{color:#fff}.brand .lt .t{color:var(--teal)}
+h1{font-family:'Sora',sans-serif;font-size:26px;font-weight:800;text-align:center;margin-bottom:6px;letter-spacing:-.5px}
+h1 .hl{color:var(--teal)}
+.sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:28px;line-height:1.6}
+.tabs{display:flex;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:24px}
+.tab{flex:1;padding:9px;border:none;background:transparent;color:var(--muted);font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;border-radius:7px;transition:.2s}
+.tab.on{background:linear-gradient(135deg,rgba(139,92,246,.18),rgba(0,212,170,.12));color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:10.5px;font-weight:700;color:var(--muted);margin-bottom:7px;letter-spacing:1.2px;text-transform:uppercase}
+.input-wrap{position:relative}
+.input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:.2s}
+.input::placeholder{color:rgba(255,255,255,.25)}
+.input:focus{border-color:rgba(139,92,246,.5);background:rgba(139,92,246,.04);box-shadow:0 0 0 3px rgba(139,92,246,.08)}
+.input.with-icon{padding-left:42px}
+.field-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;opacity:.55;pointer-events:none}
+.row-flex{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;margin-top:-2px}
+.remember{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);cursor:pointer;user-select:none}
+.remember input{accent-color:var(--teal);width:13px;height:13px;cursor:pointer}
+.forgot{font-size:12px;color:var(--teal);text-decoration:none;font-weight:600;transition:.2s}
+.forgot:hover{color:#34d399}
+.btn-primary{width:100%;background:linear-gradient(135deg,#8b5cf6,#00d4aa);border:none;color:#fff;padding:13px;border-radius:11px;font-size:14.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.25s;letter-spacing:.3px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(139,92,246,.32)}
+.btn-primary:disabled{opacity:.6;transform:none;cursor:not-allowed}
+.loading{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.divider{text-align:center;font-size:11px;color:rgba(255,255,255,.3);margin:22px 0 14px;position:relative;text-transform:uppercase;letter-spacing:1.5px}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:38%;height:1px;background:var(--border)}
+.divider::before{left:0}.divider::after{right:0}
+.swap-link{text-align:center;font-size:13px;color:var(--muted);margin-top:18px}
+.swap-link a{color:var(--teal);text-decoration:none;font-weight:600;transition:.2s}
+.swap-link a:hover{color:#34d399}
+.secure-strip{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:22px;padding-top:18px;border-top:1px solid var(--border);font-size:11px;color:rgba(255,255,255,.4)}
+.secure-strip .dot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.err-msg{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171;border-radius:8px;padding:10px 14px;font-size:12.5px;margin-bottom:14px;display:none}
+.err-msg.show{display:block}
+@media(min-width:980px){
+  .page{padding:60px 56px}
+  .container{display:grid;grid-template-columns:1fr 440px;gap:64px;max-width:1100px;width:100%;align-items:center}
+  .promo{position:relative;z-index:1}
+  .promo .tagp{display:inline-flex;align-items:center;background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.22);color:var(--teal);font-size:11px;font-weight:700;letter-spacing:1.4px;padding:5px 13px;border-radius:20px;margin-bottom:18px}
+  .promo h2{font-family:'Sora',sans-serif;font-size:38px;font-weight:800;line-height:1.12;margin-bottom:16px;letter-spacing:-.5px}
+  .promo h2 .c1{color:var(--teal)}.promo h2 .c2{color:var(--blue)}
+  .promo p{color:var(--muted);font-size:15px;line-height:1.7;max-width:440px;margin-bottom:28px}
+  .promo .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:460px}
+  .promo .stat{background:rgba(12,30,56,.6);border:1px solid var(--border);border-radius:14px;padding:16px 14px}
+  .promo .stat .v{font-family:'Sora',sans-serif;font-size:22px;font-weight:800;line-height:1;margin-bottom:4px}
+  .promo .stat .l{font-size:10.5px;font-weight:600;color:var(--muted);letter-spacing:.6px;text-transform:uppercase}
+  .promo .v.g{color:#34d399}.promo .v.b{color:#a78bfa}.promo .v.o{color:#fbbf24}
+}
+@media(max-width:979px){.promo{display:none}.container{display:contents}}
+.toast{position:fixed;bottom:24px;right:24px;background:#0c1e38;border:1px solid rgba(0,212,170,.4);color:#fff;padding:13px 18px;border-radius:11px;font-size:13.5px;font-weight:600;z-index:9999;transform:translateY(100px);opacity:0;transition:.4s;max-width:300px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.error{border-color:rgba(239,68,68,.4)}
+</style>
+</head>
+<body>
+<canvas id="liveChart"></canvas>
+<div class="toast" id="toast"></div>
+
+<nav>
+  <a class="logo" href="index.html">
+    <div class="logo-box">dm</div>
+    <div class="logo-text"><span class="w">Dhan</span><span class="t">Matrix</span></div>
+  </a>
+  <a class="back-link" href="index.html">← Back to site</a>
+</nav>
+
+<div class="page">
+  <div class="container">
+    <div class="promo">
+      <div class="tagp">SECURE CLIENT PORTAL</div>
+      <h2>Welcome back to your<br><span class="c1">DhanMatrix</span> <span class="c2">Dashboard</span></h2>
+      <p>Track every Equity, Futures and Options call you've subscribed to — independently, in real time. Manage subscriptions, view research reports and stay on top of your portfolio.</p>
+      <div class="stat-row">
+        <div class="stat"><div class="v g">Live</div><div class="l">Trade Calls</div></div>
+        <div class="stat"><div class="v b">3</div><div class="l">Segments</div></div>
+        <div class="stat"><div class="v o">24/7</div><div class="l">Push Alerts</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="brand">
+        <div class="lb">dm</div>
+        <div class="lt"><span class="w">Dhan</span><span class="t">Matrix</span></div>
+      </div>
+
+      <h1 id="formTitle">Welcome <span class="hl">Back</span></h1>
+      <p class="sub" id="formSub">Sign in with your DhanMatrix subscriber credentials.</p>
+
+      <div class="tabs">
+        <button class="tab on" id="tabSignin" onclick="switchMode('signin')">Sign In</button>
+        <button class="tab" id="tabSignup" onclick="switchMode('signup')">Sign Up</button>
+      </div>
+
+      <div class="err-msg" id="errMsg"></div>
+
+      <!-- SIGN IN -->
+      <div id="signinForm">
+        <div class="field">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <span class="field-icon">✉️</span>
+            <input class="input with-icon" type="email" id="si-email" placeholder="you@email.com" autocomplete="email">
+          </div>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <div class="input-wrap">
+            <span class="field-icon">🔒</span>
+            <input class="input with-icon" type="password" id="si-pwd" placeholder="••••••••" autocomplete="current-password">
+          </div>
+        </div>
+        <div class="row-flex">
+          <label class="remember"><input type="checkbox" id="si-rem" checked>Remember me</label>
+          <a href="#" class="forgot" onclick="doForgotPassword();return false">Forgot password?</a>
+        </div>
+        <button class="btn-primary" id="signinBtn" onclick="doSignin()">Sign In to Dashboard →</button>
+      </div>
+
+      <!-- SIGN UP -->
+      <div id="signupForm" style="display:none">
+        <div class="field">
+          <label>Full Name</label>
+          <div class="input-wrap">
+            <span class="field-icon">👤</span>
+            <input class="input with-icon" type="text" id="su-name" placeholder="Rahul Sharma">
+          </div>
+        </div>
+        <div class="field">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <span class="field-icon">✉️</span>
+            <input class="input with-icon" type="email" id="su-email" placeholder="you@email.com">
+          </div>
+        </div>
+        <div class="field">
+          <label>Mobile Number</label>
+          <div class="input-wrap">
+            <span class="field-icon">📱</span>
+            <input class="input with-icon" type="tel" id="su-mob" placeholder="+91 XXXXX XXXXX">
+          </div>
+        </div>
+        <div class="field">
+          <label>Password (min 6 chars)</label>
+          <div class="input-wrap">
+            <span class="field-icon">🔒</span>
+            <input class="input with-icon" type="password" id="su-pwd" placeholder="Create a strong password" minlength="6">
+          </div>
+        </div>
+        <button class="btn-primary" id="signupBtn" onclick="doSignup()">Create Account →</button>
+      </div>
+
+      <div class="divider">Subscriber-only access</div>
+      <p class="swap-link" id="swapHint">Don't have an account? <a href="#" onclick="switchMode('signup');return false">Sign up</a></p>
+
+      <div class="secure-strip">
+        <span class="dot"></span>
+        Secured · Firebase Auth · 256-bit encryption
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDuC_tvmAIAcpxdqke2TRCgZVmdZ0SjPrw",
+  authDomain: "dmat-b0ce6.firebaseapp.com",
+  projectId: "dmat-b0ce6",
+  storageBucket: "dmat-b0ce6.firebasestorage.app",
+  messagingSenderId: "160685363693",
+  appId: "1:160685363693:web:b1ab5c94f171d1d70ad7e4"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* ── If already logged in, redirect to dashboard ── */
+onAuthStateChanged(auth, (user) => {
+  if (user) window.location.href = 'dashboard.html';
+});
+
+function showError(msg) {
+  const el = document.getElementById('errMsg');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+function hideError() {
+  document.getElementById('errMsg').classList.remove('show');
+}
+
+function setLoading(btnId, loading) {
+  const btn = document.getElementById(btnId);
+  if (loading) {
+    btn.innerHTML = '<div class="loading"></div> Please wait...';
+    btn.disabled = true;
+  } else {
+    btn.disabled = false;
+  }
+}
+
+/* ── SIGN IN ── */
+window.doSignin = async function() {
+  hideError();
+  const email = document.getElementById('si-email').value.trim();
+  const pwd = document.getElementById('si-pwd').value;
+  if (!email || !pwd) { showError('Please enter your email and password.'); return; }
+
+  setLoading('signinBtn', true);
+  try {
+    const cred = await signInWithEmailAndPassword(auth, email, pwd);
+
+    /* Check user status in Firestore */
+    const userSnap = await getDoc(doc(db, 'users', cred.user.uid));
+    if (userSnap.exists()) {
+      const userData = userSnap.data();
+
+      if (userData.blocked === true) {
+        await auth.signOut();
+        showError('🚫 Your account has been blocked. Please contact DhanMatrix support.');
+        document.getElementById('signinBtn').innerHTML = 'Sign In to Dashboard →';
+        document.getElementById('signinBtn').disabled = false;
+        return;
+      }
+
+      if (userData.active === false) {
+        await auth.signOut();
+        showError('⚠️ Your account is currently inactive. Please contact DhanMatrix support.');
+        document.getElementById('signinBtn').innerHTML = 'Sign In to Dashboard →';
+        document.getElementById('signinBtn').disabled = false;
+        return;
+      }
+    }
+
+    showToast('✅ Signed in! Redirecting…');
+    setTimeout(() => window.location.href = 'dashboard.html', 600);
+  } catch(e) {
+    let msg = 'Sign in failed. Please check your credentials.';
+    if (e.code === 'auth/user-not-found') msg = 'No account found with this email.';
+    if (e.code === 'auth/wrong-password') msg = 'Incorrect password. Please try again.';
+    if (e.code === 'auth/invalid-email') msg = 'Invalid email address.';
+    if (e.code === 'auth/too-many-requests') msg = 'Too many failed attempts. Please try later.';
+    if (e.code === 'auth/invalid-credential') msg = 'Invalid email or password.';
+    showError(msg);
+    document.getElementById('signinBtn').innerHTML = 'Sign In to Dashboard →';
+    document.getElementById('signinBtn').disabled = false;
+  }
+}
+
+/* ── SIGN UP ── */
+window.doSignup = async function() {
+  hideError();
+  const name = document.getElementById('su-name').value.trim();
+  const email = document.getElementById('su-email').value.trim();
+  const mobile = document.getElementById('su-mob').value.trim();
+  const pwd = document.getElementById('su-pwd').value;
+
+  if (!name || !email || !mobile || !pwd) { showError('Please fill in all fields.'); return; }
+  if (pwd.length < 6) { showError('Password must be at least 6 characters.'); return; }
+
+  setLoading('signupBtn', true);
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, pwd);
+    /* Save user profile to Firestore */
+    await setDoc(doc(db, 'users', cred.user.uid), {
+      name, email, mobile,
+      status: 'FREE',
+      subscriptionEndDate: null,
+      createdAt: serverTimestamp()
+    });
+    showToast('✅ Account created! Redirecting…');
+    setTimeout(() => window.location.href = 'dashboard.html', 700);
+  } catch(e) {
+    let msg = 'Sign up failed. Please try again.';
+    if (e.code === 'auth/email-already-in-use') msg = 'This email is already registered. Please sign in.';
+    if (e.code === 'auth/invalid-email') msg = 'Invalid email address.';
+    if (e.code === 'auth/weak-password') msg = 'Password is too weak. Use at least 6 characters.';
+    showError(msg);
+    document.getElementById('signupBtn').innerHTML = 'Create Account →';
+    document.getElementById('signupBtn').disabled = false;
+  }
+}
+
+/* ── FORGOT PASSWORD ── */
+window.doForgotPassword = async function() {
+  const email = document.getElementById('si-email').value.trim();
+  if (!email) { showError('Please enter your email address first.'); return; }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    showToast('📧 Password reset email sent!');
+  } catch(e) {
+    showError('Could not send reset email. Check your email address.');
+  }
+}
+
+window.switchMode = function(mode) {
+  const signin = document.getElementById('signinForm');
+  const signup = document.getElementById('signupForm');
+  hideError();
+  document.getElementById('tabSignin').classList.toggle('on', mode === 'signin');
+  document.getElementById('tabSignup').classList.toggle('on', mode === 'signup');
+  if (mode === 'signup') {
+    signin.style.display = 'none'; signup.style.display = 'block';
+    document.getElementById('formTitle').innerHTML = 'Create your <span class="hl">Account</span>';
+    document.getElementById('formSub').textContent = 'Join DhanMatrix and start tracking your calls today.';
+    document.getElementById('swapHint').innerHTML = 'Already have an account? <a href="#" onclick="switchMode(\'signin\');return false">Sign in</a>';
+  } else {
+    signin.style.display = 'block'; signup.style.display = 'none';
+    document.getElementById('formTitle').innerHTML = 'Welcome <span class="hl">Back</span>';
+    document.getElementById('formSub').textContent = 'Sign in with your DhanMatrix subscriber credentials.';
+    document.getElementById('swapHint').innerHTML = "Don't have an account? <a href=\"#\" onclick=\"switchMode('signup');return false\">Sign up</a>";
+  }
+}
+
+function showToast(msg, isError) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.toggle('error', !!isError);
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+/* Allow Enter key */
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    if (document.getElementById('signinForm').style.display !== 'none') doSignin();
+    else doSignup();
+  }
+});
+</script>
+
+<script>
+/* Background canvas */
+try {
+  const canvas = document.getElementById('liveChart');
+  const ctx = canvas.getContext('2d');
+  const SPACING = 38;
+  let dots = [], lines = [], orbPhases;
+  const ORBS = [{cx:.20,cy:.30,r:.30,col:'0,212,170',a:.07,speed:.0004},{cx:.75,cy:.65,r:.26,col:'139,92,246',a:.06,speed:.0005},{cx:.55,cy:.10,r:.20,col:'251,191,36',a:.04,speed:.0006}];
+  function resize() {
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    dots = [];
+    const cols = Math.ceil(canvas.width/SPACING)+1, rows = Math.ceil(canvas.height/SPACING)+1;
+    for (let r=0;r<rows;r++) for (let c=0;c<cols;c++)
+      dots.push({x:c*SPACING,y:r*SPACING,baseX:c*SPACING,baseY:r*SPACING,phase:Math.random()*Math.PI*2,speed:.003+Math.random()*.004,r:.7+Math.random()*.8});
+    orbPhases = ORBS.map(()=>Math.random()*Math.PI*2);
+  }
+  function spawnLine() {
+    const side=Math.random()<.5?'h':'v', cols=['0,212,170','139,92,246','251,191,36','244,114,182'], col=cols[Math.floor(Math.random()*cols.length)];
+    if(side==='h'){const row=Math.floor(Math.random()*Math.ceil(canvas.height/SPACING));lines.push({side:'h',pos:row*SPACING,start:0,len:0,maxLen:80+Math.random()*140,speed:2+Math.random()*2.5,col,life:1});}
+    else{const c=Math.floor(Math.random()*Math.ceil(canvas.width/SPACING));lines.push({side:'v',pos:c*SPACING,start:0,len:0,maxLen:60+Math.random()*100,speed:1.5+Math.random()*2,col,life:1});}
+  }
+  let lineTimer=0;
+  function draw(ts) {
+    const t=ts*.001; ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#030c18'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ORBS.forEach((orb,oi)=>{orbPhases[oi]+=orb.speed;const ox=orb.cx*canvas.width+Math.sin(orbPhases[oi]*1.3)*canvas.width*.06,oy=orb.cy*canvas.height+Math.cos(orbPhases[oi]*.9)*canvas.height*.05,r=orb.r*Math.min(canvas.width,canvas.height);const g=ctx.createRadialGradient(ox,oy,0,ox,oy,r);g.addColorStop(0,`rgba(${orb.col},${orb.a})`);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(ox,oy,r,0,Math.PI*2);ctx.fill();});
+    lineTimer+=.016; if(lineTimer>.20+Math.random()*.3){spawnLine();lineTimer=0;}
+    lines=lines.filter(l=>l.life>0);
+    lines.forEach(l=>{l.start+=l.speed*.5;l.len=Math.min(l.len+l.speed*1.8,l.maxLen);if(l.len>=l.maxLen)l.life-=.04;ctx.strokeStyle=`rgba(${l.col},${l.life*.5})`;ctx.lineWidth=1.2;ctx.beginPath();if(l.side==='h'){ctx.moveTo(l.start,l.pos);ctx.lineTo(l.start+l.len,l.pos);}else{ctx.moveTo(l.pos,l.start);ctx.lineTo(l.pos,l.start+l.len);}ctx.stroke();});
+    dots.forEach(d=>{d.phase+=d.speed;d.x=d.baseX+Math.sin(d.phase*1.4+t*.3)*2.5;d.y=d.baseY+Math.cos(d.phase*1.1+t*.2)*2.5;let glow=0;ORBS.forEach((orb,oi)=>{const ox=orb.cx*canvas.width+Math.sin(orbPhases[oi]*1.3)*canvas.width*.06,oy=orb.cy*canvas.height+Math.cos(orbPhases[oi]*.9)*canvas.height*.05,dist=Math.sqrt((d.x-ox)**2+(d.y-oy)**2),r=orb.r*Math.min(canvas.width,canvas.height);if(dist<r)glow=Math.max(glow,1-dist/r);});ctx.beginPath();ctx.arc(d.x,d.y,d.r+glow*1.6,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${.16+glow*.45})`;ctx.fill();});
+    requestAnimationFrame(draw);
+  }
+  resize(); window.addEventListener('resize',resize); requestAnimationFrame(draw);
+} catch(e){}
+</script>
+</body>
+</html>

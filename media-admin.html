@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DhanMatrix — Media Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#f0f2f5;display:flex;min-height:100vh;color:#1a1a2e}
+
+/* SIDEBAR — matches existing panel */
+.sidebar{width:220px;background:#0f172a;min-height:100vh;position:fixed;top:0;left:0;display:flex;flex-direction:column;z-index:100}
+.sb-brand{padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-brand h2{color:#fff;font-size:18px;font-weight:700}
+.sb-brand p{color:rgba(255,255,255,.4);font-size:11px;margin-top:2px}
+.sb-nav{padding:12px 10px;flex:1}
+.sb-nav a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:rgba(255,255,255,.55);font-size:13px;font-weight:500;transition:.15s;margin-bottom:2px;cursor:pointer}
+.sb-nav a:hover{background:rgba(255,255,255,.06);color:#fff}
+.sb-nav a.active{background:#1d4ed8;color:#fff}
+.sb-nav a .ico{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.sb-back{padding:12px 10px;border-top:1px solid rgba(255,255,255,.08)}
+.sb-back a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;text-decoration:none;color:rgba(255,255,255,.4);font-size:13px;transition:.15s}
+.sb-back a:hover{color:#fff}
+
+/* MAIN */
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:#0f172a;padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar h1{color:#fff;font-size:16px;font-weight:600}
+.topbar .badge{background:rgba(29,78,216,.3);border:1px solid rgba(29,78,216,.5);color:#93c5fd;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.content{padding:28px;flex:1}
+
+/* TABS */
+.tabs{display:flex;gap:4px;background:#fff;border-radius:10px;padding:4px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,.08);width:fit-content}
+.tab{padding:8px 18px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;color:#64748b;transition:.15s;border:none;background:transparent;font-family:'Inter',sans-serif}
+.tab:hover{color:#1e293b}
+.tab.active{background:#1d4ed8;color:#fff;box-shadow:0 2px 8px rgba(29,78,216,.3)}
+
+/* CARDS */
+.card{background:#fff;border-radius:12px;padding:24px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.card-title{font-size:16px;font-weight:700;color:#0f172a}
+.card-sub{font-size:13px;color:#64748b;margin-top:2px}
+
+/* UPLOAD ZONE */
+.upload-zone{border:2px dashed #cbd5e1;border-radius:10px;padding:36px;text-align:center;cursor:pointer;transition:.2s;background:#f8fafc;position:relative}
+.upload-zone:hover,.upload-zone.drag{border-color:#1d4ed8;background:#eff6ff}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-zone .uz-ico{font-size:36px;margin-bottom:10px}
+.upload-zone h3{font-size:14px;font-weight:600;color:#0f172a;margin-bottom:4px}
+.upload-zone p{font-size:12px;color:#94a3b8}
+.upload-zone .uz-btn{display:inline-flex;background:#1d4ed8;color:#fff;padding:8px 18px;border-radius:7px;font-size:13px;font-weight:600;margin-top:12px;cursor:pointer}
+
+/* PROGRESS */
+.progress-bar{height:6px;background:#e2e8f0;border-radius:6px;overflow:hidden;margin-top:8px}
+.progress-fill{height:100%;background:linear-gradient(90deg,#1d4ed8,#3b82f6);border-radius:6px;transition:width .3s ease;width:0%}
+
+/* PHOTO GRID */
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:16px}
+.photo-item{position:relative;border-radius:8px;overflow:hidden;aspect-ratio:4/3;background:#f1f5f9;border:1px solid #e2e8f0}
+.photo-item img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-item .del-btn{position:absolute;top:6px;right:6px;background:rgba(239,68,68,.9);color:#fff;border:none;border-radius:6px;width:26px;height:26px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:.2s;opacity:0}
+.photo-item:hover .del-btn{opacity:1}
+.photo-item .photo-label{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.6));padding:6px 8px;font-size:10px;color:#fff;font-weight:500}
+
+/* DOC LIST */
+.doc-list{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.doc-item{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid #e2e8f0;border-radius:10px;background:#f8fafc;transition:.15s}
+.doc-item:hover{border-color:#bfdbfe;background:#eff6ff}
+.doc-ico{width:40px;height:40px;background:#dbeafe;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.doc-info{flex:1;min-width:0}
+.doc-name{font-size:13px;font-weight:600;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc-meta{font-size:11px;color:#94a3b8;margin-top:2px}
+.doc-status{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.doc-status.uploaded{background:#dcfce7;color:#16a34a}
+.doc-status.missing{background:#fef3c7;color:#d97706}
+.doc-actions{display:flex;gap:8px;flex-shrink:0}
+
+/* SIGNAL FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid.three{grid-template-columns:1fr 1fr 1fr}
+.fgroup{display:flex;flex-direction:column;gap:5px}
+.fgroup label{font-size:11px;font-weight:700;color:#64748b;letter-spacing:.6px;text-transform:uppercase}
+.finput{padding:9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:'Inter',sans-serif;color:#0f172a;outline:none;transition:.15s;background:#fff}
+.finput:focus{border-color:#1d4ed8;box-shadow:0 0 0 3px rgba(29,78,216,.1)}
+select.finput{cursor:pointer}
+textarea.finput{resize:vertical;min-height:80px}
+
+/* BUTTONS */
+.btn{padding:9px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;border:none;transition:.15s;display:inline-flex;align-items:center;gap:7px}
+.btn-primary{background:#1d4ed8;color:#fff}
+.btn-primary:hover{background:#1e40af}
+.btn-danger{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}
+.btn-danger:hover{background:#fecaca}
+.btn-ghost{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}
+.btn-ghost:hover{background:#e2e8f0}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-success{background:#dcfce7;color:#16a34a;border:1px solid #bbf7d0}
+.btn-success:hover{background:#bbf7d0}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:10px;font-weight:700;color:#94a3b8;letter-spacing:.8px;text-transform:uppercase;padding:10px 14px;border-bottom:1px solid #f1f5f9}
+.tbl td{padding:12px 14px;border-bottom:1px solid #f8fafc;font-size:13px;vertical-align:middle;color:#374151}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#f8fafc}
+
+/* BADGE */
+.badge-buy{background:#dcfce7;color:#16a34a;border:1px solid #bbf7d0;font-size:10px;font-weight:800;padding:2px 8px;border-radius:5px}
+.badge-sell{background:#fee2e2;color:#dc2626;border:1px solid #fecaca;font-size:10px;font-weight:800;padding:2px 8px;border-radius:5px}
+.badge-open{background:#fef3c7;color:#d97706;font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px}
+.badge-hit{background:#dcfce7;color:#16a34a;font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px}
+.badge-sl{background:#fee2e2;color:#dc2626;font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:#fff;border-radius:12px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.stat-val{font-size:28px;font-weight:800;color:#0f172a;line-height:1;margin-bottom:4px}
+.stat-lbl{font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:#0f172a;color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;transform:translateY(20px);opacity:0;transition:.3s;max-width:300px;display:flex;align-items:center;gap:8px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success{border-left:3px solid #22c55e}
+.toast.error{border-left:3px solid #ef4444}
+
+/* SECTION HIDDEN */
+.section{display:none}.section.active{display:block}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:40px;color:#94a3b8}
+.empty .e-ico{font-size:36px;margin-bottom:10px}
+.empty p{font-size:13px}
+
+/* UPLOAD ITEM PREVIEW */
+.upload-preview{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;margin-top:8px}
+.upload-preview .up-name{flex:1;font-size:12px;font-weight:600;color:#374151;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.upload-preview .up-size{font-size:11px;color:#94a3b8;flex-shrink:0}
+
+/* ANNOUNCEMENT TYPES */
+.ann-info{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start}
+.ann-success{background:#f0fdf4;border-color:#bbf7d0}
+.ann-warning{background:#fffbeb;border-color:#fde68a}
+.ann-alert{background:#fef2f2;border-color:#fecaca}
+
+.loading{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* TOGGLE SWITCH */
+.toggle-switch{width:36px;height:20px;border-radius:20px;background:#e2e8f0;position:relative;transition:.2s;cursor:pointer;flex-shrink:0}
+.toggle-switch::after{content:'';position:absolute;left:2px;top:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle-switch.on{background:#1d4ed8}
+.toggle-switch.on::after{left:18px}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sb-brand">
+    <h2>DhanMatrix</h2>
+    <p>Media & Content Admin</p>
+  </div>
+  <div class="sb-nav">
+    <a class="active" onclick="showSection('dashboard')"><span class="ico">📊</span> Dashboard</a>
+    <a onclick="showSection('photos')"><span class="ico">🖼️</span> About Photos</a>
+    <a onclick="showSection('documents')"><span class="ico">📄</span> Documents</a>
+    <a onclick="showSection('signals')"><span class="ico">📡</span> Signals</a>
+    <a onclick="showSection('announcements')"><span class="ico">📢</span> Announcements</a>
+    <a onclick="showSection('research')"><span class="ico">📊</span> Research</a>
+    <a onclick="showSection('contacts')"><span class="ico">✉️</span> Contacts</a>
+    <a onclick="showSection('qrcode')"><span class="ico">📱</span> Payment QR</a>
+    <a onclick="showSection('closedtrades')"><span class="ico">📈</span> Closed Trades</a>
+    <a onclick="showSection('applinks')"><span class="ico">🔗</span> App Links</a>
+    <a onclick="showSection('users')"><span class="ico">👥</span> Users</a>
+  </div>
+  <div class="sb-back">
+    <a href="javascript:history.back()">← Back to Main Panel</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <h1 id="topbarTitle">Dashboard</h1>
+    <span class="badge">Media & Content</span>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="section active" id="sec-dashboard">
+      <div class="stats-row" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-card"><div class="stat-val" id="d-photos">—</div><div class="stat-lbl">About Photos</div></div>
+        <div class="stat-card"><div class="stat-val" id="d-docs">—</div><div class="stat-lbl">Documents</div></div>
+        <div class="stat-card"><div class="stat-val" id="d-signals">—</div><div class="stat-lbl">Signals</div></div>
+        <div class="stat-card"><div class="stat-val" id="d-contacts">—</div><div class="stat-lbl">Contacts</div></div>
+      </div>
+      <div class="stats-row" style="grid-template-columns:repeat(3,1fr);margin-top:-10px">
+        <div class="stat-card"><div class="stat-val" id="d-closed">—</div><div class="stat-lbl">Closed Trades</div></div>
+        <div class="stat-card"><div class="stat-val" id="d-qr" style="font-size:18px">—</div><div class="stat-lbl">Payment QR</div></div>
+        <div class="stat-card"><div class="stat-val" id="d-ann">—</div><div class="stat-lbl">Announcements</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Quick Actions</div><div class="card-sub">Jump to common tasks</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+          <div onclick="showSection('photos')" style="padding:18px;border:1px solid #e2e8f0;border-radius:10px;cursor:pointer;text-align:center;transition:.15s" onmouseover="this.style.borderColor='#1d4ed8'" onmouseout="this.style.borderColor='#e2e8f0'">
+            <div style="font-size:28px;margin-bottom:8px">🖼️</div>
+            <div style="font-size:13px;font-weight:700;color:#0f172a">Upload Photos</div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px">About section gallery</div>
+          </div>
+          <div onclick="showSection('documents')" style="padding:18px;border:1px solid #e2e8f0;border-radius:10px;cursor:pointer;text-align:center;transition:.15s" onmouseover="this.style.borderColor='#1d4ed8'" onmouseout="this.style.borderColor='#e2e8f0'">
+            <div style="font-size:28px;margin-bottom:8px">📄</div>
+            <div style="font-size:13px;font-weight:700;color:#0f172a">Upload Documents</div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px">Privacy, T&C, Disclaimers</div>
+          </div>
+          <div onclick="showSection('applinks')" style="padding:18px;border:1px solid #e2e8f0;border-radius:10px;cursor:pointer;text-align:center;transition:.15s" onmouseover="this.style.borderColor='#1d4ed8'" onmouseout="this.style.borderColor='#e2e8f0'">
+            <div style="font-size:28px;margin-bottom:8px">🔗</div>
+            <div style="font-size:13px;font-weight:700;color:#0f172a">App Links</div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px">Play Store & App Store</div>
+          </div>
+          <div onclick="showSection('users')" style="padding:18px;border:1px solid #e2e8f0;border-radius:10px;cursor:pointer;text-align:center;transition:.15s" onmouseover="this.style.borderColor='#1d4ed8'" onmouseout="this.style.borderColor='#e2e8f0'">
+            <div style="font-size:28px;margin-bottom:8px">👥</div>
+            <div style="font-size:13px;font-weight:700;color:#0f172a">Manage Users</div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px">Create, block, delete</div>
+          </div>
+          <div onclick="showSection('closedtrades')" style="padding:18px;border:1px solid #e2e8f0;border-radius:10px;cursor:pointer;text-align:center;transition:.15s" onmouseover="this.style.borderColor='#1d4ed8'" onmouseout="this.style.borderColor='#e2e8f0'">
+            <div style="font-size:28px;margin-bottom:8px">📈</div>
+            <div style="font-size:13px;font-weight:700;color:#0f172a">Closed Trades</div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px">Monthly performance upload</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Firebase Status</div></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px">
+          <span style="width:8px;height:8px;border-radius:50%;background:#22c55e;flex-shrink:0"></span>
+          <span style="font-size:13px;font-weight:600;color:#15803d">Connected to Firebase — Project: dmat-b0ce6</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABOUT PHOTOS -->
+    <div class="section" id="sec-photos">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">About Section Photos</div><div class="card-sub">These appear in the slideshow on your website's About section</div></div>
+        </div>
+        <div class="upload-zone" id="photoZone">
+          <input type="file" id="photoInput" accept="image/*" multiple onchange="handlePhotoUpload(this.files)">
+          <div class="uz-ico">🖼️</div>
+          <h3>Drop photos here or click to browse</h3>
+          <p>JPG, PNG, WEBP · Max 5MB each · Multiple allowed</p>
+          <div class="uz-btn">Choose Photos</div>
+        </div>
+        <div id="photoUploadProgress" style="display:none;margin-top:12px">
+          <div style="font-size:12px;font-weight:600;color:#374151;margin-bottom:6px" id="photoProgressLabel">Uploading...</div>
+          <div class="progress-bar"><div class="progress-fill" id="photoProgressFill"></div></div>
+        </div>
+        <div id="photoGrid" class="photo-grid"></div>
+        <div id="photoEmpty" class="empty"><div class="e-ico">🖼️</div><p>No photos yet. Upload some to show in the About section slideshow.</p></div>
+      </div>
+    </div>
+
+    <!-- DOCUMENTS -->
+    <div class="section" id="sec-documents">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Legal Documents & Policies</div><div class="card-sub">Upload PDFs — they'll be accessible at /privacy-policy.pdf etc. on your website</div></div>
+        </div>
+        <div class="doc-list" id="docList">
+          <!-- populated by JS -->
+        </div>
+      </div>
+
+      <!-- UPLOAD MODAL -->
+      <div class="card" id="docUploadCard" style="display:none">
+        <div class="card-header">
+          <div><div class="card-title" id="docUploadTitle">Upload Document</div><div class="card-sub" id="docUploadSub"></div></div>
+          <button class="btn btn-ghost btn-sm" onclick="cancelDocUpload()">Cancel</button>
+        </div>
+        <div class="upload-zone" id="docZone">
+          <input type="file" id="docInput" accept=".pdf" onchange="handleDocUpload(this.files)">
+          <div class="uz-ico">📄</div>
+          <h3>Drop PDF here or click to browse</h3>
+          <p>PDF files only · Max 10MB</p>
+          <div class="uz-btn">Choose PDF</div>
+        </div>
+        <div id="docUploadProgress" style="display:none;margin-top:12px">
+          <div style="font-size:12px;font-weight:600;color:#374151;margin-bottom:6px" id="docProgressLabel">Uploading...</div>
+          <div class="progress-bar"><div class="progress-fill" id="docProgressFill"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIGNALS -->
+    <div class="section" id="sec-signals">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Post Trade Signal</div><div class="card-sub">Signals appear on your website's performance section</div></div>
+        </div>
+        <div class="form-grid" style="margin-bottom:14px">
+          <div class="fgroup"><label>Stock Symbol</label><input class="finput" id="s-symbol" placeholder="RELIANCE" type="text"></div>
+          <div class="fgroup"><label>Type</label><select class="finput" id="s-type"><option value="BUY">BUY</option><option value="SELL">SELL</option></select></div>
+        </div>
+        <div class="form-grid three" style="margin-bottom:14px">
+          <div class="fgroup"><label>Call Type</label><select class="finput" id="s-calltype"><option>Equity</option><option>Swing</option><option>Options</option><option>Futures</option></select></div>
+          <div class="fgroup"><label>Entry Price</label><input class="finput" id="s-entry" placeholder="2840" type="number"></div>
+          <div class="fgroup"><label>Stop Loss</label><input class="finput" id="s-sl" placeholder="2780" type="number"></div>
+        </div>
+        <div class="form-grid three" style="margin-bottom:14px">
+          <div class="fgroup"><label>Target 1</label><input class="finput" id="s-t1" placeholder="2920" type="number"></div>
+          <div class="fgroup"><label>Target 2</label><input class="finput" id="s-t2" placeholder="2970" type="number"></div>
+          <div class="fgroup"><label>Target 3</label><input class="finput" id="s-t3" placeholder="3050" type="number"></div>
+        </div>
+        <div class="fgroup" style="margin-bottom:16px"><label>Notes</label><input class="finput" id="s-notes" placeholder="Brief note about this call..." type="text"></div>
+        <button class="btn btn-primary" onclick="postSignal()" id="signalBtn">📡 Post Signal</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Posted Signals</div></div>
+        <div id="signalsList"><div class="empty"><div class="e-ico">📡</div><p>No signals yet.</p></div></div>
+      </div>
+    </div>
+
+    <!-- ANNOUNCEMENTS -->
+    <div class="section" id="sec-announcements">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Post Announcement</div><div class="card-sub">Announcements appear as a banner on your website</div></div>
+        </div>
+        <div class="fgroup" style="margin-bottom:14px"><label>Title</label><input class="finput" id="a-title" placeholder="Important Update" type="text"></div>
+        <div class="fgroup" style="margin-bottom:14px"><label>Message</label><textarea class="finput" id="a-body" placeholder="Write your announcement here..."></textarea></div>
+        <div class="form-grid" style="margin-bottom:16px">
+          <div class="fgroup"><label>Type</label>
+            <select class="finput" id="a-type">
+              <option value="info">ℹ️ Info</option>
+              <option value="success">✅ Success</option>
+              <option value="warning">⚠️ Warning</option>
+              <option value="alert">🚨 Alert</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="postAnnouncement()" id="annBtn">📢 Post Announcement</button>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Active Announcements</div></div>
+        <div id="annList"><div class="empty"><div class="e-ico">📢</div><p>No announcements yet.</p></div></div>
+      </div>
+    </div>
+
+    <!-- RESEARCH -->
+    <div class="section" id="sec-research">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Add Research Report</div><div class="card-sub">Reports appear in the Research section of your website</div></div>
+        </div>
+        <div class="form-grid" style="margin-bottom:14px">
+          <div class="fgroup"><label>Report Title</label><input class="finput" id="r-title" placeholder="Banking Sector Q3 2025 Review" type="text"></div>
+          <div class="fgroup"><label>Sector</label>
+            <select class="finput" id="r-sector">
+              <option>Banking</option><option>IT</option><option>Energy</option>
+              <option>Auto</option><option>Pharma</option><option>FMCG</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="fgroup" style="margin-bottom:14px"><label>Summary</label><textarea class="finput" id="r-summary" placeholder="Brief summary of this report..."></textarea></div>
+        <div class="form-grid" style="margin-bottom:16px">
+          <div class="fgroup"><label>PDF Link (optional)</label><input class="finput" id="r-pdf" placeholder="https://..." type="url"></div>
+          <div class="fgroup"><label>Published Date</label><input class="finput" id="r-date" type="date"></div>
+        </div>
+        <button class="btn btn-primary" onclick="postResearch()" id="resBtn">📄 Publish Report</button>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Published Reports</div></div>
+        <div id="resList"><div class="empty"><div class="e-ico">📊</div><p>No reports yet.</p></div></div>
+      </div>
+    </div>
+
+    <!-- CONTACTS -->
+    <div class="section" id="sec-contacts">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Contact Inquiries</div><div class="card-sub">Messages submitted through your website contact form</div></div>
+          <button class="btn btn-ghost btn-sm" onclick="loadContacts()">↻ Refresh</button>
+        </div>
+        <div id="contactsList"><div class="empty"><div class="e-ico">✉️</div><p>No contacts yet.</p></div></div>
+      </div>
+    </div>
+
+    <!-- QR CODE -->
+    <div class="section" id="sec-qrcode">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Payment QR Code</div><div class="card-sub">Upload your UPI/payment QR code — it will show on the Services page for customers to pay</div></div>
+        </div>
+
+        <!-- Current QR Preview -->
+        <div id="currentQR" style="display:none;margin-bottom:24px">
+          <div style="font-size:12px;font-weight:700;color:#64748b;letter-spacing:.6px;text-transform:uppercase;margin-bottom:10px">Current QR Code</div>
+          <div style="display:flex;align-items:flex-start;gap:20px;padding:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px">
+            <img id="currentQRImg" src="" alt="Payment QR" style="width:140px;height:140px;object-fit:contain;border-radius:8px;border:1px solid #e2e8f0;background:#fff;padding:8px">
+            <div>
+              <div style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:4px" id="currentQRName">—</div>
+              <div style="font-size:12px;color:#94a3b8;margin-bottom:12px" id="currentQRDate">—</div>
+              <div style="display:flex;gap:8px">
+                <a id="currentQRLink" href="#" target="_blank" class="btn btn-success btn-sm">View Full Size</a>
+                <button class="btn btn-danger btn-sm" onclick="deleteQR()">🗑 Remove QR</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upload Zone -->
+        <div>
+          <div style="font-size:12px;font-weight:700;color:#64748b;letter-spacing:.6px;text-transform:uppercase;margin-bottom:10px" id="qrUploadLabel">Upload QR Code</div>
+          <div class="upload-zone" id="qrZone">
+            <input type="file" id="qrInput" accept="image/*" onchange="handleQRUpload(this.files)">
+            <div class="uz-ico">📱</div>
+            <h3>Drop QR image here or click to browse</h3>
+            <p>PNG, JPG · Clear & high quality · Max 3MB</p>
+            <div class="uz-btn">Choose QR Image</div>
+          </div>
+          <div id="qrUploadProgress" style="display:none;margin-top:12px">
+            <div style="font-size:12px;font-weight:600;color:#374151;margin-bottom:6px">Uploading QR Code...</div>
+            <div class="progress-bar"><div class="progress-fill" id="qrProgressFill"></div></div>
+          </div>
+        </div>
+
+        <!-- Instructions -->
+        <div style="margin-top:20px;padding:14px 16px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px">
+          <div style="font-size:12px;font-weight:700;color:#1d4ed8;margin-bottom:6px">📋 How to add QR to your Services page</div>
+          <div style="font-size:12px;color:#374151;line-height:1.7">After uploading, add this code to your <strong>services.html</strong> where you want the QR to appear:</div>
+          <pre id="qrSnippet" style="margin-top:8px;background:#1e293b;color:#e2e8f0;padding:12px;border-radius:6px;font-size:11px;overflow-x:auto;white-space:pre-wrap"><!-- Loading snippet... --></pre>
+          <button onclick="copySnippet()" class="btn btn-ghost btn-sm" style="margin-top:8px">📋 Copy Code</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLOSED TRADES -->
+    <div class="section" id="sec-closedtrades">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Upload Closed Trades</div><div class="card-sub">Add monthly closed trades — they show on your performance.html page</div></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select class="finput" id="ct-month" style="width:auto;font-size:12px;padding:6px 10px">
+              <option>January 2025</option><option>February 2025</option><option>March 2025</option>
+              <option>April 2025</option><option>May 2025</option><option>June 2025</option>
+              <option>July 2025</option><option>August 2025</option><option>September 2025</option>
+              <option>October 2025</option><option>November 2025</option><option selected>December 2025</option>
+              <option>January 2026</option><option>February 2026</option><option>March 2026</option>
+              <option>April 2026</option><option selected>May 2026</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Add Trade Form -->
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:18px;margin-bottom:20px">
+          <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:14px">➕ Add Trade</div>
+          <div class="form-grid" style="margin-bottom:12px">
+            <div class="fgroup"><label>Symbol</label><input class="finput" id="ct-symbol" placeholder="RELIANCE" type="text"></div>
+            <div class="fgroup"><label>Type</label><select class="finput" id="ct-type"><option value="BUY">BUY</option><option value="SELL">SELL</option></select></div>
+          </div>
+          <div class="form-grid three" style="margin-bottom:12px">
+            <div class="fgroup"><label>Call Type</label><select class="finput" id="ct-calltype"><option>Equity</option><option>Swing</option><option>Options</option><option>Futures</option></select></div>
+            <div class="fgroup"><label>Entry ₹</label><input class="finput" id="ct-entry" placeholder="2780" type="number"></div>
+            <div class="fgroup"><label>Exit ₹</label><input class="finput" id="ct-exit" placeholder="2960" type="number"></div>
+          </div>
+          <div class="form-grid three" style="margin-bottom:12px">
+            <div class="fgroup"><label>Stop Loss ₹</label><input class="finput" id="ct-sl" placeholder="2700" type="number"></div>
+            <div class="fgroup"><label>Target 1 ₹</label><input class="finput" id="ct-t1" placeholder="2860" type="number"></div>
+            <div class="fgroup"><label>P&L %</label><input class="finput" id="ct-pnl" placeholder="+6.5" type="number" step="0.1"></div>
+          </div>
+          <div class="form-grid" style="margin-bottom:14px">
+            <div class="fgroup"><label>Status</label>
+              <select class="finput" id="ct-status">
+                <option value="WIN">✅ WIN</option>
+                <option value="LOSS">❌ LOSS</option>
+                <option value="OPEN">🟡 OPEN</option>
+              </select>
+            </div>
+            <div class="fgroup"><label>Date</label><input class="finput" id="ct-date" type="date"></div>
+          </div>
+          <button class="btn btn-primary" onclick="addClosedTrade()" id="ctBtn">➕ Add to List</button>
+        </div>
+
+        <!-- Trades List -->
+        <div id="closedTradesList"><div class="empty"><div class="e-ico">📈</div><p>No closed trades yet. Add some above.</p></div></div>
+
+        <!-- Stats Summary -->
+        <div id="ctStats" style="display:none;margin-top:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:14px;text-align:center">
+            <div style="font-size:22px;font-weight:800;color:#16a34a" id="ct-total">0</div>
+            <div style="font-size:11px;color:#64748b;font-weight:600">Total Trades</div>
+          </div>
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:14px;text-align:center">
+            <div style="font-size:22px;font-weight:800;color:#16a34a" id="ct-wins">0</div>
+            <div style="font-size:11px;color:#64748b;font-weight:600">Wins ✅</div>
+          </div>
+          <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:14px;text-align:center">
+            <div style="font-size:22px;font-weight:800;color:#dc2626" id="ct-losses">0</div>
+            <div style="font-size:11px;color:#64748b;font-weight:600">Losses ❌</div>
+          </div>
+          <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px;text-align:center">
+            <div style="font-size:22px;font-weight:800;color:#1d4ed8" id="ct-winrate">0%</div>
+            <div style="font-size:11px;color:#64748b;font-weight:600">Win Rate</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- APP LINKS -->
+    <div class="section" id="sec-applinks">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">App Download Links</div><div class="card-sub">These links appear on your website for users to download the app</div></div>
+          <button class="btn btn-primary" onclick="saveAppLinks()">💾 Save Links</button>
+        </div>
+
+        <!-- Play Store -->
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:18px;margin-bottom:16px">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+            <div style="width:42px;height:42px;background:#16a34a;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">▶</div>
+            <div><div style="font-size:14px;font-weight:700;color:#0f172a">Google Play Store</div><div style="font-size:12px;color:#64748b">Android app link</div></div>
+          </div>
+          <div class="fgroup">
+            <label>Play Store URL</label>
+            <input class="finput" id="playstore-url" type="url" placeholder="https://play.google.com/store/apps/details?id=com.stockadvisory.app">
+          </div>
+          <div id="playstore-current" style="display:none;margin-top:8px;padding:8px 12px;background:#dcfce7;border-radius:7px;font-size:12px;color:#16a34a;display:flex;align-items:center;gap:8px">
+            <span>✅ Current:</span><a id="playstore-link" href="#" target="_blank" style="color:#16a34a;font-weight:600;word-break:break-all"></a>
+          </div>
+        </div>
+
+        <!-- App Store / APK -->
+        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:18px;margin-bottom:16px">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+            <div style="width:42px;height:42px;background:#2563eb;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🍎</div>
+            <div><div style="font-size:14px;font-weight:700;color:#0f172a">iOS App Store / APK Link</div><div style="font-size:12px;color:#64748b">App Store link or direct APK download link</div></div>
+          </div>
+          <div class="fgroup" style="margin-bottom:10px">
+            <label>App Store / APK URL</label>
+            <input class="finput" id="appstore-url" type="url" placeholder="https://apps.apple.com/app/... or APK direct link">
+          </div>
+          <div style="display:flex;gap:8px">
+            <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#374151;cursor:pointer"><input type="radio" name="ios-type" value="appstore" id="ios-appstore" checked> App Store</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#374151;cursor:pointer"><input type="radio" name="ios-type" value="apk" id="ios-apk"> APK Direct Download</label>
+          </div>
+          <div id="appstore-current" style="display:none;margin-top:8px;padding:8px 12px;background:#dbeafe;border-radius:7px;font-size:12px;color:#1d4ed8">
+            <span>✅ Current:</span> <a id="appstore-link" href="#" target="_blank" style="color:#1d4ed8;font-weight:600;word-break:break-all"></a>
+          </div>
+        </div>
+
+        <!-- Website Snippet -->
+        <div style="background:#fafafa;border:1px solid #e2e8f0;border-radius:10px;padding:16px">
+          <div style="font-size:12px;font-weight:700;color:#374151;margin-bottom:8px">📋 Add to your website HTML (services.html or index.html):</div>
+          <pre id="appLinksSnippet" style="background:#1e293b;color:#e2e8f0;padding:12px;border-radius:6px;font-size:11px;overflow-x:auto;white-space:pre-wrap"><!-- Save links above first to generate snippet --></pre>
+          <button onclick="copyAppSnippet()" class="btn btn-ghost btn-sm" style="margin-top:8px">📋 Copy Code</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="section" id="sec-users">
+
+      <!-- CREATE USER CARD -->
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Create Web User</div><div class="card-sub">Create login credentials for website dashboard access</div></div>
+        </div>
+        <div class="form-grid" style="margin-bottom:14px">
+          <div class="fgroup"><label>Full Name</label><input class="finput" id="nu-name" placeholder="Rahul Sharma" type="text"></div>
+          <div class="fgroup"><label>Email Address</label><input class="finput" id="nu-email" placeholder="rahul@email.com" type="email"></div>
+        </div>
+        <div class="form-grid" style="margin-bottom:14px">
+          <div class="fgroup"><label>Mobile Number</label><input class="finput" id="nu-mobile" placeholder="+91 XXXXX XXXXX" type="tel"></div>
+          <div class="fgroup"><label>Password</label><input class="finput" id="nu-pwd" placeholder="Min 6 characters" type="password"></div>
+        </div>
+        <div class="form-grid" style="margin-bottom:16px">
+          <div class="fgroup"><label>Subscription Status</label>
+            <select class="finput" id="nu-status">
+              <option value="FREE">FREE — No subscription</option>
+              <option value="PAID">PAID — Active subscriber</option>
+            </select>
+          </div>
+          <div class="fgroup"><label>Subscription End Date</label>
+            <input class="finput" id="nu-expiry" type="date">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="createUser()" id="createUserBtn">👤 Create User Account</button>
+      </div>
+
+      <!-- USERS LIST -->
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">All Web Users</div><div class="card-sub">Manage access, block/unblock, activate/deactivate</div></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input class="finput" id="user-search" placeholder="Search by name or email..." type="text" style="width:220px;padding:7px 12px" oninput="filterUsers(this.value)">
+            <button class="btn btn-ghost btn-sm" onclick="loadUsers()">↻ Refresh</button>
+          </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div style="display:flex;gap:6px;margin-bottom:16px">
+          <button class="btn btn-primary btn-sm" onclick="setUserFilter('all',this)" id="uf-all">All</button>
+          <button class="btn btn-ghost btn-sm" onclick="setUserFilter('active',this)" id="uf-active">✅ Active</button>
+          <button class="btn btn-ghost btn-sm" onclick="setUserFilter('blocked',this)" id="uf-blocked">🚫 Blocked</button>
+          <button class="btn btn-ghost btn-sm" onclick="setUserFilter('free',this)" id="uf-free">🆓 Free</button>
+          <button class="btn btn-ghost btn-sm" onclick="setUserFilter('paid',this)" id="uf-paid">💳 Paid</button>
+        </div>
+
+        <div id="usersList"><div class="empty"><div class="e-ico">👥</div><p>Loading users...</p></div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp, query, orderBy, setDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js';
+
+/* ── FIREBASE CONFIG ── */
+const firebaseConfig = {
+  apiKey: "AIzaSyDuC_tvmAIAcpxdqke2TRCgZVmdZ0SjPrw",
+  authDomain: "dmat-b0ce6.firebaseapp.com",
+  projectId: "dmat-b0ce6",
+  storageBucket: "dmat-b0ce6.firebasestorage.app",
+  messagingSenderId: "160685363693",
+  appId: "1:160685363693:web:b1ab5c94f171d1d70ad7e4"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+/* ── TOAST ── */
+function toast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = (type === 'success' ? '✅ ' : '❌ ') + msg;
+  t.className = `toast show ${type}`;
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+/* ── NAV ── */
+window.showSection = function(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sb-nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+  const titles = {dashboard:'Dashboard',photos:'About Photos',documents:'Documents',signals:'Signals',announcements:'Announcements',research:'Research Reports',contacts:'Contact Inquiries',qrcode:'Payment QR Code',closedtrades:'Closed Trades',applinks:'App Download Links',users:'User Management'};
+  document.getElementById('topbarTitle').textContent = titles[name] || name;
+  if(name === 'photos') loadPhotos();
+  if(name === 'documents') loadDocuments();
+  if(name === 'signals') loadSignals();
+  if(name === 'announcements') loadAnnouncements();
+  if(name === 'research') loadResearch();
+  if(name === 'contacts') loadContacts();
+  if(name === 'dashboard') loadDashboard();
+  if(name === 'qrcode') loadQR();
+  if(name === 'closedtrades') loadClosedTrades();
+  if(name === 'applinks') loadAppLinks();
+  if(name === 'users') loadUsers();
+}
+
+/* ── DASHBOARD ── */
+async function loadDashboard() {
+  try {
+    const [photos, signals, contacts, closed, qr, ann] = await Promise.all([
+      getDocs(collection(db, 'aboutPhotos')),
+      getDocs(collection(db, 'signals')),
+      getDocs(collection(db, 'contacts')),
+      getDocs(collection(db, 'closedTrades')),
+      getDocs(collection(db, 'paymentQR')),
+      getDocs(collection(db, 'announcements'))
+    ]);
+    document.getElementById('d-photos').textContent = photos.size;
+    document.getElementById('d-signals').textContent = signals.size;
+    document.getElementById('d-contacts').textContent = contacts.size;
+    document.getElementById('d-docs').textContent = '5';
+    document.getElementById('d-closed').textContent = closed.size;
+    document.getElementById('d-qr').textContent = qr.empty ? '❌ Not set' : '✅ Active';
+    document.getElementById('d-ann').textContent = ann.size;
+  } catch(e) { console.log(e); }
+}
+
+/* ══════════════════════════════
+   ABOUT PHOTOS
+══════════════════════════════ */
+window.handlePhotoUpload = async function(files) {
+  if (!files.length) return;
+  const prog = document.getElementById('photoUploadProgress');
+  const fill = document.getElementById('photoProgressFill');
+  const label = document.getElementById('photoProgressLabel');
+  prog.style.display = 'block';
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    if (file.size > 5 * 1024 * 1024) { toast(`${file.name} is too large (max 5MB)`, 'error'); continue; }
+    label.textContent = `Uploading ${i+1}/${files.length}: ${file.name}`;
+
+    const storageRef = ref(storage, `aboutPhotos/${Date.now()}_${file.name}`);
+    const task = uploadBytesResumable(storageRef, file);
+
+    await new Promise((resolve, reject) => {
+      task.on('state_changed',
+        snap => { fill.style.width = (snap.bytesTransferred / snap.totalBytes * 100) + '%'; },
+        reject,
+        async () => {
+          const url = await getDownloadURL(task.snapshot.ref);
+          await addDoc(collection(db, 'aboutPhotos'), {
+            url, name: file.name,
+            path: storageRef.fullPath,
+            createdAt: serverTimestamp()
+          });
+          resolve();
+        }
+      );
+    });
+  }
+
+  prog.style.display = 'none';
+  fill.style.width = '0%';
+  document.getElementById('photoInput').value = '';
+  toast(`${files.length} photo(s) uploaded!`);
+  loadPhotos();
+}
+
+async function loadPhotos() {
+  const grid = document.getElementById('photoGrid');
+  const empty = document.getElementById('photoEmpty');
+  grid.innerHTML = '<div style="grid-column:1/-1;padding:20px;text-align:center;color:#94a3b8;font-size:13px">Loading...</div>';
+  try {
+    const snap = await getDocs(query(collection(db, 'aboutPhotos'), orderBy('createdAt', 'desc')));
+    if (snap.empty) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    grid.innerHTML = snap.docs.map(d => {
+      const data = d.data();
+      return `<div class="photo-item">
+        <img src="${data.url}" alt="${data.name}" loading="lazy">
+        <button class="del-btn" onclick="deletePhoto('${d.id}','${data.path}')">×</button>
+        <div class="photo-label">${data.name}</div>
+      </div>`;
+    }).join('');
+  } catch(e) { grid.innerHTML = ''; toast('Failed to load photos', 'error'); }
+}
+
+window.deletePhoto = async function(id, path) {
+  if (!confirm('Delete this photo?')) return;
+  try {
+    await deleteDoc(doc(db, 'aboutPhotos', id));
+    try { await deleteObject(ref(storage, path)); } catch(e) {}
+    toast('Photo deleted');
+    loadPhotos();
+  } catch(e) { toast('Delete failed', 'error'); }
+}
+
+/* ══════════════════════════════
+   DOCUMENTS
+══════════════════════════════ */
+const DOCS = [
+  { key: 'privacy-policy',       label: 'Privacy Policy',         filename: 'privacy-policy.pdf' },
+  { key: 'terms-and-conditions', label: 'Terms & Conditions',      filename: 'terms-and-conditions.pdf' },
+  { key: 'financial-disclaimer', label: 'Financial Disclaimer',    filename: 'financial-disclaimer.pdf' },
+  { key: 'ai-disclaimer',        label: 'AI Disclaimer',           filename: 'ai-disclaimer.pdf' },
+  { key: 'payment-refund-policy',label: 'Payment & Refund Policy', filename: 'payment-refund-policy.pdf' },
+];
+
+let activeDocKey = null;
+
+async function loadDocuments() {
+  const list = document.getElementById('docList');
+  list.innerHTML = '<div style="padding:20px;text-align:center;color:#94a3b8;font-size:13px">Loading...</div>';
+  
+  const snap = await getDocs(collection(db, 'documents'));
+  const uploaded = {};
+  snap.forEach(d => { uploaded[d.data().key] = d.data(); });
+
+  list.innerHTML = DOCS.map(doc => {
+    const info = uploaded[doc.key];
+    const hasFile = !!info;
+    return `<div class="doc-item">
+      <div class="doc-ico">📄</div>
+      <div class="doc-info">
+        <div class="doc-name">${doc.label}</div>
+        <div class="doc-meta">${hasFile ? `Uploaded · ${info.filename || doc.filename}` : 'Not uploaded yet'}</div>
+      </div>
+      <span class="doc-status ${hasFile ? 'uploaded' : 'missing'}">${hasFile ? '✓ Uploaded' : '⚠ Missing'}</span>
+      <div class="doc-actions">
+        ${hasFile ? `<a href="${info.url}" target="_blank" class="btn btn-success btn-sm">View PDF</a>` : ''}
+        <button class="btn btn-primary btn-sm" onclick="openDocUpload('${doc.key}','${doc.label}','${doc.filename}')">
+          ${hasFile ? '↑ Replace' : '↑ Upload'}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.openDocUpload = function(key, label, filename) {
+  activeDocKey = { key, label, filename };
+  document.getElementById('docUploadTitle').textContent = `Upload: ${label}`;
+  document.getElementById('docUploadSub').textContent = `Will be saved as ${filename}`;
+  document.getElementById('docUploadCard').style.display = 'block';
+  document.getElementById('docUploadCard').scrollIntoView({ behavior: 'smooth' });
+}
+
+window.cancelDocUpload = function() {
+  document.getElementById('docUploadCard').style.display = 'none';
+  document.getElementById('docInput').value = '';
+  activeDocKey = null;
+}
+
+window.handleDocUpload = async function(files) {
+  if (!files.length || !activeDocKey) return;
+  const file = files[0];
+  if (file.type !== 'application/pdf') { toast('Please upload a PDF file only', 'error'); return; }
+  if (file.size > 10 * 1024 * 1024) { toast('File too large (max 10MB)', 'error'); return; }
+
+  const prog = document.getElementById('docUploadProgress');
+  const fill = document.getElementById('docProgressFill');
+  const label = document.getElementById('docProgressLabel');
+  prog.style.display = 'block';
+  label.textContent = `Uploading ${file.name}...`;
+
+  const storageRef = ref(storage, `documents/${activeDocKey.filename}`);
+  const task = uploadBytesResumable(storageRef, file);
+
+  task.on('state_changed',
+    snap => { fill.style.width = (snap.bytesTransferred / snap.totalBytes * 100) + '%'; },
+    err => { toast('Upload failed: ' + err.message, 'error'); prog.style.display = 'none'; },
+    async () => {
+      const url = await getDownloadURL(task.snapshot.ref);
+      // Save/update in Firestore
+      const snap2 = await getDocs(collection(db, 'documents'));
+      let existingId = null;
+      snap2.forEach(d => { if (d.data().key === activeDocKey.key) existingId = d.id; });
+      if (existingId) {
+        await deleteDoc(doc(db, 'documents', existingId));
+      }
+      await addDoc(collection(db, 'documents'), {
+        key: activeDocKey.key,
+        label: activeDocKey.label,
+        filename: activeDocKey.filename,
+        url,
+        path: storageRef.fullPath,
+        uploadedAt: serverTimestamp()
+      });
+      prog.style.display = 'none';
+      fill.style.width = '0%';
+      toast(`${activeDocKey.label} uploaded!`);
+      cancelDocUpload();
+      loadDocuments();
+    }
+  );
+}
+
+/* ══════════════════════════════
+   SIGNALS
+══════════════════════════════ */
+window.postSignal = async function() {
+  const btn = document.getElementById('signalBtn');
+  const symbol = document.getElementById('s-symbol').value.trim().toUpperCase();
+  const type = document.getElementById('s-type').value;
+  const callType = document.getElementById('s-calltype').value;
+  if (!symbol) { toast('Stock symbol is required', 'error'); return; }
+
+  btn.innerHTML = '<div class="loading"></div> Posting...';
+  btn.disabled = true;
+
+  try {
+    await addDoc(collection(db, 'signals'), {
+      symbol, type, callType,
+      entry: document.getElementById('s-entry').value,
+      sl: document.getElementById('s-sl').value,
+      target1: document.getElementById('s-t1').value,
+      target2: document.getElementById('s-t2').value,
+      target3: document.getElementById('s-t3').value,
+      notes: document.getElementById('s-notes').value,
+      status: 'OPEN',
+      createdAt: serverTimestamp()
+    });
+    toast(`Signal posted: ${symbol} ${type}`);
+    ['s-symbol','s-entry','s-sl','s-t1','s-t2','s-t3','s-notes'].forEach(id => document.getElementById(id).value = '');
+    loadSignals();
+  } catch(e) { toast('Failed to post signal', 'error'); }
+  btn.innerHTML = '📡 Post Signal';
+  btn.disabled = false;
+}
+
+async function loadSignals() {
+  const el = document.getElementById('signalsList');
+  el.innerHTML = '<div style="padding:16px;text-align:center;color:#94a3b8;font-size:13px">Loading...</div>';
+  try {
+    const snap = await getDocs(query(collection(db, 'signals'), orderBy('createdAt', 'desc')));
+    if (snap.empty) { el.innerHTML = '<div class="empty"><div class="e-ico">📡</div><p>No signals yet.</p></div>'; return; }
+    el.innerHTML = `<table class="tbl">
+      <thead><tr><th>Symbol</th><th>Type</th><th>Call</th><th>Entry</th><th>SL</th><th>T1</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+      <tbody>${snap.docs.map(d => {
+        const s = d.data();
+        const date = s.createdAt?.toDate?.()?.toLocaleDateString('en-IN') || '—';
+        return `<tr>
+          <td><strong>${s.symbol}</strong></td>
+          <td><span class="${s.type==='BUY'?'badge-buy':'badge-sell'}">${s.type}</span></td>
+          <td>${s.callType}</td>
+          <td>${s.entry ? '₹'+s.entry : '—'}</td>
+          <td style="color:#dc2626">${s.sl ? '₹'+s.sl : '—'}</td>
+          <td style="color:#16a34a">${s.target1 ? '₹'+s.target1 : '—'}</td>
+          <td><span class="badge-${s.status==='OPEN'?'open':s.status==='TARGET_HIT'?'hit':'sl'}">${s.status}</span></td>
+          <td style="color:#94a3b8;font-size:11px">${date}</td>
+          <td>
+            <select onchange="updateSignalStatus('${d.id}',this.value)" style="font-size:11px;padding:4px 6px;border:1px solid #e2e8f0;border-radius:5px;background:#fff;cursor:pointer">
+              <option ${s.status==='OPEN'?'selected':''} value="OPEN">Open</option>
+              <option ${s.status==='TARGET_HIT'?'selected':''} value="TARGET_HIT">Target Hit</option>
+              <option ${s.status==='SL_HIT'?'selected':''} value="SL_HIT">SL Hit</option>
+              <option ${s.status==='CLOSED'?'selected':''} value="CLOSED">Closed</option>
+            </select>
+            <button class="btn btn-danger btn-sm" style="margin-left:4px" onclick="deleteSignal('${d.id}')">×</button>
+          </td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>`;
+  } catch(e) { el.innerHTML = '<div class="empty"><p>Failed to load.</p></div>'; }
+}
+
+window.updateSignalStatus = async function(id, status) {
+  try {
+    const { updateDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+    await updateDoc(doc(db, 'signals', id), { status });
+    toast('Status updated to ' + status);
+  } catch(e) { toast('Update failed', 'error'); }
+}
+
+window.deleteSignal = async function(id) {
+  if (!confirm('Delete this signal?')) return;
+  try { await deleteDoc(doc(db, 'signals', id)); toast('Signal deleted'); loadSignals(); }
+  catch(e) { toast('Delete failed', 'error'); }
+}
+
+/* ══════════════════════════════
+   ANNOUNCEMENTS
+══════════════════════════════ */
+window.postAnnouncement = async function() {
+  const btn = document.getElementById('annBtn');
+  const title = document.getElementById('a-title').value.trim();
+  const body = document.getElementById('a-body').value.trim();
+  if (!title || !body) { toast('Title and message are required', 'error'); return; }
+
+  btn.innerHTML = '<div class="loading"></div> Posting...';
+  btn.disabled = true;
+  try {
+    await addDoc(collection(db, 'announcements'), {
+      title, body, type: document.getElementById('a-type').value,
+      createdAt: serverTimestamp()
+    });
+    toast('Announcement posted!');
+    document.getElementById('a-title').value = '';
+    document.getElementById('a-body').value = '';
+    loadAnnouncements();
+  } catch(e) { toast('Failed to post', 'error'); }
+  btn.innerHTML = '📢 Post Announcement';
+  btn.disabled = false;
+}
+
+async function loadAnnouncements() {
+  const el = document.getElementById('annList');
+  try {
+    const snap = await getDocs(query(collection(db, 'announcements'), orderBy('createdAt', 'desc')));
+    if (snap.empty) { el.innerHTML = '<div class="empty"><div class="e-ico">📢</div><p>No announcements yet.</p></div>'; return; }
+    const icons = {info:'ℹ️',success:'✅',warning:'⚠️',alert:'🚨'};
+    el.innerHTML = snap.docs.map(d => {
+      const a = d.data();
+      const date = a.createdAt?.toDate?.()?.toLocaleDateString('en-IN') || '—';
+      return `<div class="ann-${a.type}" style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;border-radius:8px;padding:12px 14px">
+        <span style="font-size:18px;flex-shrink:0">${icons[a.type]||'📢'}</span>
+        <div style="flex:1"><div style="font-size:13px;font-weight:700;margin-bottom:2px">${a.title}</div><div style="font-size:12px;opacity:.7">${a.body}</div></div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+          <span style="font-size:10px;color:#94a3b8">${date}</span>
+          <button class="btn btn-danger btn-sm" onclick="deleteAnn('${d.id}')">×</button>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) { el.innerHTML = '<div class="empty"><p>Failed to load.</p></div>'; }
+}
+
+window.deleteAnn = async function(id) {
+  if (!confirm('Delete announcement?')) return;
+  try { await deleteDoc(doc(db, 'announcements', id)); toast('Deleted'); loadAnnouncements(); }
+  catch(e) { toast('Delete failed', 'error'); }
+}
+
+/* ══════════════════════════════
+   RESEARCH
+══════════════════════════════ */
+window.postResearch = async function() {
+  const btn = document.getElementById('resBtn');
+  const title = document.getElementById('r-title').value.trim();
+  const sector = document.getElementById('r-sector').value;
+  if (!title) { toast('Title is required', 'error'); return; }
+
+  btn.innerHTML = '<div class="loading"></div> Publishing...';
+  btn.disabled = true;
+  try {
+    await addDoc(collection(db, 'research'), {
+      title, sector,
+      summary: document.getElementById('r-summary').value,
+      pdfUrl: document.getElementById('r-pdf').value,
+      publishedDate: document.getElementById('r-date').value || new Date().toISOString().split('T')[0],
+      createdAt: serverTimestamp()
+    });
+    toast('Report published!');
+    ['r-title','r-summary','r-pdf','r-date'].forEach(id => document.getElementById(id).value = '');
+    loadResearch();
+  } catch(e) { toast('Failed to publish', 'error'); }
+  btn.innerHTML = '📄 Publish Report';
+  btn.disabled = false;
+}
+
+async function loadResearch() {
+  const el = document.getElementById('resList');
+  try {
+    const snap = await getDocs(query(collection(db, 'research'), orderBy('createdAt', 'desc')));
+    if (snap.empty) { el.innerHTML = '<div class="empty"><div class="e-ico">📊</div><p>No reports yet.</p></div>'; return; }
+    el.innerHTML = `<table class="tbl">
+      <thead><tr><th>Title</th><th>Sector</th><th>Date</th><th>PDF</th><th>Action</th></tr></thead>
+      <tbody>${snap.docs.map(d => {
+        const r = d.data();
+        return `<tr>
+          <td><div style="font-weight:600">${r.title}</div><div style="font-size:11px;color:#94a3b8">${r.summary?.slice(0,60)||''}</div></td>
+          <td>${r.sector}</td>
+          <td style="font-size:12px;color:#94a3b8">${r.publishedDate}</td>
+          <td>${r.pdfUrl?`<a href="${r.pdfUrl}" target="_blank" style="color:#1d4ed8;font-size:12px">View →</a>`:'—'}</td>
+          <td><button class="btn btn-danger btn-sm" onclick="deleteResearch('${d.id}')">Delete</button></td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>`;
+  } catch(e) { el.innerHTML = '<div class="empty"><p>Failed to load.</p></div>'; }
+}
+
+window.deleteResearch = async function(id) {
+  if (!confirm('Delete this report?')) return;
+  try { await deleteDoc(doc(db, 'research', id)); toast('Report deleted'); loadResearch(); }
+  catch(e) { toast('Delete failed', 'error'); }
+}
+
+/* ══════════════════════════════
+   CONTACTS
+══════════════════════════════ */
+async function loadContacts() {
+  const el = document.getElementById('contactsList');
+  el.innerHTML = '<div style="padding:16px;text-align:center;color:#94a3b8;font-size:13px">Loading...</div>';
+  try {
+    const snap = await getDocs(query(collection(db, 'contacts'), orderBy('createdAt', 'desc')));
+    if (snap.empty) { el.innerHTML = '<div class="empty"><div class="e-ico">✉️</div><p>No contacts yet.</p></div>'; return; }
+    el.innerHTML = `<table class="tbl">
+      <thead><tr><th>Name</th><th>Mobile</th><th>Interest</th><th>Message</th><th>Date</th></tr></thead>
+      <tbody>${snap.docs.map(d => {
+        const c = d.data();
+        const date = c.createdAt?.toDate?.()?.toLocaleDateString('en-IN') || '—';
+        return `<tr>
+          <td><strong>${c.firstName||''} ${c.lastName||''}</strong></td>
+          <td>${c.mobile||'—'}</td>
+          <td style="font-size:12px">${c.interest||'—'}</td>
+          <td style="font-size:12px;color:#64748b;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.message||'—'}</td>
+          <td style="font-size:11px;color:#94a3b8">${date}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>`;
+  } catch(e) { el.innerHTML = '<div class="empty"><p>Failed to load.</p></div>'; }
+}
+
+/* ══════════════════════════════
+   QR CODE
+══════════════════════════════ */
+async function loadQR() {
+  try {
+    const snap = await getDocs(collection(db, 'paymentQR'));
+    if (!snap.empty) {
+      const data = snap.docs[0].data();
+      const el = document.getElementById('currentQR');
+      document.getElementById('currentQRImg').src = data.url;
+      document.getElementById('currentQRName').textContent = data.name || 'Payment QR';
+      document.getElementById('currentQRDate').textContent = 'Uploaded: ' + (data.uploadedAt?.toDate?.()?.toLocaleDateString('en-IN') || '—');
+      document.getElementById('currentQRLink').href = data.url;
+      el.style.display = 'block';
+      document.getElementById('qrUploadLabel').textContent = '🔄 Replace QR Code';
+      updateQRSnippet(data.url);
+    } else {
+      updateQRSnippet('YOUR_QR_URL_AFTER_UPLOAD');
+    }
+  } catch(e) {}
+}
+
+function updateQRSnippet(url) {
+  document.getElementById('qrSnippet').textContent =
+`<!-- Payment QR Code — paste in services.html -->
+<div id="paymentQR" style="text-align:center;margin-top:24px">
+  <img src="${url}" alt="Scan to Pay" 
+       style="width:180px;height:180px;border-radius:12px;
+              border:2px solid rgba(255,255,255,.2);padding:8px;
+              background:#fff">
+  <p style="color:rgba(255,255,255,.6);font-size:12px;margin-top:8px">
+    Scan QR to Pay via UPI
+  </p>
+</div>`;
+}
+
+window.copySnippet = function() {
+  const text = document.getElementById('qrSnippet').textContent;
+  navigator.clipboard.writeText(text).then(() => toast('Code copied!'));
+}
+
+window.handleQRUpload = async function(files) {
+  if (!files.length) return;
+  const file = files[0];
+  if (file.size > 3 * 1024 * 1024) { toast('File too large (max 3MB)', 'error'); return; }
+
+  const prog = document.getElementById('qrUploadProgress');
+  const fill = document.getElementById('qrProgressFill');
+  prog.style.display = 'block';
+
+  const storageRef = ref(storage, `qr/payment-qr.${file.name.split('.').pop()}`);
+  const task = uploadBytesResumable(storageRef, file);
+
+  task.on('state_changed',
+    snap => { fill.style.width = (snap.bytesTransferred / snap.totalBytes * 100) + '%'; },
+    err => { toast('Upload failed', 'error'); prog.style.display = 'none'; },
+    async () => {
+      const url = await getDownloadURL(task.snapshot.ref);
+      // Clear old QR
+      const oldSnap = await getDocs(collection(db, 'paymentQR'));
+      for (const d of oldSnap.docs) await deleteDoc(doc(db, 'paymentQR', d.id));
+      // Save new
+      await addDoc(collection(db, 'paymentQR'), {
+        url, name: file.name, path: storageRef.fullPath,
+        uploadedAt: serverTimestamp()
+      });
+      prog.style.display = 'none';
+      fill.style.width = '0%';
+      document.getElementById('qrInput').value = '';
+      toast('Payment QR uploaded! ✅');
+      loadQR();
+    }
+  );
+}
+
+window.deleteQR = async function() {
+  if (!confirm('Remove payment QR?')) return;
+  try {
+    const snap = await getDocs(collection(db, 'paymentQR'));
+    for (const d of snap.docs) {
+      try { await deleteObject(ref(storage, d.data().path)); } catch(e) {}
+      await deleteDoc(doc(db, 'paymentQR', d.id));
+    }
+    document.getElementById('currentQR').style.display = 'none';
+    toast('QR removed');
+    loadQR();
+  } catch(e) { toast('Failed', 'error'); }
+}
+
+/* ══════════════════════════════
+   CLOSED TRADES
+══════════════════════════════ */
+window.addClosedTrade = async function() {
+  const symbol = document.getElementById('ct-symbol').value.trim().toUpperCase();
+  const entry = document.getElementById('ct-entry').value;
+  const exit = document.getElementById('ct-exit').value;
+  if (!symbol || !entry || !exit) { toast('Symbol, Entry and Exit are required', 'error'); return; }
+
+  const btn = document.getElementById('ctBtn');
+  btn.innerHTML = '<div class="loading"></div> Adding...';
+  btn.disabled = true;
+
+  try {
+    const pnl = document.getElementById('ct-pnl').value ||
+      ((((parseFloat(exit) - parseFloat(entry)) / parseFloat(entry)) * 100).toFixed(1));
+
+    await addDoc(collection(db, 'closedTrades'), {
+      symbol,
+      type: document.getElementById('ct-type').value,
+      callType: document.getElementById('ct-calltype').value,
+      entry, exit,
+      sl: document.getElementById('ct-sl').value,
+      target1: document.getElementById('ct-t1').value,
+      pnl: pnl,
+      status: document.getElementById('ct-status').value,
+      month: document.getElementById('ct-month').value,
+      date: document.getElementById('ct-date').value || new Date().toISOString().split('T')[0],
+      createdAt: serverTimestamp()
+    });
+
+    toast(`${symbol} added!`);
+    ['ct-symbol','ct-entry','ct-exit','ct-sl','ct-t1','ct-pnl'].forEach(id => document.getElementById(id).value = '');
+    loadClosedTrades();
+  } catch(e) { toast('Failed to add trade', 'error'); }
+
+  btn.innerHTML = '➕ Add to List';
+  btn.disabled = false;
+}
+
+async function loadClosedTrades() {
+  const el = document.getElementById('closedTradesList');
+  const statsEl = document.getElementById('ctStats');
+  el.innerHTML = '<div style="padding:16px;text-align:center;color:#94a3b8;font-size:13px">Loading...</div>';
+
+  try {
+    const snap = await getDocs(query(collection(db, 'closedTrades'), orderBy('createdAt', 'desc')));
+    if (snap.empty) {
+      el.innerHTML = '<div class="empty"><div class="e-ico">📈</div><p>No closed trades yet.</p></div>';
+      statsEl.style.display = 'none';
+      return;
+    }
+
+    const trades = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const wins = trades.filter(t => t.status === 'WIN').length;
+    const losses = trades.filter(t => t.status === 'LOSS').length;
+    const winRate = trades.length ? Math.round((wins / trades.length) * 100) : 0;
+
+    document.getElementById('ct-total').textContent = trades.length;
+    document.getElementById('ct-wins').textContent = wins;
+    document.getElementById('ct-losses').textContent = losses;
+    document.getElementById('ct-winrate').textContent = winRate + '%';
+    statsEl.style.display = 'grid';
+
+    el.innerHTML = `<table class="tbl">
+      <thead><tr><th>#</th><th>Symbol</th><th>Type</th><th>Segment</th><th>Entry</th><th>Exit</th><th>SL</th><th>T1</th><th>P&L%</th><th>Status</th><th>Month</th><th>Action</th></tr></thead>
+      <tbody>${trades.map((t, i) => `<tr>
+        <td style="color:#94a3b8">${i+1}</td>
+        <td><strong>${t.symbol}</strong><br><span style="font-size:10px;color:#94a3b8">${t.callType}</span></td>
+        <td><span class="${t.type==='BUY'?'badge-buy':'badge-sell'}">${t.type}</span></td>
+        <td style="font-size:12px">${t.callType}</td>
+        <td>₹${t.entry}</td>
+        <td>₹${t.exit}</td>
+        <td style="color:#dc2626">${t.sl?'₹'+t.sl:'—'}</td>
+        <td style="color:#16a34a">${t.target1?'₹'+t.target1:'—'}</td>
+        <td style="font-weight:700;color:${parseFloat(t.pnl)>=0?'#16a34a':'#dc2626'}">${parseFloat(t.pnl)>=0?'+':''}${t.pnl}%</td>
+        <td><span class="${t.status==='WIN'?'badge-hit':t.status==='LOSS'?'badge-sl':'badge-open'}">${t.status}</span></td>
+        <td style="font-size:11px;color:#94a3b8">${t.month||'—'}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="deleteClosedTrade('${t.id}')">×</button></td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+  } catch(e) { el.innerHTML = '<div class="empty"><p>Failed to load.</p></div>'; }
+}
+
+window.deleteClosedTrade = async function(id) {
+  if (!confirm('Delete this trade?')) return;
+  try { await deleteDoc(doc(db, 'closedTrades', id)); toast('Trade deleted'); loadClosedTrades(); }
+  catch(e) { toast('Delete failed', 'error'); }
+}
+
+/* ══════════════════════════════
+   APP LINKS
+══════════════════════════════ */
+const FIREBASE_API_KEY = 'AIzaSyDuC_tvmAIAcpxdqke2TRCgZVmdZ0SjPrw';
+
+async function loadAppLinks() {
+  try {
+    const snap = await getDocs(collection(db, 'appLinks'));
+    if (!snap.empty) {
+      const data = snap.docs[0].data();
+      if (data.playstore) {
+        document.getElementById('playstore-url').value = data.playstore;
+        const el = document.getElementById('playstore-current');
+        document.getElementById('playstore-link').textContent = data.playstore;
+        document.getElementById('playstore-link').href = data.playstore;
+        el.style.display = 'flex';
+      }
+      if (data.appstore) {
+        document.getElementById('appstore-url').value = data.appstore;
+        const el = document.getElementById('appstore-current');
+        document.getElementById('appstore-link').textContent = data.appstore;
+        document.getElementById('appstore-link').href = data.appstore;
+        el.style.display = 'block';
+        if (data.iosType === 'apk') document.getElementById('ios-apk').checked = true;
+        else document.getElementById('ios-appstore').checked = true;
+      }
+      updateAppSnippet(data);
+    }
+  } catch(e) {}
+}
+
+window.saveAppLinks = async function() {
+  const playstore = document.getElementById('playstore-url').value.trim();
+  const appstore = document.getElementById('appstore-url').value.trim();
+  const iosType = document.getElementById('ios-apk').checked ? 'apk' : 'appstore';
+  if (!playstore && !appstore) { toast('Enter at least one link', 'error'); return; }
+
+  try {
+    const snap = await getDocs(collection(db, 'appLinks'));
+    if (!snap.empty) await deleteDoc(doc(db, 'appLinks', snap.docs[0].id));
+    await addDoc(collection(db, 'appLinks'), { playstore, appstore, iosType, updatedAt: serverTimestamp() });
+    toast('App links saved! ✅');
+    updateAppSnippet({ playstore, appstore, iosType });
+    loadAppLinks();
+  } catch(e) { toast('Failed to save', 'error'); }
+}
+
+function updateAppSnippet(data) {
+  const ps = data.playstore || '';
+  const as = data.appstore || '';
+  const iosLabel = data.iosType === 'apk' ? 'Download APK' : 'App Store';
+  document.getElementById('appLinksSnippet').textContent =
+`<!-- App Download Buttons — paste in services.html or index.html -->
+<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px">
+  ${ps ? `<a href="${ps}" target="_blank" rel="noopener"
+    style="display:inline-flex;align-items:center;gap:8px;background:#16a34a;
+           color:#fff;padding:12px 22px;border-radius:10px;font-weight:700;
+           text-decoration:none;font-size:14px">
+    ▶ Google Play
+  </a>` : ''}
+  ${as ? `<a href="${as}" target="_blank" rel="noopener"
+    style="display:inline-flex;align-items:center;gap:8px;background:#2563eb;
+           color:#fff;padding:12px 22px;border-radius:10px;font-weight:700;
+           text-decoration:none;font-size:14px">
+    🍎 ${iosLabel}
+  </a>` : ''}
+</div>`;
+}
+
+window.copyAppSnippet = function() {
+  navigator.clipboard.writeText(document.getElementById('appLinksSnippet').textContent)
+    .then(() => toast('Code copied!'));
+}
+
+/* ══════════════════════════════
+   USERS MANAGEMENT
+══════════════════════════════ */
+let allUsers = [];
+let userFilter = 'all';
+let userSearch = '';
+
+window.createUser = async function() {
+  const name = document.getElementById('nu-name').value.trim();
+  const email = document.getElementById('nu-email').value.trim();
+  const mobile = document.getElementById('nu-mobile').value.trim();
+  const pwd = document.getElementById('nu-pwd').value;
+  const status = document.getElementById('nu-status').value;
+  const expiry = document.getElementById('nu-expiry').value;
+
+  if (!name || !email || !pwd) { toast('Name, email and password are required', 'error'); return; }
+  if (pwd.length < 6) { toast('Password must be at least 6 characters', 'error'); return; }
+
+  const btn = document.getElementById('createUserBtn');
+  btn.innerHTML = '<div class="loading"></div> Creating...';
+  btn.disabled = true;
+
+  try {
+    /* Create Firebase Auth user via REST API */
+    const authRes = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${FIREBASE_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: pwd, returnSecureToken: true })
+      }
+    );
+    const authData = await authRes.json();
+
+    if (authData.error) {
+      let msg = authData.error.message;
+      if (msg === 'EMAIL_EXISTS') msg = 'This email is already registered';
+      if (msg === 'WEAK_PASSWORD : Password should be at least 6 characters') msg = 'Password too weak';
+      toast(msg, 'error');
+      btn.innerHTML = '👤 Create User Account';
+      btn.disabled = false;
+      return;
+    }
+
+    const uid = authData.localId;
+
+    /* Save user profile to Firestore */
+    await setDoc(doc(db, 'users', uid), {
+      name, email, mobile,
+      status,
+      active: true,
+      blocked: false,
+      subscriptionEndDate: expiry ? new Date(expiry) : null,
+      createdAt: serverTimestamp(),
+      createdBy: 'admin'
+    });
+
+    toast(`✅ User created: ${name} (${email})`);
+    ['nu-name','nu-email','nu-mobile','nu-pwd','nu-expiry'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('nu-status').value = 'FREE';
+    loadUsers();
+  } catch(e) {
+    toast('Failed: ' + e.message, 'error');
+  }
+
+  btn.innerHTML = '👤 Create User Account';
+  btn.disabled = false;
+}
+
+async function loadUsers() {
+  const el = document.getElementById('usersList');
+  el.innerHTML = '<div style="padding:16px;text-align:center;color:#94a3b8;font-size:13px">Loading users...</div>';
+  try {
+    const snap = await getDocs(query(collection(db, 'users'), orderBy('createdAt', 'desc')));
+    allUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderUsers();
+  } catch(e) {
+    el.innerHTML = '<div class="empty"><p>Failed to load users.</p></div>';
+  }
+}
+
+function renderUsers() {
+  const el = document.getElementById('usersList');
+  let filtered = allUsers;
+
+  /* Apply filter */
+  if (userFilter === 'blocked') filtered = filtered.filter(u => u.blocked);
+  else if (userFilter === 'active') filtered = filtered.filter(u => u.active && !u.blocked);
+  else if (userFilter === 'free') filtered = filtered.filter(u => u.status === 'FREE');
+  else if (userFilter === 'paid') filtered = filtered.filter(u => u.status === 'PAID');
+
+  /* Apply search */
+  if (userSearch) filtered = filtered.filter(u =>
+    (u.name || '').toLowerCase().includes(userSearch) ||
+    (u.email || '').toLowerCase().includes(userSearch) ||
+    (u.mobile || '').includes(userSearch)
+  );
+
+  if (!filtered.length) {
+    el.innerHTML = '<div class="empty"><div class="e-ico">👥</div><p>No users found.</p></div>';
+    return;
+  }
+
+  el.innerHTML = `<table class="tbl">
+    <thead><tr>
+      <th>Name</th><th>Email</th><th>Mobile</th>
+      <th>Subscription</th><th>Expiry</th>
+      <th>Status</th><th>Active</th><th>Actions</th>
+    </tr></thead>
+    <tbody>${filtered.map(u => {
+      const isBlocked = u.blocked;
+      const isActive = u.active !== false;
+      const isPaid = u.status === 'PAID';
+      const expiry = u.subscriptionEndDate
+        ? (u.subscriptionEndDate.toDate ? u.subscriptionEndDate.toDate() : new Date(u.subscriptionEndDate)).toLocaleDateString('en-IN')
+        : '—';
+      const createdBy = u.createdBy === 'admin' ? '🔑 Admin' : '📱 App';
+
+      return `<tr style="${isBlocked ? 'opacity:.6' : ''}">
+        <td>
+          <div style="font-weight:700;color:#0f172a">${u.name || '—'}</div>
+          <div style="font-size:10px;color:#94a3b8;margin-top:2px">${createdBy}</div>
+        </td>
+        <td style="color:#1d4ed8;font-size:12px">${u.email || '—'}</td>
+        <td style="font-size:12px">${u.mobile || '—'}</td>
+        <td>
+          <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;
+            background:${isPaid ? '#dcfce7' : '#f1f5f9'};
+            color:${isPaid ? '#16a34a' : '#64748b'}">
+            ${u.status || 'FREE'}
+          </span>
+        </td>
+        <td style="font-size:11px;color:#94a3b8">${expiry}</td>
+        <td>
+          ${isBlocked
+            ? `<span style="font-size:10px;font-weight:700;background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:20px">🚫 Blocked</span>`
+            : `<span style="font-size:10px;font-weight:700;background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:20px">✅ Active</span>`}
+        </td>
+        <td>
+          <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer">
+            <div class="toggle-switch ${isActive ? 'on' : ''}" onclick="toggleActive('${u.id}', ${isActive})"></div>
+            <span style="font-size:11px;color:#64748b">${isActive ? 'Active' : 'Inactive'}</span>
+          </label>
+        </td>
+        <td>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <select onchange="updateSubscription('${u.id}', this.value)" style="font-size:11px;padding:4px 6px;border:1px solid #e2e8f0;border-radius:5px;background:#fff;cursor:pointer">
+              <option ${u.status==='FREE'?'selected':''} value="FREE">FREE</option>
+              <option ${u.status==='PAID'?'selected':''} value="PAID">PAID</option>
+            </select>
+            <button class="btn btn-sm" style="font-size:11px;padding:4px 10px;background:${isBlocked?'#dcfce7':'#fee2e2'};color:${isBlocked?'#16a34a':'#dc2626'};border:1px solid ${isBlocked?'#bbf7d0':'#fecaca'}"
+              onclick="toggleBlock('${u.id}', ${isBlocked})">
+              ${isBlocked ? '✅ Unblock' : '🚫 Block'}
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}', '${(u.name||'').replace(/'/g,"\\'")}')">🗑</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>
+  <div style="padding:12px 0;font-size:12px;color:#94a3b8;text-align:right">
+    Showing ${filtered.length} of ${allUsers.length} users
+  </div>`;
+}
+
+window.setUserFilter = function(filter, btn) {
+  userFilter = filter;
+  ['all','active','blocked','free','paid'].forEach(f => {
+    const el = document.getElementById('uf-' + f);
+    if (el) { el.className = f === filter ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm'; }
+  });
+  renderUsers();
+}
+
+window.filterUsers = function(val) {
+  userSearch = val.toLowerCase();
+  renderUsers();
+}
+
+window.toggleBlock = async function(uid, currentlyBlocked) {
+  try {
+    const { updateDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+    await updateDoc(doc(db, 'users', uid), { blocked: !currentlyBlocked });
+    toast(currentlyBlocked ? '✅ User unblocked' : '🚫 User blocked');
+    loadUsers();
+  } catch(e) { toast('Failed', 'error'); }
+}
+
+window.toggleActive = async function(uid, currentlyActive) {
+  try {
+    const { updateDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+    await updateDoc(doc(db, 'users', uid), { active: !currentlyActive });
+    toast(currentlyActive ? 'User set to Inactive' : '✅ User set to Active');
+    loadUsers();
+  } catch(e) { toast('Failed', 'error'); }
+}
+
+window.updateSubscription = async function(uid, status) {
+  try {
+    const { updateDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+    await updateDoc(doc(db, 'users', uid), { status });
+    toast(`Subscription updated to ${status}`);
+    loadUsers();
+  } catch(e) { toast('Failed', 'error'); }
+}
+
+window.deleteUser = async function(uid, name) {
+  if (!confirm(`Delete user "${name}"?\n\nThis removes them from the dashboard. They may still be able to log in — to fully block them, use the Block button instead.`)) return;
+  try {
+    await deleteDoc(doc(db, 'users', uid));
+    toast('User deleted from web access');
+    loadUsers();
+  } catch(e) { toast('Delete failed', 'error'); }
+}
+
+/* ── INIT ── */
+loadDashboard();
+loadQR();
+loadAppLinks();
+
+/* expose for contacts window */
+window.loadContacts = loadContacts;
+
+</script>
+</body>
+</html>
