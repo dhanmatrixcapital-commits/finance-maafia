@@ -1,5 +1,13 @@
 {
   "buildCommand": null,
   "outputDirectory": ".",
-  "framework": null
+  "framework": null,
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "dhanmatrix.in" }],
+      "destination": "https://www.dhanmatrix.in/$1",
+      "permanent": true
+    }
+  ]
 }
